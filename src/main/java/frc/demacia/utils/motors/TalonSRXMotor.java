@@ -8,9 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
+import frc.demacia.utils.log.LogManager;
+import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 /**
  * Wrapper class for the CTRE Talon SRX motor controller using Phoenix 5.
@@ -39,7 +39,7 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
         configMotor();
         addLog();
         setName(name);
-        SmartDashboard.putData(name, this);
+        // SmartDashboard.putData(name, this);
         LogManager.log(name + " motor initialized");
     }
 
@@ -81,7 +81,7 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
         () -> getCurrentClosedLoopError(),
         () -> getCurrentClosedLoopSP()
         ).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
-        .withIsMotor().build();
+        .withIsMotor(config.canbus.equals(Canbus.Rio)).build();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
     }
 
     @Override
-    public void setVelocityWithAcceleratoin(double velocity, Supplier<Double> wantedAccelerationSupplier) {
+    public void setVelocityWithAcceleration(double velocity, Supplier<Double> wantedAccelerationSupplier) {
         setVelocity(velocity, wantedAccelerationSupplier.get() * config.pid[slot].kA());
     }
 
