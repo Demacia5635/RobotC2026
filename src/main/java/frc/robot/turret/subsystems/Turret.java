@@ -5,7 +5,6 @@
 package frc.robot.turret.subsystems;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
-import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
 import edu.wpi.first.math.MathUtil;

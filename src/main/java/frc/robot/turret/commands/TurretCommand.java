@@ -4,21 +4,19 @@
 
 package frc.robot.turret.commands;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.shooter.ShooterConstants;
-import frc.robot.shooter.ShooterConstants.FeederConstants;
-import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurretCommand extends Command {
-  public Turret turret ;
+  public Turret turret;
   public TurretStates turretstates;
+  private double Angle;
 
   private double turretAngle;
   /** Creates a new TurretCommand. */
@@ -47,22 +45,22 @@ public class TurretCommand extends Command {
         turret.setTurrtMotorMotion(turretAngle);
         break;
       case SHOOTING:
-      double Angle =TurretConstants.TURRET_POSE.getTranslation().plus(Constants.HUB_POSE2D.getTranslation()).getAngle().getRadians();
+        double Angle =TurretConstants.TURRET_POSE.getTranslation().plus(Constants.HUB_POSE2D.getTranslation()).getAngle().getRadians();
         turret.setTurrtMotorMotion(Angle);
         break;
       case DELIVERY:
-      
+        if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
+          Angle  =TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT).getAngle().getRadians();
+        }else{
+          Angle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
+        }
         break;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted) {
+    turret.stopMotor();
   }
 }
