@@ -7,7 +7,7 @@ import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.sensors.LimitSwitchConfig;
 
 public class TurretConstants {
-
+    //TODO: Set the motor config and delivery points
     public final static String NAME = "Turret";
     public final static Translation2d DELIVERY_RIGHT_POINT = Translation2d.kZero;
     public final static Translation2d DELIVERY_LEFT_POINT = Translation2d.kZero;
@@ -20,7 +20,7 @@ public class TurretConstants {
     public static final double MAX_TURRET_ANGEL = 0;
     public static final double MIN_TURRET_ANGEL = 0;
 
-
+    //TODO: Set the limit switch config
     public static final int MAX_LIMIT_SWITCH_ID = 0;
     public static final int MIN_LIMIT_SWITCH_ID = 0;
     public final static String MAX_LIMIT_SWITCH_NAME = "max limit swich";

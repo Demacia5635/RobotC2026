@@ -20,6 +20,7 @@ public class ShooterConstants {
 
 
     public final static class FlywheelConstants {
+        //TODO: Set the motor config
         public static final Canbus FLYWEEL_CANBUS = Canbus.Rio;
         public static final String FLYWEEL_NAME = "fly weel motor";
         public static final int FLYWEEL_ID = 0;
@@ -30,6 +31,7 @@ public class ShooterConstants {
     }
 
     public final static class HoodConstants {
+        //TODO: Set the motor config
         public static final Canbus HOOD_CANBUS = Canbus.Rio;
         public static final String HOOD_NAME = "hood motor";
         public static final int HOOD_ID = 0;
@@ -41,6 +43,7 @@ public class ShooterConstants {
     }
 
     public final static class IndexerConstants {
+        //TODO: Set the motor config
         public static final Canbus INDEXER_CANBUS = Canbus.Rio;
         public static final String INDEXER_NAME = "indexer motor";
         public static final int INDEXER_ID = 0;
@@ -50,6 +53,7 @@ public class ShooterConstants {
     }
 
     public final static class FeederConstants {
+        //TODO: Set the motor config
         public static final Canbus FEEDER_CANBUS = Canbus.Rio;
         public static final String FEEDER_NAME = "feeder motor";
         public static final int  FEEDER_ID = 0;
