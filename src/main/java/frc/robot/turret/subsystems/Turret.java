@@ -11,39 +11,54 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
-  private TalonFXMotor turrtMotor;
+  private TalonFXMotor turretMotor;
   private LimitSwitch maxLimitSwitch;
   private LimitSwitch minLimitSwitch;
-
   private TurretStates turretStates;
+  private boolean isCalibrated;
   /** Creates a new Turret. */
   public Turret() {
-   turrtMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
-   maxLimitSwitch = new LimitSwitch(TurretConstants.MAX_LIMIT_SWITCH_CONFIG);
-   minLimitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
+    turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
+    maxLimitSwitch = new LimitSwitch(TurretConstants.MAX_LIMIT_SWITCH_CONFIG);
+    minLimitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
+    isCalibrated = false;
   }
 
-  public void setTurrtMotorPower(double Power){
-    turrtMotor.setDuty(Power);
+  public void setTurretPower(double Power){
+    turretMotor.setDuty(Power);
   }
 
-  public void setTurrtMotion(double position){
-    position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGEL, TurretConstants.MAX_TURRET_ANGEL);
-    position = MathUtil.angleModulus(position);
-    turrtMotor.setMotion(position);
+  public void setTurretMotion(double position){
+    if(isCalibrated){
+      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGEL, TurretConstants.MAX_TURRET_ANGEL);
+      position = MathUtil.angleModulus(position);
+      turretMotor.setMotion(position);
+    }
+  }
+
+  public void setPositionByLimit(){
+    if(getMaxLimitSwich()){
+      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGEL);
+    } else if(getMinLimitSwich()){
+      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGEL);
+    }
   }
   public void stopMotor(){
-    turrtMotor.stop();
+    turretMotor.stop();
   }
+
   public double getTurretAngle(){
-    return turrtMotor.getCurrentAngle();
+    return turretMotor.getCurrentAngle();
   }
+
   public boolean getMaxLimitSwich(){
     return maxLimitSwitch.get();
   }
+
   public boolean getMinLimitSwich(){
     return minLimitSwitch.get();
   }
+
   public void setState(TurretStates state){
      turretStates = state;
   }
@@ -52,8 +67,7 @@ public class Turret extends SubsystemBase {
     return turretStates;
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void setCalibration(){
+    isCalibrated = true;
   }
 }

@@ -24,10 +24,6 @@ public class TurretCommand extends Command {
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty(getName(), ()-> testAngle, (angle)-> testAngle = angle);
   }
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -49,7 +45,7 @@ public class TurretCommand extends Command {
         }
         break;
     }
-    turret.setTurrtMotion(targetAngle);
+    turret.setTurretMotion(targetAngle);
   }
 
   // Called once the command ends or is interrupted.
