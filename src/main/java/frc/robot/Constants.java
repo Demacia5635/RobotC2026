@@ -19,7 +19,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  //TODO:CANGE ITTOTHE FIELD CLASS
+  //TODO: Change it to field class
   public static final Pose2d HUB_POSE2D = new Pose2d();
 
   public static final double FIELD_WIDTH = 0;

@@ -27,7 +27,7 @@ public class Turret extends SubsystemBase {
     turrtMotor.setDuty(Power);
   }
 
-  public void setTurrtMotorMotion(double position){
+  public void setTurrtMotion(double position){
     position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGEL, TurretConstants.MAX_TURRET_ANGEL);
     position = MathUtil.angleModulus(position);
     turrtMotor.setMotion(position);

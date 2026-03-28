@@ -9,53 +9,47 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
-import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.subsystems.Turret;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurretCommand extends Command {
-  public Turret turret;
-  public TurretStates turretstates;
-  private double Angle;
+  private Turret turret;
+  private double testAngle;
+  private double targetAngle;
 
-  private double turretAngle;
-  /** Creates a new TurretCommand. */
-  public TurretCommand() {
-        addRequirements(turret);
-
-    // Use addRequirements() here to declare subsystem dependencies.
+  public TurretCommand(Turret turret) {
+    this.turret = turret;
+    addRequirements(turret);
   }
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty(getName(), ()-> turretAngle, (angle)-> turretAngle = angle   );
+    builder.addDoubleProperty(getName(), ()-> testAngle, (angle)-> testAngle = angle);
   }
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (turret.getTurretState()) {
       case IDLE:
-        turret.stopMotor();
+      turret.stopMotor();
         break;
       case TEST:
-        turret.setTurrtMotorMotion(turretAngle);
+        targetAngle = testAngle;
         break;
       case SHOOTING:
-        double Angle =TurretConstants.TURRET_POSE.getTranslation().plus(Constants.HUB_POSE2D.getTranslation()).getAngle().getRadians();
-        turret.setTurrtMotorMotion(Angle);
+        targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(Constants.HUB_POSE2D.getTranslation()).getAngle().getRadians();
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
-          Angle  =TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT).getAngle().getRadians();
-        }else{
-          Angle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
+          targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT).getAngle().getRadians();
+        } else{
+          targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
         }
         break;
     }
+    turret.setTurrtMotion(targetAngle);
   }
 
   // Called once the command ends or is interrupted.

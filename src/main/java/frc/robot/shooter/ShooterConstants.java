@@ -62,6 +62,6 @@ public class ShooterConstants {
         IDLE,
         TEST,
         DELIVERY,
-        Tranch
+        TRANCH
     }
 }

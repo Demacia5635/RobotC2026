@@ -29,7 +29,7 @@ public class TurretConstants {
     public static final LimitSwitchConfig MIN_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MAX_LIMIT_SWITCH_ID, MAX_LIMIT_SWITCH_NAME);
     public static final LimitSwitchConfig MAX_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MIN_LIMIT_SWITCH_ID, MIN_LIMIT_SWITCH_NAME);
 
-    //TODO: set this after
+    //TODO: Set the turret pose to the actaual
     public static final Pose2d TURRET_POSE = new Pose2d();
 
     public enum TurretStates{
@@ -38,5 +38,4 @@ public class TurretConstants {
         DELIVERY,
         SHOOTING,
     }
-    }
-
+}

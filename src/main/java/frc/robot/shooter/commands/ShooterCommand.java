@@ -14,13 +14,11 @@ import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
 import frc.robot.shooter.ShooterConstants.IndexerConstants;
-import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.subsystems.Shooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShooterCommand extends Command {
-  public Shooter shooter;
-  public ShooterStates shooterState;
+  private Shooter shooter;
   private double flywheelVelocity = 0;
   private double hoodPosition = 0;
   private double indexerPower = 0;
@@ -88,7 +86,7 @@ public class ShooterCommand extends Command {
           shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
         }
         break;
-      case Tranch:
+      case TRANCH:
         shooter.setHoodMotion(HoodConstants.MIN_POSITION);
         shooter.stopFeeder();
         break;
