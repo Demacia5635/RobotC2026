@@ -11,6 +11,8 @@ public class RobotCommon {
     public static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     public static Rotation2d robotAngle = Rotation2d.kZero;
 
+    public static Pose2d hubPose = new Pose2d();
+
     public static boolean isRed = false;
     public static boolean isComp = false;
     public static boolean isRobotCalibrated = false;

@@ -12,10 +12,10 @@ public class ShooterConstants {
     public final static double HEIGHT = 4;
     public final static Translation2d DELIVERY_RIGHT_POINT = Translation2d.kZero;
     public final static Translation2d DELIVERY_LEFT_POINT = Translation2d.kZero;
-    public final static LookUpTable LOOK_UP_TABLE = new LookUpTable(2); //distance: velocity, angel
+    public final static LookUpTable LOOK_UP_TABLE = new LookUpTable(3); //distance: velocity, angel
     public static final Translation2d HUB = Translation2d.kZero;
     static{
-        LOOK_UP_TABLE.add(0, 0, 0);
+        LOOK_UP_TABLE.add(0, 0, 0, 0);
     }
 
 
