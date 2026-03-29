@@ -7,6 +7,7 @@ package frc.robot.turret.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.ShotingWhileDriving;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.subsystems.Turret;
@@ -35,7 +36,7 @@ public class TurretCommand extends Command {
         targetAngle = testAngle;
         break;
       case SHOOTING:
-        targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(Constants.HUB_POSE2D.getTranslation()).getAngle().getRadians();
+        targetAngle = ShotingWhileDriving.getTurretAngle();
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
