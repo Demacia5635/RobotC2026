@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.shooter.ShooterConstants;
 
 /** Add your docs here. */
-public class ShootingWhileDriving {
+public class ShotingWhileDriving {
     private static ChassisSpeeds robotVel;
     private static Pose2d robotPose;
     private static double robotFutureX;

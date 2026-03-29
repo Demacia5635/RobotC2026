@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotCommon;
+import frc.robot.ShotingWhileDriving;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
@@ -25,7 +27,6 @@ public class ShooterCommand extends Command {
   private double feederPower = 0;
   private Pose2d robotPose = Pose2d.kZero;
   private Translation2d shooterToTarget;
-  private double[] lookUpTableValues;
 
   /** Creates a new ShooterCommand. */
   public ShooterCommand(Shooter shooter) {
@@ -43,21 +44,15 @@ public class ShooterCommand extends Command {
       builder.addDoubleProperty("FeederPower", () -> feederPower, (power) -> feederPower = power);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (shooter.getShooterState()) {
       case SHOOTER:
-        shooterToTarget = robotPose.getTranslation().plus(ShooterConstants.HUB);
-        lookUpTableValues = ShooterConstants.LOOK_UP_TABLE.get(shooterToTarget.getNorm());
-        shooter.setFlywheelVelocity(lookUpTableValues[0]);
-        shooter.setHoodMotion(lookUpTableValues[1]);
+        //TODO: Change the position of the calculate
+        ShotingWhileDriving.calculate(RobotCommon.hubPose);
+        shooter.setFlywheelVelocity(ShotingWhileDriving.getFlyweelVel());
+        shooter.setHoodMotion(ShotingWhileDriving.getHoodAngle());
         shooter.stopFeeder();
         shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
         if(shooter.isReady()){
