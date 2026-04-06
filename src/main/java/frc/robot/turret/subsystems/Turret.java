@@ -70,4 +70,11 @@ public class Turret extends SubsystemBase {
   public void setCalibration(){
     isCalibrated = true;
   }
+
+  @Override
+  public void periodic() {
+      if (turretMotor.getCurrentCurrent() > TurretConstants.MAX_CURRENT && Math.abs(turretMotor.getCurrentVelocity()) < TurretConstants.MIN_VELOCITY){
+        stopMotor();
+      }
+  }
 }

@@ -8,8 +8,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shooter.ShooterConstants;
+import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
+import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 
 public class Shooter extends SubsystemBase {
@@ -92,6 +94,14 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+      if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
+        stopFeeder();
+      }
+      if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
+        hood.stop();
+      }
+      if (indexer.getCurrentCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(indexer.getCurrentVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
+        indexer.stop();
+      }
   }
 }
