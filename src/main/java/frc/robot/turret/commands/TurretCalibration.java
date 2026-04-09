@@ -20,6 +20,7 @@ public class TurretCalibration extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    turret.stopMotor();
     if(!interrupted){
       turret.setCalibration();
       turret.setPositionByLimit();

@@ -21,7 +21,6 @@ public class Shooter extends SubsystemBase {
   private TalonFXMotor feeder;
   private ShooterStates shooterState;
   private double targetHoodPosition;
-  private double targetFlywheelVelocity;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -49,7 +48,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFlywheelVelocity (double velocity){
-    targetFlywheelVelocity = velocity;
     flywheel.setVelocity(velocity);
   }
 
@@ -79,12 +77,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return (Math.abs(targetFlywheelVelocity - flywheel.getCurrentPosition()) < FlywheelConstants.flywheelPositionOffset) && 
-    (Math.abs(targetHoodPosition - hood.getCurrentPosition()) < HoodConstants.hoodPositionOffset);
+    return flywheel.getCurrentClosedLoopError() < FlywheelConstants.flywheelPositionOffset &&
+    hood.getCurrentClosedLoopError()    < HoodConstants.hoodPositionOffset;
   }
 
-  public boolean isReady(double targetFlywheelVelocity){
-    return (flywheel.getCurrentVelocity() - targetFlywheelVelocity > 0) && 
+  public boolean isReady(double flywheelVelocity){
+    return (flywheel.getCurrentVelocity() - flywheelVelocity > 0) && 
     (Math.abs(targetHoodPosition - hood.getCurrentPosition()) < HoodConstants.hoodPositionOffset);
   }
 
@@ -93,7 +91,7 @@ public class Shooter extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public void periodic() { //TODO to make you change it in elastic,  may not work couse not neer the other code
       if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
         stopFeeder();
       }

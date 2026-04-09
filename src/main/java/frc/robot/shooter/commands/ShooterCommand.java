@@ -10,7 +10,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotCommon;
-import frc.robot.ShotingWhileDriving;
+import frc.robot.ShootingWhileDriving;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
@@ -26,7 +26,7 @@ public class ShooterCommand extends Command {
   private double indexerPower = 0;
   private double feederPower = 0;
   private Pose2d robotPose = Pose2d.kZero;
-  private Translation2d shooterToTarget;
+  private Translation2d shooterToTarget;//TODO be in robot common
 
   /** Creates a new ShooterCommand. */
   public ShooterCommand(Shooter shooter) {
@@ -50,9 +50,9 @@ public class ShooterCommand extends Command {
     switch (shooter.getShooterState()) {
       case SHOOTER:
         //TODO: Change the position of the calculate
-        ShotingWhileDriving.calculate(RobotCommon.hubPose);
-        shooter.setFlywheelVelocity(ShotingWhileDriving.getFlyweelVel());
-        shooter.setHoodMotion(ShotingWhileDriving.getHoodAngle());
+        ShootingWhileDriving.calculate(RobotCommon.hubPose);
+        shooter.setFlywheelVelocity(ShootingWhileDriving.getFlywheelVel());
+        shooter.setHoodMotion(ShootingWhileDriving.getHoodAngle());
         shooter.stopFeeder();
         shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
         if(shooter.isReady()){
@@ -76,6 +76,8 @@ public class ShooterCommand extends Command {
         } else{
           shooterToTarget = robotPose.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT);
         }
+        //TODO add robot velocity multiplayd by 1.2
+        shooterToTarget = (new Translation2d(RobotCommon.robotRelativeSpeeds.vxMetersPerSecond * 1.2, RobotCommon.robotRelativeSpeeds.vyMetersPerSecond * 1.2));
         shooter.setHoodMotion((Math.asin((shooterToTarget.getNorm() * Constants.G) / (shooter.getFlywheelVelocity() * shooter.getFlywheelVelocity())) / 2.0d));
         if (shooter.isReady(Math.sqrt(Constants.G * (ShooterConstants.HEIGHT * Math.sqrt((shooterToTarget.getNorm() * shooterToTarget.getNorm()) + (ShooterConstants.HEIGHT * ShooterConstants.HEIGHT)))))){
           shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
@@ -90,11 +92,7 @@ public class ShooterCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted) {
+    shooter.stopAll();
   }
 }

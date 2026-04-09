@@ -17,8 +17,8 @@ public class TurretConstants {
 
     public static final TalonFXConfig TURRET_CONFIG= new TalonFXConfig(TURRET_ID, TURRET_CANBUS, TURRET_NAME);
 
-    public static final double MAX_TURRET_ANGEL = 0;
-    public static final double MIN_TURRET_ANGEL = 0;
+    public static final double MAX_TURRET_ANGLE = 0;
+    public static final double MIN_TURRET_ANGLE = 0;
 
     //TODO: Set the limit switch config
     public static final int MAX_LIMIT_SWITCH_ID = 0;

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class RobotCommon {
@@ -11,7 +12,7 @@ public class RobotCommon {
     public static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     public static Rotation2d robotAngle = Rotation2d.kZero;
 
-    public static Pose2d hubPose = new Pose2d();
+    public static Translation2d hubPose = Translation2d.kZero;
 
     public static boolean isRed = false;
     public static boolean isComp = false;

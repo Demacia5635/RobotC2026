@@ -29,18 +29,18 @@ public class Turret extends SubsystemBase {
   }
 
   public void setTurretMotion(double position){
-    if(isCalibrated){
-      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGEL, TurretConstants.MAX_TURRET_ANGEL);
-      position = MathUtil.angleModulus(position);
+    if(isCalibrated){ //if not stop
+      position = MathUtil.inputModulus(position, 0, 360);
+      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
       turretMotor.setMotion(position);
     }
   }
 
   public void setPositionByLimit(){
     if(getMaxLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGEL);
+      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGLE);
     } else if(getMinLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGEL);
+      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGLE);
     }
   }
   public void stopMotor(){
@@ -72,7 +72,7 @@ public class Turret extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public void periodic() {// like shooter, may not work couse not neer the other code
       if (turretMotor.getCurrentCurrent() > TurretConstants.MAX_CURRENT && Math.abs(turretMotor.getCurrentVelocity()) < TurretConstants.MIN_VELOCITY){
         stopMotor();
       }

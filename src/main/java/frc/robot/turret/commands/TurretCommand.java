@@ -6,8 +6,7 @@ package frc.robot.turret.commands;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.ShotingWhileDriving;
+import frc.robot.ShootingWhileDriving;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.subsystems.Turret;
@@ -23,7 +22,7 @@ public class TurretCommand extends Command {
   }
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty(getName(), ()-> testAngle, (angle)-> testAngle = angle);
+    builder.addDoubleProperty("Turret Angle:", ()-> testAngle, (angle)-> testAngle = angle);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,7 +35,7 @@ public class TurretCommand extends Command {
         targetAngle = testAngle;
         break;
       case SHOOTING:
-        targetAngle = ShotingWhileDriving.getTurretAngle();
+        targetAngle = ShootingWhileDriving.getTurretAngle();
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
@@ -46,7 +45,7 @@ public class TurretCommand extends Command {
         }
         break;
     }
-    turret.setTurretMotion(targetAngle);
+    turret.setTurretMotion(targetAngle); //TODO todo also pid and motion magic
   }
 
   // Called once the command ends or is interrupted.

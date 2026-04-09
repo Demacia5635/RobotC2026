@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.shooter.ShooterConstants;
 
 /** Add your docs here. */
-public class ShotingWhileDriving {
+public class ShootingWhileDriving {
     private static ChassisSpeeds robotVel;
     private static Pose2d robotPose;
     private static double robotFutureX;
@@ -23,7 +23,7 @@ public class ShotingWhileDriving {
     private static double velocity;
     private static double distance;
     
-    public static void calculate(Pose2d targetPose){
+    public static void calculate(Translation2d targetPose){
         robotVel = RobotCommon.fieldRelativeSpeeds;
         robotPose = RobotCommon.futureRobotPose;
         
@@ -57,7 +57,7 @@ public class ShotingWhileDriving {
         return hoodAngle;
     }
 
-    public static double getFlyweelVel(){
+    public static double getFlywheelVel(){
         return velocity;
     }
 
