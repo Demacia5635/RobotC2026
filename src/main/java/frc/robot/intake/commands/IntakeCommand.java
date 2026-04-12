@@ -13,10 +13,12 @@ public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   private final IntakeSubsytem IntakeSubsystem;
 
+  private double wantedAngle = 0;
+  private double wantedDuty = 0;
+
   public IntakeCommand(IntakeSubsytem IntakeSubsystem) {
     this.IntakeSubsystem = IntakeSubsystem;
     addRequirements(IntakeSubsystem);
-
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -30,20 +32,27 @@ public class IntakeCommand extends Command {
   public void execute() {
     switch (IntakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-         IntakeSubsystem.setRollerDuty(IntakeSubsystem.getState().duty);
-         IntakeSubsystem.setAngleIntakeDeploy(IntakeSubsystem.getState().angle);
-        break;
-      default:
-      IntakeSubsystem.setState(IntakeState.IDLE);
-      IntakeSubsystem.stopRoller();
-      IntakeSubsystem.stopIntakeDeploy();
+        IntakeSubsystem.setRollerDuty(IntakeSubsystem.getState().duty);
+        IntakeSubsystem.setAngleIntakeDeploy(IntakeSubsystem.getState().angle);
         break;
 
-    case TESTING:
-      break;
+      case TESTING:
+        IntakeSubsystem.setRollerDuty(wantedDuty);
+        IntakeSubsystem.setAngleIntakeDeploy(wantedAngle);
+        break;
+
+      case IDLE:
+        IntakeSubsystem.stopRoller();
+        IntakeSubsystem.stopIntakeDeploy();
+        break;
+
+      default:
+        IntakeSubsystem.setState(IntakeState.IDLE);
+        IntakeSubsystem.stopRoller();
+        IntakeSubsystem.stopIntakeDeploy();
+        break;
     }
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
