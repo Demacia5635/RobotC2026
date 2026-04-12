@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class robotCommon {
 
 
-    private static Pose2d currentRobotPose = Pose2d.kZero;
+    public static Pose2d currentRobotPose = Pose2d.kZero;
     private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
     private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
     private static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
@@ -19,17 +19,41 @@ public class robotCommon {
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    private boolean isComp = false; //how the to do it?!?!
-    private boolean isRobotCalibrated = false; //how the to do it?!?!
+    private static boolean isRed;
+
+    public static boolean isComp = false; 
+    private static boolean isRobotCalibrated = false; 
 
     public static boolean isRed(){
-        if(alliance.get() == Alliance.Red) return true;
-        else return false;
+        if(alliance.get() == Alliance.Red) isRed = true;
+        else isRed = false;
+
+        return isRed;        
+    }
+
+    public static void setIsRed(boolean newIsRed){
+        isRed = newIsRed;
     }
 
     public static Translation2d getHubPose(){
         if(isRed()) return Translation2d.kZero; //TODO: update point
         else return Translation2d.kZero; //TODO: update point
+    }
+
+    public static boolean getRobotCalibrated(){
+        return isRobotCalibrated;
+    }
+
+    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
+        newIsRobotCalibrated = isRobotCalibrated;
+    }
+
+    public static boolean getIsComp(){
+        return isComp;
+    }
+
+    public static void setIsComp(boolean newIsComp){
+        isComp = newIsComp;
     }
 
     public static Pose2d getDelveryPose(){
