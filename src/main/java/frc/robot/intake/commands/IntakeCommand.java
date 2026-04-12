@@ -4,6 +4,8 @@
 
 package frc.robot.intake.commands;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsytem;
@@ -19,7 +21,15 @@ public class IntakeCommand extends Command {
   public IntakeCommand(IntakeSubsytem IntakeSubsystem) {
     this.IntakeSubsystem = IntakeSubsystem;
     addRequirements(IntakeSubsystem);
+    SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty("Wanted angle", () -> wantedAngle, (x) -> wantedAngle = x);
+    builder.addDoubleProperty("Wanted duty", () -> wantedDuty, (x) -> wantedDuty = x);
   }
 
   // Called when the command is initially scheduled.
@@ -38,7 +48,7 @@ public class IntakeCommand extends Command {
 
       case TESTING:
         IntakeSubsystem.setRollerDuty(wantedDuty);
-        IntakeSubsystem.setAngleIntakeDeploy(wantedAngle);
+        IntakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
         break;
 
       case IDLE:
