@@ -82,7 +82,7 @@ public class Vision {
             y += pose2d.getY() * confidence;
 
         }
-        return new Pose2d(x, y,  RobotCommon.robotAngle);
+        return new Pose2d(x, y,  RobotCommon.getRobotAngle());
     }
 
       
