@@ -32,7 +32,14 @@ public class IntakeConstants {
 
         public static enum IntakeState {
             IDLE(0,0),
-            TESTING(0,0);
+            TESTING(0,0),
+            INTAKING(1,0),
+            EJECTING(-1,0),
+            DEPLOYED(0,0),
+            CLOSED(0,0);
+
+
+
 
             public double duty;
             public double angle;

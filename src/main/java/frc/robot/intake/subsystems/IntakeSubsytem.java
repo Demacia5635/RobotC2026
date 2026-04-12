@@ -7,16 +7,20 @@ package frc.robot.intake.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
+import frc.robot.intake.IntakeConstants.IntakeState;
 
 public class IntakeSubsytem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
+  private IntakeState state;
 
   public IntakeSubsytem() {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
+    state = IntakeState.IDLE;
   }
+
 
   public void checkElectronics() {
     rollerMotor.checkElectronics();
@@ -43,17 +47,20 @@ public class IntakeSubsytem extends SubsystemBase {
     intakeDeployMotor.stop();
   }
 
-    public void stopAll() {
-    stopRoller();
-    stopIntakeDeploy();
-  }
-
   public double getRollerCurrent() {
     return rollerMotor.getCurrentCurrent();
   }
 
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
+  }
+
+  public IntakeState getState() {
+    return state;
+  }
+
+  public void setState(IntakeState newState) {
+    state = newState;
   }
 
   @Override

@@ -5,6 +5,7 @@
 package frc.robot.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsytem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -27,7 +28,22 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    switch (IntakeSubsystem.getState()) {
+      case INTAKING, EJECTING, DEPLOYED, CLOSED:
+         IntakeSubsystem.setRollerDuty(IntakeSubsystem.getState().duty);
+         IntakeSubsystem.setAngleIntakeDeploy(IntakeSubsystem.getState().angle);
+        break;
+      default:
+      IntakeSubsystem.setState(IntakeState.IDLE);
+      IntakeSubsystem.stopRoller();
+      IntakeSubsystem.stopIntakeDeploy();
+        break;
+
+    case TESTING:
+      break;
+    }
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
