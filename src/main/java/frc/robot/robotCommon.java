@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-public class robotCommon {
+public class RobotCommon {
 
 
     public static Pose2d currentRobotPose = Pose2d.kZero;
@@ -36,8 +36,8 @@ public class robotCommon {
     }
 
     public static Translation2d getHubPose(){
-        if(isRed()) return Translation2d.kZero; //TODO: update point
-        else return Translation2d.kZero; //TODO: update point
+        if(isRed()) return Field.HubRed.CENTER;
+        else return Field.HubRed.CENTER; 
     }
 
     public static boolean getRobotCalibrated(){
@@ -58,15 +58,15 @@ public class robotCommon {
 
     public static Pose2d getDelveryPose(){
         if(isRed()){
-            if(currentRobotPose.getX() > 8.07 /2){
-                return Pose2d.kZero; //TODO: update the point
+            if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
+                return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
             }
-            else return Pose2d.kZero;
+            else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
                 }
-                else return Pose2d.kZero;
+                else return Pose2d.kZero; //TODO: update the point
         }
     }
 
