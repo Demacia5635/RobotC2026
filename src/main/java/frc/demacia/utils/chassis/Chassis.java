@@ -462,9 +462,9 @@ public class Chassis extends SubsystemBase {
 
     public void updateCommon() {
         RobotCommon.currentRobotPose = getPose();
-        RobotCommon.setRobotFucerPose(getFuturePose(0.04));
+        RobotCommon.setRobotFuturePose(getFuturePose(0.04));
         RobotCommon.setChassisfieldRelativeSpeeds(getChassisSpeedsFieldRel());
-        RobotCommon.setrobotRelativeSpeeds(getRobotRelVelocities());
+        RobotCommon.setRobotRelativeSpeeds(getRobotRelVelocities());
         RobotCommon.setRobotAngle(getGyroAngle());
     }
 

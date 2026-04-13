@@ -133,7 +133,7 @@ public class RobotPose {
         double y = 0.05;
         double theta = 0.03;
 
-        ChassisSpeeds currentSpeeds = RobotCommon.getrobotRelativeSpeeds();
+        ChassisSpeeds currentSpeeds = RobotCommon.getRobotRelativeSpeeds();
         double speed = Utilities.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
 
         // Vision confidence adjustment

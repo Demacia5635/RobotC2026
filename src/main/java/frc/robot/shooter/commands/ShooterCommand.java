@@ -4,7 +4,6 @@
 
 package frc.robot.shooter.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,7 +69,7 @@ public class ShooterCommand extends Command {
       case DELIVERY:
         shooter.setFlywheelPower(FlywheelConstants.MAX_FLYWHEEL_POWER);
         shooter.setFeederPower(FeederConstants.MAX_FEEDER_POWER);
-        shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
+        shooterToTarget = RobotCommon.getDeliveryPose().getTranslation();
         //TODO add robot velocity multiplayd by 1.2
         shooterToTarget = (new Translation2d(RobotCommon.getChassisfieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getChassisfieldRelativeSpeeds().vyMetersPerSecond * 1.2));
         shooter.setHoodMotion((Math.asin((shooterToTarget.getNorm() * Constants.G) / (shooter.getFlywheelVelocity() * shooter.getFlywheelVelocity())) / 2.0d));

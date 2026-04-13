@@ -24,8 +24,8 @@ public class ShootingWhileDriving {
     private static double distance;
     
     public static void calculate(Translation2d targetPose){
-        robotVel = RobotCommon.getrobotRelativeSpeeds();
-        robotPose = RobotCommon.getRobotFucerPose();
+        robotVel = RobotCommon.getRobotRelativeSpeeds();
+        robotPose = RobotCommon.getRobotFuturePose();
         
         distance = Math.hypot(targetPose.getX() - robotPose.getX(), targetPose.getY() - robotPose.getY());
 

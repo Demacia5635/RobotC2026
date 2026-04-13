@@ -56,17 +56,17 @@ public class RobotCommon {
         isComp = newIsComp;
     }
 
-    public static Pose2d getDelveryPose(){
+    public static Pose2d getDeliveryPose(){
         if(isRed()){
             if(currentRobotPose.getX() > 8.07 /2){
                 return Pose2d.kZero; //TODO: update the point
             }
-            else return Pose2d.kZero;
+            else return Pose2d.kZero; //TODO: update the point
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
                 }
-                else return Pose2d.kZero;
+                else return Pose2d.kZero; //TODO: update the point
         }
     }
 
@@ -78,12 +78,12 @@ public class RobotCommon {
         robotAngle = newRobotAngle;
     }
 
-    public static Pose2d getRobotFucerPose(){
+    public static Pose2d getRobotFuturePose(){
         return futureRobotPose;
     }
 
-    public static void setRobotFucerPose(Pose2d newRobotFucerPose){
-        futureRobotPose = newRobotFucerPose;
+    public static void setRobotFuturePose(Pose2d newRobotFuturePose){
+        futureRobotPose = newRobotFuturePose;
     }
 
     public static ChassisSpeeds getChassisfieldRelativeSpeeds(){
@@ -94,11 +94,11 @@ public class RobotCommon {
         fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
     }
 
-    public static ChassisSpeeds getrobotRelativeSpeeds(){
+    public static ChassisSpeeds getRobotRelativeSpeeds(){
         return robotRelativeSpeeds;
     }
 
-    public static void setrobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
+    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
 
