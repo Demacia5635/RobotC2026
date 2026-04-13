@@ -36,8 +36,8 @@ public class RobotCommon {
     }
 
     public static Translation2d getHubPose(){
-        if(isRed()) return Translation2d.kZero; //TODO: update point
-        else return Translation2d.kZero; //TODO: update point
+        if(isRed()) return Field.HubRed.CENTER;
+        else return Field.HubRed.CENTER; 
     }
 
     public static boolean getRobotCalibrated(){
@@ -58,7 +58,7 @@ public class RobotCommon {
 
     public static Pose2d getDelveryPose(){
         if(isRed()){
-            if(currentRobotPose.getX() > 8.07 /2){
+            if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
                 return Pose2d.kZero; //TODO: update the point
             }
             else return Pose2d.kZero;

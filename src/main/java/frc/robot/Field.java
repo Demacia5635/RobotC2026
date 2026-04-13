@@ -175,6 +175,11 @@ public final class Field {
         /** Centre X — 182.11 in. */
         public static final double X_CENTER = 4.626;
 
+        /** Centre Y — 158.84 in. */
+        public static final double Y_CENTER = 4.035;
+
+        public static final Translation2d CENTER = new Translation2d(X_CENTER, Y_CENTER);
+
         /**
          * X of the face nearest the Blue Alliance Wall ("back" face). — 158.34 in.
          */
@@ -185,9 +190,6 @@ public final class Field {
          * Robots approach from higher X. — 205.87 in.
          */
         public static final double X_FRONT = 5.229;
-
-        /** Centre Y — 158.84 in. */
-        public static final double Y_CENTER = 4.035;
 
         /** Y of the face nearest the Scoring Table guardrail — 135.09 in. */
         public static final double Y_FRONT = 3.431;
