@@ -7,28 +7,44 @@ package frc.robot.intake.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsystem;
+import frc.robot.shinua.ShinuaConstants;
+import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
-  private final IntakeSubsystem IntakeSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
 
   private double wantedAngle = 0;
   private double wantedDuty = 0;
 
   public IntakeCommand(IntakeSubsystem IntakeSubsystem) {
-    this.IntakeSubsystem = IntakeSubsystem;
+    this.intakeSubsystem = IntakeSubsystem;
     addRequirements(IntakeSubsystem);
     SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
   }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addDoubleProperty("Wanted angle", () -> wantedAngle, (x) -> wantedAngle = x);
     builder.addDoubleProperty("Wanted duty intake", () -> wantedDuty, (x) -> wantedDuty = x);
+  }
+
+  private boolean isBallsStuck() {
+    return (ShinuaSubsystem.getInstance().getShinuaCurrent() > ShinuaConstants.SHINUA_BALLS_STUCK_CURRENT
+        && Math.abs(ShinuaSubsystem.getInstance().getShinuaVelocity()) < ShinuaConstants.SHINUA_BALLS_STUCK_VELOCITY)
+        || (IntakeSubsystem.getInstance().getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
+            && IntakeSubsystem.getInstance().getVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
+  }
+
+  private void handleBallsStuck() {
+    ShinuaSubsystem.getInstance().setShinuaDuty(-1);
+    IntakeSubsystem.getInstance().setRollerDuty(-1);
   }
 
   // Called when the command is initially scheduled.
@@ -39,26 +55,30 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (IntakeSubsystem.getState()) {
+
+    switch (intakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-        IntakeSubsystem.setRollerDuty(IntakeSubsystem.getState().duty);
-        IntakeSubsystem.setAngleIntakeDeploy(IntakeSubsystem.getState().angle);
+      if (isBallsStuck()) {
+        handleBallsStuck();
+      }
+        intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
+        intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         break;
 
       case TESTING:
-        IntakeSubsystem.setRollerDuty(wantedDuty);
-        IntakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
+        intakeSubsystem.setRollerDuty(wantedDuty);
+        intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
         break;
 
       case IDLE:
-        IntakeSubsystem.stopRoller();
-        IntakeSubsystem.stopIntakeDeploy();
+        intakeSubsystem.stopRoller();
+        intakeSubsystem.stopIntakeDeploy();
         break;
 
       default:
-        IntakeSubsystem.setState(IntakeState.IDLE);
-        IntakeSubsystem.stopRoller();
-        IntakeSubsystem.stopIntakeDeploy();
+        intakeSubsystem.setState(IntakeState.IDLE);
+        intakeSubsystem.stopRoller();
+        intakeSubsystem.stopIntakeDeploy();
         break;
     }
   }
@@ -66,6 +86,8 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intakeSubsystem.stopRoller();
+    intakeSubsystem.stopIntakeDeploy();
   }
 
   // Returns true when the command should end.

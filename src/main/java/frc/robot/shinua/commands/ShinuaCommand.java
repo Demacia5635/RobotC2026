@@ -51,14 +51,12 @@ public class ShinuaCommand extends Command {
   @Override
   public void execute() {
     switch (shinuaSubsystem.getState()) {
-      case SHINUA_ON, SHINUA_OFF:
+      case SHINUA_ON, SHINUA_OFF, EJECTING:
         if (isBallsStuck()) {
           handleBallsStuck();
         }
         shinuaSubsystem.setShinuaDuty(shinuaSubsystem.getState().duty);
         break;
-      case EJECTING:
-        shinuaSubsystem.setShinuaDuty(shinuaSubsystem.getState().duty);
       case Testing:
         shinuaSubsystem.setShinuaDuty(wantedDuty);
         break;
