@@ -71,7 +71,7 @@ public class ShooterCommand extends Command {
         shooter.setFeederPower(FeederConstants.MAX_FEEDER_POWER);
         shooterToTarget = RobotCommon.getDeliveryPose().getTranslation();
         //TODO add robot velocity multiplayd by 1.2
-        shooterToTarget = (new Translation2d(RobotCommon.getChassisfieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getChassisfieldRelativeSpeeds().vyMetersPerSecond * 1.2));
+        shooterToTarget = (new Translation2d(RobotCommon.getChassisFieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getChassisFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
         shooter.setHoodMotion((Math.asin((shooterToTarget.getNorm() * Constants.G) / (shooter.getFlywheelVelocity() * shooter.getFlywheelVelocity())) / 2.0d));
         if (shooter.isReady(Math.sqrt(Constants.G * (ShooterConstants.HEIGHT * Math.sqrt((shooterToTarget.getNorm() * shooterToTarget.getNorm()) + (ShooterConstants.HEIGHT * ShooterConstants.HEIGHT)))))){
           shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);

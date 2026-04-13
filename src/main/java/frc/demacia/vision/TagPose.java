@@ -164,13 +164,13 @@ public class TagPose {
 
   private double getYawCrop() {
     double TagYaw = ((-camToTagYaw) + camera.getYaw()) / 31.25;
-    return TagYaw + RobotCommon.getChassisfieldRelativeSpeeds().vyMetersPerSecond * PREDICT_Y
-        + RobotCommon.getChassisfieldRelativeSpeeds().omegaRadiansPerSecond * PREDICT_OMEGA;
+    return TagYaw + RobotCommon.getChassisFieldRelativeSpeeds().vyMetersPerSecond * PREDICT_Y
+        + RobotCommon.getChassisFieldRelativeSpeeds().omegaRadiansPerSecond * PREDICT_OMEGA;
   }
 
   private double getPitchCrop() {
     double TagPitch = camToTagPitch / 24.45;
-    return TagPitch + RobotCommon.getChassisfieldRelativeSpeeds().vxMetersPerSecond * PREDICT_X;
+    return TagPitch + RobotCommon.getChassisFieldRelativeSpeeds().vxMetersPerSecond * PREDICT_X;
   }
 
   private void cropStop() {

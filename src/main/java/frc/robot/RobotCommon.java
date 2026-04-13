@@ -45,7 +45,7 @@ public class RobotCommon {
     }
 
     public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
-        newIsRobotCalibrated = isRobotCalibrated;
+        isRobotCalibrated = newIsRobotCalibrated;
     }
 
     public static boolean getIsComp(){
@@ -86,12 +86,12 @@ public class RobotCommon {
         futureRobotPose = newRobotFuturePose;
     }
 
-    public static ChassisSpeeds getChassisfieldRelativeSpeeds(){
+    public static ChassisSpeeds getChassisFieldRelativeSpeeds(){
         return fieldRelativeSpeeds;
     }
 
-    public static void setChassisfieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
-        fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
+    public static void setChassisFieldRelativeSpeeds(ChassisSpeeds newChassisFieldRelativeSpeeds){
+        fieldRelativeSpeeds = newChassisFieldRelativeSpeeds;
     }
 
     public static ChassisSpeeds getRobotRelativeSpeeds(){
