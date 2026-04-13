@@ -20,7 +20,6 @@ public class Shooter extends SubsystemBase {
   private TalonFXMotor indexer;
   private TalonFXMotor feeder;
   private ShooterStates shooterState;
-  private double targetHoodPosition;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -55,9 +54,36 @@ public class Shooter extends SubsystemBase {
     return flywheel.getCurrentVelocity();
   }
 
+  public double getHoodCurrent(){
+    return hood.getCurrentCurrent();
+  }
+
+  public double getIndexerCurrent(){
+    return indexer.getCurrentCurrent();
+  }
+
+  public double getFeederCurrent(){
+    return feeder.getCurrentCurrent();
+  }
+
+  public double getHoodVelocity(){
+    return hood.getCurrentVelocity();
+  }
+
+  public double getIndexerVelocity(){
+    return indexer.getCurrentVelocity();
+  }
+
+  public double getFeederVelocity(){
+    return feeder.getCurrentVelocity();
+  }
+
+  public double getHoodPosition(){
+    return hood.getCurrentPosition();
+  }
+
   public void setHoodMotion(double position){
     position = MathUtil.clamp(position, HoodConstants.MIN_POSITION, HoodConstants.MAX_POSITION);
-    targetHoodPosition = position;
     hood.setMotion(position);
   }
 
@@ -77,21 +103,29 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return flywheel.getCurrentClosedLoopError() < FlywheelConstants.flywheelPositionOffset &&
-    hood.getCurrentClosedLoopError()    < HoodConstants.hoodPositionOffset;
+    return FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET - flywheel.getCurrentClosedLoopError() > 0 &&
+    hood.getCurrentClosedLoopError() < HoodConstants.HOOD_POSITION_OFFSET;
   }
 
   public boolean isReady(double flywheelVelocity){
-    return (flywheel.getCurrentVelocity() - flywheelVelocity > 0) && 
-    (Math.abs(targetHoodPosition - hood.getCurrentPosition()) < HoodConstants.hoodPositionOffset);
+    return (Math.abs(flywheel.getCurrentVelocity() - flywheelVelocity) > FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
+    (hood.getCurrentClosedLoopError() < HoodConstants.HOOD_POSITION_OFFSET);
   }
 
   public void stopFeeder() {
     feeder.stop();
   }
 
+  public void stopHood() {
+    hood.stop();
+  }
+
+  public void stopIndexer() {
+    indexer.stop();
+  }
+
   @Override
-  public void periodic() { //TODO to make you change it in elastic,  may not work couse not neer the other code
+  public void periodic() { //TODO to make you change it in elastic,  may not work because not neer the other code
       if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
         stopFeeder();
       }

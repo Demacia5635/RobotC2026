@@ -7,10 +7,8 @@ package frc.robot.shooter.commands;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.RobotCommon;
 import frc.robot.ShootingWhileDriving;
-import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
@@ -49,38 +47,49 @@ public class ShooterCommand extends Command {
       case SHOOTER:
         //TODO: Change the position of the calculate
         ShootingWhileDriving.calculate(RobotCommon.getHubPose());
-        shooter.setFlywheelVelocity(ShootingWhileDriving.getFlywheelVel());
-        shooter.setHoodMotion(ShootingWhileDriving.getHoodAngle());
-        shooter.stopFeeder();
-        shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
+        flywheelVelocity = ShootingWhileDriving.getFlywheelVel();
+        hoodPosition = ShootingWhileDriving.getHoodAngle();
+        indexerPower = 0;
+        feederPower = FeederConstants.MAX_FEEDER_POWER;
         if(shooter.isReady()){
-          shooter.setFeederPower(FeederConstants.MAX_FEEDER_POWER);
+          indexerPower = IndexerConstants.MAX_INDEXER_POWER;
         }
         break;
       case IDLE:
-        shooter.stopAll();
+        flywheelVelocity = 0;
+        hoodPosition = 0;
+        indexerPower = 0;
+        feederPower = 0;
         break;
       case TEST:
-        shooter.setFlywheelVelocity(flywheelVelocity);
-        shooter.setHoodMotion(hoodPosition);
-        shooter.setIndexerPower(indexerPower);
-        shooter.setFeederPower(feederPower);
         break;
       case DELIVERY:
-        shooter.setFlywheelPower(FlywheelConstants.MAX_FLYWHEEL_POWER);
-        shooter.setFeederPower(FeederConstants.MAX_FEEDER_POWER);
+        feederPower = FeederConstants.MAX_FEEDER_POWER;
         shooterToTarget = RobotCommon.getDeliveryPose().getTranslation();
-        //TODO add robot velocity multiplayd by 1.2
-        shooterToTarget = (new Translation2d(RobotCommon.getChassisFieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getChassisFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
-        shooter.setHoodMotion((Math.asin((shooterToTarget.getNorm() * Constants.G) / (shooter.getFlywheelVelocity() * shooter.getFlywheelVelocity())) / 2.0d));
-        if (shooter.isReady(Math.sqrt(Constants.G * (ShooterConstants.HEIGHT * Math.sqrt((shooterToTarget.getNorm() * shooterToTarget.getNorm()) + (ShooterConstants.HEIGHT * ShooterConstants.HEIGHT)))))){
-          shooter.setIndexerPower(IndexerConstants.MAX_INDEXER_POWER);
+        shooterToTarget = shooterToTarget.minus(new Translation2d(RobotCommon.getChassisFieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getChassisFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
+        hoodPosition = 45;
+        flywheelVelocity = FlywheelConstants.MAX_FLYWHEEL_POWER;
+        if (shooter.isReady()){
+          indexerPower = IndexerConstants.MAX_INDEXER_POWER;
         }
         break;
       case TRANCH:
-        shooter.setHoodMotion(HoodConstants.MIN_POSITION);
-        shooter.stopFeeder();
+        hoodPosition = HoodConstants.MIN_POSITION;
+        feederPower = 0;
         break;
+    }
+    shooter.setFlywheelVelocity(flywheelVelocity);
+    shooter.setHoodMotion(hoodPosition);
+    shooter.setIndexerPower(indexerPower);
+    shooter.setFeederPower(feederPower);
+    if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
+      shooter.stopFeeder();
+    }
+    if (shooter.getHoodCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(shooter.getHoodVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
+      shooter.stopHood();
+    }
+    if (shooter.getIndexerCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(shooter.getIndexerVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
+      shooter.stopIndexer();
     }
   }
 

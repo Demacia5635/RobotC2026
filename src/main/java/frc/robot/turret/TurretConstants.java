@@ -2,15 +2,12 @@ package frc.robot.turret;
 
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.sensors.LimitSwitchConfig;
 
 public class TurretConstants {
     //TODO: Set the motor config and delivery points
     public final static String NAME = "Turret";
-    public final static Translation2d DELIVERY_RIGHT_POINT = Translation2d.kZero;
-    public final static Translation2d DELIVERY_LEFT_POINT = Translation2d.kZero;
     public static final Canbus TURRET_CANBUS = Canbus.Rio;
     public static final String TURRET_NAME = "fly weel motor";
     public static final int TURRET_ID = 0;

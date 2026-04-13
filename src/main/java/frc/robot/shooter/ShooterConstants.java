@@ -27,7 +27,7 @@ public class ShooterConstants {
 
         public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME);
         public static final double MAX_FLYWHEEL_POWER = 1;
-        public static final double flywheelPositionOffset = 0.4;
+        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
     }
 
     public final static class HoodConstants {
@@ -37,7 +37,7 @@ public class ShooterConstants {
         public static final int HOOD_ID = 0;
 
         public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME);
-        public static final double hoodPositionOffset = 0.4;
+        public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = 0;
         public static final double MAX_HOOD_CURRENT = 0;

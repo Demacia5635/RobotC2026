@@ -45,7 +45,7 @@ public class TurretCommand extends Command {
         }
         break;
     }
-    turret.setTurretMotion(targetAngle); //TODO todo also pid and motion magic
+    turret.setTurretMotion(targetAngle); //TODO also pid and motion magic
   }
 
   // Called once the command ends or is interrupted.
