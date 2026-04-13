@@ -59,9 +59,9 @@ public class RobotCommon {
     public static Pose2d getDelveryPose(){
         if(isRed()){
             if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
-                return Pose2d.kZero; //TODO: update the point
+                return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
             }
-            else return Pose2d.kZero;
+            else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point

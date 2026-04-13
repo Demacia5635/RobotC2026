@@ -739,6 +739,11 @@ public final class Field {
         public static final double Y_BACK = 1.542;
     }
 
+    public static final class DELIVERY{
+        public static final Translation2d DELIVERY_POINT1 = new Translation2d(12.6619, 4.023 - 2.5);
+        public static final Translation2d DELIVERY_POINT2 = new Translation2d(12.6619, 4.023 + 2.5);    
+    }
+
     // =========================================================================
     // GAME PIECE — FUEL
     // =========================================================================
