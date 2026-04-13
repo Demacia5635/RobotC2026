@@ -9,13 +9,19 @@ import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 
-public class IntakeSubsytem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
+  private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
   private IntakeState state;
 
-  public IntakeSubsytem() {
+  public static IntakeSubsystem getInstance() {
+    if (instance == null)
+      instance = new IntakeSubsystem();
+    return instance;
+  }
+  public IntakeSubsystem() {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     state = IntakeState.IDLE;
@@ -57,6 +63,9 @@ public class IntakeSubsytem extends SubsystemBase {
 
   public IntakeState getState() {
     return state;
+  }
+  public double getVelocity() {
+    return rollerMotor.getCurrentVelocity();
   }
 
   public void setState(IntakeState newState) {

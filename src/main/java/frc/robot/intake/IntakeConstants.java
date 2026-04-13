@@ -12,6 +12,8 @@ public class IntakeConstants {
     public static final boolean ROLLER_INVERTED = false;
     public static final double ROLLER_CURRENT_LIMIT = 40.0; 
     public static final boolean ROLLER_BRAKE= false;
+    public static final double ROLLER_BALLS_STUCK_CURRENT = 0;
+    public static final double ROLLER_BALLS_STUCK_VELOCITY = 0;
 
     public static final TalonFXConfig ROLLER_CONFIG = new TalonFXConfig(ROLLER_ID, INTAKE_CANBUS, ROLLER_NAME)
         .withBrake(ROLLER_BRAKE)
