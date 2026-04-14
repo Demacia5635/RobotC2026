@@ -6,6 +6,7 @@ import choreo.Choreo;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -17,8 +18,21 @@ public class pathManager {
     private double MaxToleranceMeter = 0.5;
     private double MaxToleranceRotation = 0.2;
 
-    public pathManager() {
+    private int pathNamber;
+
+    public pathManager(int pathNamber) {
+        this.pathNamber = pathNamber;
         // firstRightAutoFactory = Choreo.createAutoFactory();
+    }
+
+    public AutoRoutine getAuto(){
+        if(pathNamber == 1){
+            return firstPathRight();
+        } else if(pathNamber == 2){
+            return firstPathLeft();
+        } else {
+            return null;
+        }
     }
 
     private AutoRoutine firstPathRight(){
@@ -42,7 +56,7 @@ public class pathManager {
         AutoRoutine routine = firstLeftAutoFactory.newRoutine("firstAtouPathLeft");
         AutoTrajectory traj = routine.trajectory("firstAtouPathLeft");
 
-        routine.active().onTrue(Command.sequence(
+        routine.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         )
@@ -56,8 +70,9 @@ public class pathManager {
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
         return routine;
-}
+    }
 
+    
 
 
 }
