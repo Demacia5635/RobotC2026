@@ -2,9 +2,6 @@ package frc.robot.atou;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import com.fasterxml.jackson.databind.type.SimpleType;
-
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -24,22 +21,10 @@ public class pathManager {
     private path pathNamber;
     private dercsean LeftOrRight;
 
-    private AutoFactory factoryFirstPathRight;
-    private AutoFactory factoryFirstPathLeft;
-    private AutoFactory factorySecondPathRight;
-    private AutoFactory factorySecondPathLeft;
-    private AutoFactory factoryThirdPath;
-    private AutoFactory factoryFourthPathRight;
-    private AutoFactory factoryFourthPathLeft;
+    private AutoFactory factory;
 
     public pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis,Supplier<Pose2d> currentSupplierPose2d, Consumer<Pose2d> startPoseConsumer){
-        factoryFirstPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factoryFirstPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factorySecondPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factorySecondPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factoryThirdPath = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factoryFourthPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
-        factoryFourthPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factory = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
     }
@@ -84,7 +69,7 @@ public class pathManager {
     }
 
     private AutoRoutine firstPathRight(){
-        AutoRoutine routineFirstPathRight = factoryFirstPathRight.newRoutine("firstAtouPathRight");
+        AutoRoutine routineFirstPathRight = factory.newRoutine("firstAtouPathRight");
         AutoTrajectory traj = routineFirstPathRight.trajectory("firstAtouPathRight");
 
         routineFirstPathRight.active().onTrue(Commands.sequence(
