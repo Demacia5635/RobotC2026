@@ -7,9 +7,11 @@ package frc.robot.shinua.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shinua.ShinuaConstants;
+import frc.robot.shinua.ShinuaConstants.ShinuaState;
 
 public class ShinuaSubsystem extends SubsystemBase {
-  private TalonFXMotor shinuaMotor;
+  private TalonFXMotor mecanumMotor;
+  private TalonFXMotor rollersMotor;
   private ShinuaConstants.ShinuaState state;
   private static ShinuaSubsystem instance;
 
@@ -21,38 +23,55 @@ public class ShinuaSubsystem extends SubsystemBase {
 
   /** Creates a new ShinuaSubsystem. */
   public ShinuaSubsystem() {
-    shinuaMotor = new TalonFXMotor(ShinuaConstants.SHINUA_CONFIG);
+    mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
+    rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
   }
 
   public void checkElectronics() {
-    shinuaMotor.checkElectronics();
+    mecanumMotor.checkElectronics();
+    rollersMotor.checkElectronics();
   }
 
-  public void setNeutralModeShinua(boolean isBrake) {
-    shinuaMotor.setNeutralMode(isBrake);
+  public void setNeutralModeRollers(boolean isBrake) {
+    rollersMotor.setNeutralMode(isBrake);
+  }
+  public void setNeutralModeMecanum(boolean isBrake) {
+    mecanumMotor.setNeutralMode(isBrake);
   }
 
-  public void setShinuaDuty(double duty) {
-    shinuaMotor.setDuty(duty);
+  public void setMecanumDuty(double duty) {
+    mecanumMotor.setDuty(duty);
+  }
+  public void setRollersDuty(double duty) {
+    rollersMotor.setDuty(duty);
   }
 
-  public void stopShinua() {
-    shinuaMotor.stop();
+  public void stopMecanum() {
+    mecanumMotor.stop();
+  }
+  public void stopRollers() {
+    rollersMotor.stop();
   }
 
-  public double getShinuaVelocity() {
-    return shinuaMotor.getCurrentVelocity();
+  public double getMecanumVelocity() {
+    return mecanumMotor.getCurrentVelocity();
+  }
+  public double getRollersVelocity() {
+    return rollersMotor.getCurrentVelocity();
   }
 
-  public double getShinuaCurrent() {
-    return shinuaMotor.getCurrentCurrent();
+  public double getMecanumCurrent() {
+    return mecanumMotor.getCurrentCurrent();
+  }
+  public double getRollerCurrent() {
+    return rollersMotor.getCurrentCurrent();
   }
 
   public void setState(ShinuaConstants.ShinuaState state) {
     this.state = state;
   }
 
-  public ShinuaConstants.ShinuaState getState() {
+  public ShinuaState getState() {
     return state;
   }
 

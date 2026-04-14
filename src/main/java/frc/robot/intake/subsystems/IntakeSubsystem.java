@@ -21,12 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
       instance = new IntakeSubsystem();
     return instance;
   }
+
   public IntakeSubsystem() {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     state = IntakeState.IDLE;
   }
-
 
   public void checkElectronics() {
     rollerMotor.checkElectronics();
@@ -57,15 +57,16 @@ public class IntakeSubsystem extends SubsystemBase {
     return rollerMotor.getCurrentCurrent();
   }
 
+  public double getRollerVelocity() {
+    return rollerMotor.getCurrentVelocity();
+  }
+
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
   }
 
   public IntakeState getState() {
     return state;
-  }
-  public double getVelocity() {
-    return rollerMotor.getCurrentVelocity();
   }
 
   public void setState(IntakeState newState) {

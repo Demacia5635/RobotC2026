@@ -16,14 +16,13 @@ import frc.robot.shinua.subsystems.ShinuaSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
-  private final IntakeSubsystem intakeSubsystem;
-
   private double wantedAngle = 0;
   private double wantedDuty = 0;
+  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
-  public IntakeCommand(IntakeSubsystem IntakeSubsystem) {
-    this.intakeSubsystem = IntakeSubsystem;
-    addRequirements(IntakeSubsystem);
+  public IntakeCommand() {
+    addRequirements(intakeSubsystem);
     SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -36,15 +35,19 @@ public class IntakeCommand extends Command {
   }
 
   private boolean isBallsStuck() {
-    return (ShinuaSubsystem.getInstance().getShinuaCurrent() > ShinuaConstants.SHINUA_BALLS_STUCK_CURRENT
-        && Math.abs(ShinuaSubsystem.getInstance().getShinuaVelocity()) < ShinuaConstants.SHINUA_BALLS_STUCK_VELOCITY)
-        || (IntakeSubsystem.getInstance().getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && IntakeSubsystem.getInstance().getVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
+    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
+        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
+        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
+            && Math
+                .abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY)
+        || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
+            && intakeSubsystem.getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
   }
 
   private void handleBallsStuck() {
-    ShinuaSubsystem.getInstance().setShinuaDuty(-1);
-    IntakeSubsystem.getInstance().setRollerDuty(-1);
+    shinuaSubsystem.setRollersDuty(-1);
+    shinuaSubsystem.setMecanumDuty(-1);
+    intakeSubsystem.setRollerDuty(-1);
   }
 
   // Called when the command is initially scheduled.
@@ -58,9 +61,9 @@ public class IntakeCommand extends Command {
 
     switch (intakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-      if (isBallsStuck()) {
-        handleBallsStuck();
-      }
+        if (isBallsStuck()) {
+          handleBallsStuck();
+        }
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         break;

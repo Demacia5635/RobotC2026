@@ -16,18 +16,21 @@ import frc.robot.shinua.subsystems.ShinuaSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShinuaCommand extends Command {
   /** Creates a new ShinuaCommand. */
-  private ShinuaSubsystem shinuaSubsystem;
-  private double wantedDuty = 0;
+  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
+  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private double wantedDutyRollers = 0;
+  private double wantedDutyMecanum = 0;
 
-  public ShinuaCommand(ShinuaSubsystem shinuaSubsystem) {
-    this.shinuaSubsystem = shinuaSubsystem;
+  public ShinuaCommand() {
+    addRequirements(shinuaSubsystem);
     SmartDashboard.putData("Shinua Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("Wanted duty shinua", () -> wantedDuty, (x) -> wantedDuty = x);
+    builder.addDoubleProperty("Wanted duty rollers", () -> wantedDutyRollers, (x) -> wantedDutyRollers = x);
+    builder.addDoubleProperty("Wanted duty mecanum", () -> wantedDutyMecanum, (x) -> wantedDutyMecanum = x);
   }
 
   // Called when the command is initially scheduled.
@@ -36,15 +39,18 @@ public class ShinuaCommand extends Command {
   }
 
   private boolean isBallsStuck() {
-    return (shinuaSubsystem.getShinuaCurrent() > ShinuaConstants.SHINUA_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getShinuaVelocity()) < ShinuaConstants.SHINUA_BALLS_STUCK_VELOCITY)
-        || (IntakeSubsystem.getInstance().getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && IntakeSubsystem.getInstance().getVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
+    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
+        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
+        || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
+            && intakeSubsystem.getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY)
+        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
+            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY);
   }
 
   private void handleBallsStuck() {
-    shinuaSubsystem.setShinuaDuty(-1);
-    IntakeSubsystem.getInstance().setRollerDuty(-1);
+    shinuaSubsystem.setMecanumDuty(-1);
+    shinuaSubsystem.setRollersDuty(-1);
+    intakeSubsystem.setRollerDuty(-1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,14 +61,17 @@ public class ShinuaCommand extends Command {
         if (isBallsStuck()) {
           handleBallsStuck();
         }
-        shinuaSubsystem.setShinuaDuty(shinuaSubsystem.getState().duty);
+        shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
+        shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
         break;
       case Testing:
-        shinuaSubsystem.setShinuaDuty(wantedDuty);
+        shinuaSubsystem.setMecanumDuty(wantedDutyMecanum);
+        shinuaSubsystem.setRollersDuty(wantedDutyRollers);
         break;
       default:
         shinuaSubsystem.setState(ShinuaState.SHINUA_OFF);
-        shinuaSubsystem.stopShinua();
+        shinuaSubsystem.stopMecanum();
+        shinuaSubsystem.stopRollers();
         break;
     }
   }
@@ -70,7 +79,8 @@ public class ShinuaCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shinuaSubsystem.stopShinua();
+    shinuaSubsystem.stopMecanum();
+    shinuaSubsystem.stopRollers();
     shinuaSubsystem.setState(ShinuaState.SHINUA_OFF);
   }
 
