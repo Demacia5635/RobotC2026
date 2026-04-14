@@ -115,8 +115,5 @@ public class pathManager {
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
         return routine;
-
-
-
     }
 }
