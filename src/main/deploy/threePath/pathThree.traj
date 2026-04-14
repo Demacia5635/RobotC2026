@@ -170,8 +170,8 @@
   "splits":[0]
  },
  "events":[
-   {"name":"depo", "from":{"target":1, "targetTimestamp":1.31821, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
-   {"name":"homen", "from":{"target":3, "targetTimestamp":3.8127, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"depot", "from":{"target":1, "targetTimestamp":1.31821, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"humanPlayer", "from":{"target":3, "targetTimestamp":3.8127, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"startShooting", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"stopShoting", "from":{"target":4, "targetTimestamp":5.08162, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

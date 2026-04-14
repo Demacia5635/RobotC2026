@@ -30,7 +30,8 @@ public class pathManager {
 
     enum dercsean{
         left,
-        right
+        right,
+        center
     }
 
     public AutoRoutine getAuto(){
@@ -46,6 +47,8 @@ public class pathManager {
             }else{
                 return secondPathLeft();
             }
+        } else if(pathNamber == path.thirdPath){
+                return thirdPath();
         } else {
             return null;
         }
@@ -123,5 +126,21 @@ public class pathManager {
         return routine;
     }
 
-    private 
+    private AutoRoutine thirdPath(){
+        AutoRoutine routine = firstRightAutoFactory.newRoutine("pathThree");
+        AutoTrajectory traj = routine.trajectory("pathThree");
+
+        routine.active().onTrue(Commands.sequence(
+            traj.resetOdometry(),
+            traj.cmd()
+        ));
+
+        traj.atPose("startShooting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("stopShooting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+
+        return routine;
+    }
+
 }
