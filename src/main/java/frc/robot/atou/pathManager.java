@@ -55,6 +55,8 @@ public class pathManager {
             }else{
                 return fourthPathLeft();
             }
+        }else{
+            return null;
         }
     }
 
