@@ -1,7 +1,6 @@
 package frc.robot.atou;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -9,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.demacia.utils.chassis.Chassis;
 import frc.robot.RobotCommon;
+import frc.robot.atou.atouUtill.atouUtil;
 
 public class pathManager {
     
@@ -16,15 +16,15 @@ public class pathManager {
     private AutoFactory firstLeftAutoFactory;
     
     private double MaxToleranceMeter = 0.5;
-    private double MaxToleranceRotation = 0.2;
+    private double MaxToleranceRotation = Math.toRadians(0.7);
 
     private path pathNamber;
     private dercsean LeftOrRight;
 
     private AutoFactory factory;
 
-    public pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis,Supplier<Pose2d> currentSupplierPose2d, Consumer<Pose2d> startPoseConsumer){
-        factory = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+    public <ST> pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis, Consumer<Pose2d> startPoseConsumer){
+        factory = new AutoFactory(atouUtil.pose2DtoSupplierPose2d(RobotCommon.currentRobotPose), startPoseConsumer, null, RobotCommon.isRed(), chassis);
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
     }
