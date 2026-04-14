@@ -1,13 +1,8 @@
 package frc.robot.atou;
 
-import static edu.wpi.first.units.Units.Rotation;
-
-import choreo.Choreo;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class pathManager {
@@ -19,17 +14,26 @@ public class pathManager {
     private double MaxToleranceRotation = 0.2;
 
     private int pathNamber;
+    private path LeftOrRight;
 
-    public pathManager(int pathNamber) {
+    public pathManager(int pathNamber, path LeftOrRight) {
         this.pathNamber = pathNamber;
+        this.LeftOrRight = LeftOrRight;
         // firstRightAutoFactory = Choreo.createAutoFactory();
+    }
+
+    enum path{
+        left,
+        right
     }
 
     public AutoRoutine getAuto(){
         if(pathNamber == 1){
-            return firstPathRight();
-        } else if(pathNamber == 2){
-            return firstPathLeft();
+            if (LeftOrRight == path.right) {
+                return firstPathRight();
+            }else{
+                return firstPathLeft();
+            }
         } else {
             return null;
         }
@@ -72,7 +76,7 @@ public class pathManager {
         return routine;
     }
 
-    
+
 
 
 }
