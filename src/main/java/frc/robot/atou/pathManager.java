@@ -14,28 +14,28 @@ public class pathManager {
     private double MaxToleranceRotation = 0.2;
 
     private int pathNamber;
-    private path LeftOrRight;
+    private dercsean LeftOrRight;
 
-    public pathManager(int pathNamber, path LeftOrRight) {
+    public pathManager(int pathNamber, dercsean LeftOrRight) {
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
         // firstRightAutoFactory = Choreo.createAutoFactory();
     }
 
-    enum path{
+    enum dercsean{
         left,
         right
     }
 
     public AutoRoutine getAuto(){
         if(pathNamber == 1){
-            if (LeftOrRight == path.right) {
+            if (LeftOrRight == dercsean.right) {
                 return firstPathRight();
             }else{
                 return firstPathLeft();
             }
         } else if(pathNamber == 2){
-            if (LeftOrRight == path.right) {
+            if (LeftOrRight == dercsean.right) {
                 return secondPathRight();
             }else{
                 return secondPathLeft();
