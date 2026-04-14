@@ -19,7 +19,6 @@ public class pathManager {
     public pathManager(path pathNamber, dercsean LeftOrRight) {
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
-        // firstRightAutoFactory = Choreo.createAutoFactory();
     }
 
     enum path{
@@ -35,13 +34,13 @@ public class pathManager {
     }
 
     public AutoRoutine getAuto(){
-        if(pathNamber == 1){
+        if(pathNamber == path.firstPath){
             if (LeftOrRight == dercsean.right) {
                 return firstPathRight();
             }else{
                 return firstPathLeft();
             }
-        } else if(pathNamber == 2){
+        } else if(pathNamber == path.secondPath){
             if (LeftOrRight == dercsean.right) {
                 return secondPathRight();
             }else{
@@ -123,4 +122,6 @@ public class pathManager {
 
         return routine;
     }
+
+    private 
 }
