@@ -1,22 +1,45 @@
 package frc.robot.atou;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.fasterxml.jackson.databind.type.SimpleType;
+
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.demacia.utils.chassis.Chassis;
+import frc.robot.RobotCommon;
 
 public class pathManager {
     
     private AutoFactory firstRightAutoFactory;
     private AutoFactory firstLeftAutoFactory;
-
+    
     private double MaxToleranceMeter = 0.5;
     private double MaxToleranceRotation = 0.2;
 
     private path pathNamber;
     private dercsean LeftOrRight;
 
-    public pathManager(path pathNamber, dercsean LeftOrRight) {
+    private AutoFactory factoryFirstPathRight;
+    private AutoFactory factoryFirstPathLeft;
+    private AutoFactory factorySecondPathRight;
+    private AutoFactory factorySecondPathLeft;
+    private AutoFactory factoryThirdPath;
+    private AutoFactory factoryFourthPathRight;
+    private AutoFactory factoryFourthPathLeft;
+
+    public pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis,Supplier<Pose2d> currentSupplierPose2d, Consumer<Pose2d> startPoseConsumer){
+        factoryFirstPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factoryFirstPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factorySecondPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factorySecondPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factoryThirdPath = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factoryFourthPathRight = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factoryFourthPathLeft = new AutoFactory(currentSupplierPose2d, startPoseConsumer, null, RobotCommon.isRed(), chassis);
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
     }
@@ -61,10 +84,10 @@ public class pathManager {
     }
 
     private AutoRoutine firstPathRight(){
-        AutoRoutine routine = firstRightAutoFactory.newRoutine("firstAtouPathRight");
-        AutoTrajectory traj = routine.trajectory("firstAtouPathRight");
+        AutoRoutine routineFirstPathRight = factoryFirstPathRight.newRoutine("firstAtouPathRight");
+        AutoTrajectory traj = routineFirstPathRight.trajectory("firstAtouPathRight");
 
-        routine.active().onTrue(Commands.sequence(
+        routineFirstPathRight.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         ));
@@ -74,14 +97,14 @@ public class pathManager {
         traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineFirstPathRight;
     }
 
     private AutoRoutine firstPathLeft(){
-        AutoRoutine routine = firstLeftAutoFactory.newRoutine("firstAtouPathLeft");
-        AutoTrajectory traj = routine.trajectory("firstAtouPathLeft");
+        AutoRoutine routineFirstPathLeft = firstLeftAutoFactory.newRoutine("firstAtouPathLeft");
+        AutoTrajectory traj = routineFirstPathLeft.trajectory("firstAtouPathLeft");
 
-        routine.active().onTrue(Commands.sequence(
+        routineFirstPathLeft.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         )
@@ -94,14 +117,14 @@ public class pathManager {
         traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineFirstPathLeft;
     }
 
     private AutoRoutine secondPathRight(){
-        AutoRoutine routine = firstRightAutoFactory.newRoutine("secendPathRight");
-        AutoTrajectory traj = routine.trajectory("secendPathRight");
+        AutoRoutine routineSecondPathRight = firstRightAutoFactory.newRoutine("secendPathRight");
+        AutoTrajectory traj = routineSecondPathRight.trajectory("secendPathRight");
 
-        routine.active().onTrue(Commands.sequence(
+        routineSecondPathRight.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         ));
@@ -111,14 +134,14 @@ public class pathManager {
         traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineSecondPathRight;
     }
 
     private AutoRoutine secondPathLeft(){
-        AutoRoutine routine = firstLeftAutoFactory.newRoutine("secendPathLeft");
-        AutoTrajectory traj = routine.trajectory("secendPathLeft");
+        AutoRoutine routineSecondPathLeft = firstLeftAutoFactory.newRoutine("secendPathLeft");
+        AutoTrajectory traj = routineSecondPathLeft.trajectory("secendPathLeft");
 
-        routine.active().onTrue(Commands.sequence(
+        routineSecondPathLeft.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         )
@@ -129,14 +152,14 @@ public class pathManager {
         traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineSecondPathLeft;
     }
 
     private AutoRoutine thirdPath(){
-        AutoRoutine routine = firstRightAutoFactory.newRoutine("pathThree");
-        AutoTrajectory traj = routine.trajectory("pathThree");
+        AutoRoutine routineThirdPath = firstRightAutoFactory.newRoutine("pathThree");
+        AutoTrajectory traj = routineThirdPath.trajectory("pathThree");
 
-        routine.active().onTrue(Commands.sequence(
+        routineThirdPath.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         ));
@@ -146,14 +169,14 @@ public class pathManager {
         traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineThirdPath;
     }
 
         private AutoRoutine fourthPathRight(){
-        AutoRoutine routine = firstRightAutoFactory.newRoutine("rightPathFour");
-        AutoTrajectory traj = routine.trajectory("rightPathFour");
+        AutoRoutine routineFourthPathRight = firstRightAutoFactory.newRoutine("rightPathFour");
+        AutoTrajectory traj = routineFourthPathRight.trajectory("rightPathFour");
 
-        routine.active().onTrue(Commands.sequence(
+        routineFourthPathRight.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         ));
@@ -162,15 +185,15 @@ public class pathManager {
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("shoot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineFourthPathRight;
     }
 
     
         private AutoRoutine fourthPathLeft(){
-        AutoRoutine routine = firstLeftAutoFactory.newRoutine("leftPathFour");
-        AutoTrajectory traj = routine.trajectory("leftPathFour");
+        AutoRoutine routineFourthPathLeft = firstLeftAutoFactory.newRoutine("leftPathFour");
+        AutoTrajectory traj = routineFourthPathLeft.trajectory("leftPathFour");
 
-        routine.active().onTrue(Commands.sequence(
+        routineFourthPathLeft.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         ));
@@ -179,7 +202,7 @@ public class pathManager {
         traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("shoot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
-        return routine;
+        return routineFourthPathLeft;
     }
 
 }
