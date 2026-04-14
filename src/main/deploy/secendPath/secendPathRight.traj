@@ -235,6 +235,6 @@
  "events":[
    {"name":"startIntake", "from":{"target":1, "targetTimestamp":0.84303, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"stopIntake", "from":{"target":3, "targetTimestamp":2.01151, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
-   {"name":"homen", "from":{"target":5, "targetTimestamp":3.77448, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"humanPlayer", "from":{"target":5, "targetTimestamp":3.77448, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"startShoting", "from":{"target":4, "targetTimestamp":2.78259, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

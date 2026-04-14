@@ -34,6 +34,12 @@ public class pathManager {
             }else{
                 return firstPathLeft();
             }
+        } else if(pathNamber == 2){
+            if (LeftOrRight == path.right) {
+                return secondPathRight();
+            }else{
+                return secondPathLeft();
+            }
         } else {
             return null;
         }
@@ -76,7 +82,41 @@ public class pathManager {
         return routine;
     }
 
+    private AutoRoutine secondPathRight(){
+        AutoRoutine routine = firstRightAutoFactory.newRoutine("secendPathRight");
+        AutoTrajectory traj = routine.trajectory("secendPathRight");
+
+        routine.active().onTrue(Commands.sequence(
+            traj.resetOdometry(),
+            traj.cmd()
+        ));
+
+        traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+
+        return routine;
+    }
+
+    private AutoRoutine secondPathLeft(){
+        AutoRoutine routine = firstLeftAutoFactory.newRoutine("secendPathLeft");
+        AutoTrajectory traj = routine.trajectory("secendPathLeft");
+
+        routine.active().onTrue(Commands.sequence(
+            traj.resetOdometry(),
+            traj.cmd()
+        )
+    );
+    
+        traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+
+        return routine;
 
 
 
+    }
 }
