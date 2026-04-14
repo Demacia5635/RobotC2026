@@ -49,8 +49,12 @@ public class pathManager {
             }
         } else if(pathNamber == path.thirdPath){
                 return thirdPath();
-        } else {
-            return null;
+        } else if(pathNamber == path.fourthPath){
+            if (LeftOrRight == dercsean.right) {
+                return fourthPathRight();
+            }else{
+                return fourthPathLeft();
+            }
         }
     }
 
@@ -139,6 +143,39 @@ public class pathManager {
         traj.atPose("stopShooting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
         traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+
+        return routine;
+    }
+
+        private AutoRoutine fourthPathRight(){
+        AutoRoutine routine = firstRightAutoFactory.newRoutine("rightPathFour");
+        AutoTrajectory traj = routine.trajectory("rightPathFour");
+
+        routine.active().onTrue(Commands.sequence(
+            traj.resetOdometry(),
+            traj.cmd()
+        ));
+
+        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("shoot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+
+        return routine;
+    }
+
+    
+        private AutoRoutine fourthPathLeft(){
+        AutoRoutine routine = firstLeftAutoFactory.newRoutine("leftPathFour");
+        AutoTrajectory traj = routine.trajectory("leftPathFour");
+
+        routine.active().onTrue(Commands.sequence(
+            traj.resetOdometry(),
+            traj.cmd()
+        ));
+
+        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        traj.atPose("shoot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
         return routine;
     }
