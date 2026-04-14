@@ -13,13 +13,20 @@ public class pathManager {
     private double MaxToleranceMeter = 0.5;
     private double MaxToleranceRotation = 0.2;
 
-    private int pathNamber;
+    private path pathNamber;
     private dercsean LeftOrRight;
 
-    public pathManager(int pathNamber, dercsean LeftOrRight) {
+    public pathManager(path pathNamber, dercsean LeftOrRight) {
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
         // firstRightAutoFactory = Choreo.createAutoFactory();
+    }
+
+    enum path{
+    firstPath,
+    secondPath,
+    thirdPath,
+    fourthPath
     }
 
     enum dercsean{
