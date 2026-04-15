@@ -7,19 +7,14 @@ package frc.robot.intake.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsystem;
-import frc.robot.shinua.ShinuaConstants;
-import frc.robot.shinua.subsystems.ShinuaSubsystem;
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   private double wantedAngle = 0;
   private double wantedDuty = 0;
   private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
-  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
   public IntakeCommand() {
     addRequirements(intakeSubsystem);

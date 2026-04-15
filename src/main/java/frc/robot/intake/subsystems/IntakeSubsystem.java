@@ -4,6 +4,7 @@
 
 package frc.robot.intake.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
   private IntakeState state;
+  private Timer timerForStuckBalls;
+  private boolean startedHandlingBalls = false;
   private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
   public static IntakeSubsystem getInstance() {
@@ -30,6 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
+    timerForStuckBalls = new Timer();
     state = IntakeState.IDLE;
     addNT();
   }
@@ -39,7 +43,6 @@ public class IntakeSubsystem extends SubsystemBase {
     stateChooser.addOption("INTAKING", IntakeState.INTAKING);
     stateChooser.addOption("EJECTING", IntakeState.EJECTING);
     stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
-
     stateChooser.addOption("IDLE", IntakeState.IDLE);
     stateChooser.addOption("TESTING", IntakeState.TESTING);
     stateChooser.onChange(newState -> this.state = newState);
@@ -61,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setAngleIntakeDeploy(double angle) {
-    intakeDeployMotor.setAngle(angle);
+    intakeDeployMotor.setMotion(angle);
   }
 
   public void stopRoller() {
@@ -98,6 +101,21 @@ public class IntakeSubsystem extends SubsystemBase {
     shinuaSubsystem.setMecanumDuty(-1);
     setRollerDuty(-1);
   }
+  public boolean BallsArentStuckAnymore() {
+    return timerForStuckBalls.isRunning() && !isBallsStuck();
+  }
+
+  private boolean shouldStartStuckBallsTimer() {
+    return isBallsStuck() && !timerForStuckBalls.isRunning();
+  }
+
+  private boolean shouldHandleBallsStuck() {
+    return timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls && isBallsStuck();
+  }
+
+  private boolean shouldStopHandlingBallsStuck() {
+    return startedHandlingBalls && timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_HANDLING_TIME);
+  }
 
   public IntakeState getState() {
     return state;
@@ -109,6 +127,26 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (shouldStartStuckBallsTimer()) {
+      timerForStuckBalls.restart();
+    }
+
+    if (BallsArentStuckAnymore()) {
+      timerForStuckBalls.stop();
+      timerForStuckBalls.reset();
+      startedHandlingBalls = false;
+    }
+
+    if (shouldHandleBallsStuck()) {
+      startedHandlingBalls = true;
+      handleBallsStuck();
+    }
+
+    if (shouldStopHandlingBallsStuck()) {
+      timerForStuckBalls.stop();
+      timerForStuckBalls.reset();
+      startedHandlingBalls = false;
+    }
     // This method will be called once per scheduler run
   }
 }

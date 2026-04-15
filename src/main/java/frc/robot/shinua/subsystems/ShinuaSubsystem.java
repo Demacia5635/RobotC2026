@@ -4,6 +4,7 @@
 
 package frc.robot.shinua.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,8 @@ public class ShinuaSubsystem extends SubsystemBase {
   private ShinuaConstants.ShinuaState state;
   private static ShinuaSubsystem instance;
   private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private Timer timerForStuckBalls;
+  private boolean startedHandlingBalls = false;
 
   public static ShinuaSubsystem getInstance() {
     if (instance == null)
@@ -30,6 +33,7 @@ public class ShinuaSubsystem extends SubsystemBase {
   public ShinuaSubsystem() {
     mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
+    timerForStuckBalls = new Timer();
     state = ShinuaState.SHINUA_OFF;
     addNT();
   }
@@ -105,6 +109,22 @@ public class ShinuaSubsystem extends SubsystemBase {
     intakeSubsystem.setRollerDuty(-1);
   }
 
+  public boolean BallsArentStuckAnymore() {
+    return timerForStuckBalls.isRunning() && !isBallsStuck();
+  }
+
+  private boolean shouldStartStuckBallsTimer() {
+    return isBallsStuck() && !timerForStuckBalls.isRunning();
+  }
+
+  private boolean shouldHandleBallsStuck() {
+    return timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls && isBallsStuck();
+  }
+
+  private boolean shouldStopHandlingBallsStuck() {
+    return startedHandlingBalls && timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_HANDLING_TIME);
+  }
+
   public void setState(ShinuaConstants.ShinuaState state) {
     this.state = state;
   }
@@ -115,6 +135,26 @@ public class ShinuaSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (shouldStartStuckBallsTimer()) {
+      timerForStuckBalls.restart();
+    }
+
+    if (BallsArentStuckAnymore()) {
+      timerForStuckBalls.stop();
+      timerForStuckBalls.reset();
+      startedHandlingBalls = false;
+    }
+
+    if (shouldHandleBallsStuck()) {
+      startedHandlingBalls = true;
+      handleBallsStuck();
+    }
+
+    if (shouldStopHandlingBallsStuck()) {
+      timerForStuckBalls.stop();
+      timerForStuckBalls.reset();
+      startedHandlingBalls = false;
+    }
     // This method will be called once per scheduler run
   }
 }
