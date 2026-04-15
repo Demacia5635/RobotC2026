@@ -17,7 +17,7 @@ import frc.robot.shinua.ShinuaConstants.ShinuaState;
 public class ShinuaSubsystem extends SubsystemBase {
   private TalonFXMotor mecanumMotor;
   private TalonFXMotor rollersMotor;
-  private ShinuaConstants.ShinuaState state;
+  private ShinuaConstants.ShinuaState state; //TODO import the ShinuaState
   private static ShinuaSubsystem instance;
   private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
   private Timer timerForStuckBalls;
@@ -30,7 +30,7 @@ public class ShinuaSubsystem extends SubsystemBase {
   }
 
   /** Creates a new ShinuaSubsystem. */
-  public ShinuaSubsystem() {
+  public ShinuaSubsystem() {//TODO call super
     mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
     timerForStuckBalls = new Timer();
@@ -40,7 +40,7 @@ public class ShinuaSubsystem extends SubsystemBase {
 
   public void addNT() {
     SendableChooser<ShinuaConstants.ShinuaState> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("SHINUA_ON", ShinuaConstants.ShinuaState.SHINUA_ON);
+    stateChooser.addOption("SHINUA_ON", ShinuaConstants.ShinuaState.SHINUA_ON); //TODO add in for
     stateChooser.addOption("SHINUA_OFF", ShinuaConstants.ShinuaState.SHINUA_OFF);
     stateChooser.addOption("EJECTING", ShinuaConstants.ShinuaState.EJECTING);
     stateChooser.addOption("TESTING", ShinuaConstants.ShinuaState.TESTING);
@@ -94,7 +94,7 @@ public class ShinuaSubsystem extends SubsystemBase {
     return rollersMotor.getCurrentCurrent();
   }
 
-  public boolean isBallsStuck() {
+  public boolean isBallsStuck() {//TODO add abs on intake, to put else where / check only shinoa motor stuck
     return (getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
         && Math.abs(getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
         || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
@@ -134,7 +134,7 @@ public class ShinuaSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public void periodic() { //TODO deal in command, nead elses
     if (shouldStartStuckBallsTimer()) {
       timerForStuckBalls.restart();
     }

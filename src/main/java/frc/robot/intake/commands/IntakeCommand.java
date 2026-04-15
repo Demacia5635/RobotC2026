@@ -44,7 +44,7 @@ public class IntakeCommand extends Command {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
         if (intakeSubsystem.isBallsStuck()) {
           intakeSubsystem.handleBallsStuck();
-        }
+        } //TODO add else
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         break;

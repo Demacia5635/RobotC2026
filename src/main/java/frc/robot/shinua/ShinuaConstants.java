@@ -13,12 +13,13 @@ public class ShinuaConstants {
     public static final boolean MECANUM_BRAKE = true;
     public static final double MECANUM_BALLS_STUCK_CURRENT = 0;
     public static final double MECANUM_BALLS_STUCK_VELOCITY = 0;
-
-    // stuck balls timing constants
+    public static final double MECANUM_GEAR_RATIO = 0.0;
+    // stuck balls time constants
     public static final double BALLS_STUCK_DURATION = 0.10000006200; 
     public static final double BALLS_STUCK_HANDLING_TIME = 0.2;
 
     public static final TalonFXConfig MECANUM_CONFIG = new TalonFXConfig(MECANUM_ID, SHINUA_CANBUS, MECANUM_NAME)
+            .withRadiansMotor(MECANUM_GEAR_RATIO)
             .withBrake(MECANUM_BRAKE)
             .withInvert(MECANUM_INVERTED)
             .withCurrent(MECANUM_CURRENT_LIMIT);
@@ -31,8 +32,10 @@ public class ShinuaConstants {
     public static final boolean ROLLERS_BRAKE = true;
     public static final double ROLLERS_BALLS_STUCK_CURRENT = 0;
     public static final double ROLLERS_BALLS_STUCK_VELOCITY = 0;
+    public static final double ROLLERS_GEAR_RATIO = 0.0;
 
     public static final TalonFXConfig ROLLERS_CONFIG = new TalonFXConfig(ROLLERS_ID, SHINUA_CANBUS, ROLLERS_NAME)
+            .withRadiansMotor(ROLLERS_GEAR_RATIO)
             .withBrake(ROLLERS_BRAKE)
             .withInvert(ROLLERS_INVERTED)
             .withCurrent(ROLLERS_CURRENT_LIMIT);

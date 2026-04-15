@@ -42,7 +42,7 @@ public class ShinuaCommand extends Command {
       case SHINUA_ON, SHINUA_OFF, EJECTING:
         if (shinuaSubsystem.isBallsStuck()) {
           shinuaSubsystem.handleBallsStuck();
-        }
+        } //TODO add else
         shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
         shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
         break;

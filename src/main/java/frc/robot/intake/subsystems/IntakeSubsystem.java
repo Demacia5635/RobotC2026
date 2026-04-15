@@ -13,7 +13,7 @@ import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.shinua.ShinuaConstants;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
-
+//add calibration, TODO when have requiremant
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
   private static IntakeSubsystem instance;
@@ -24,29 +24,31 @@ public class IntakeSubsystem extends SubsystemBase {
   private boolean startedHandlingBalls = false;
   private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
+  //TODO do private couse its singalton
   public static IntakeSubsystem getInstance() {
     if (instance == null)
       instance = new IntakeSubsystem();
     return instance;
   }
 
-  public IntakeSubsystem() {
+  public IntakeSubsystem() {//TODO call super, 
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     timerForStuckBalls = new Timer();
     state = IntakeState.IDLE;
     addNT();
+    //TODO if add initsendable add smartdashboard.putData(this)
   }
 
   public void addNT() {
     SendableChooser<IntakeState> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("INTAKING", IntakeState.INTAKING);
+    stateChooser.addOption("INTAKING", IntakeState.INTAKING); //TODO ADD as for
     stateChooser.addOption("EJECTING", IntakeState.EJECTING);
     stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
     stateChooser.addOption("IDLE", IntakeState.IDLE);
     stateChooser.addOption("TESTING", IntakeState.TESTING);
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);
+    SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);//TODO use name from constant
 
   }
 
@@ -63,7 +65,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.setDuty(duty);
   }
 
-  public void setAngleIntakeDeploy(double angle) {
+  public void setAngleIntakeDeploy(double angle) { //TODO set if in range
     intakeDeployMotor.setMotion(angle);
   }
 
@@ -86,7 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
   }
-
+//TODO check in shinoa, do not nead to check here
   public boolean isBallsStuck() {
     return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
         && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
@@ -96,7 +98,7 @@ public class IntakeSubsystem extends SubsystemBase {
             && getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
   }
 
-  public void handleBallsStuck() {
+  public void handleBallsStuck() {//TODO not give power to other subsystem
     shinuaSubsystem.setRollersDuty(-1);
     shinuaSubsystem.setMecanumDuty(-1);
     setRollerDuty(-1);

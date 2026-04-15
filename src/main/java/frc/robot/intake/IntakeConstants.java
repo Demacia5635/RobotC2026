@@ -5,7 +5,7 @@ import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 public class IntakeConstants {
     public static final double BALLS_STUCK_DURATION = 0.10000006200; 
-    public static final double BALLS_STUCK_HANDLING_TIME = 2.0;
+    public static final double BALLS_STUCK_HANDLING_TIME = 0.2;
 
     // constants for roller motor
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
