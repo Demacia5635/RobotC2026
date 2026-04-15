@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.shinua.ShinuaConstants;
+import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
@@ -17,6 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
   private IntakeState state;
+  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -30,18 +33,20 @@ public class IntakeSubsystem extends SubsystemBase {
     state = IntakeState.IDLE;
     addNT();
   }
-    public void addNT() {
+
+  public void addNT() {
     SendableChooser<IntakeState> stateChooser = new SendableChooser<>();
     stateChooser.addOption("INTAKING", IntakeState.INTAKING);
     stateChooser.addOption("EJECTING", IntakeState.EJECTING);
     stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
-    
+
     stateChooser.addOption("IDLE", IntakeState.IDLE);
     stateChooser.addOption("TESTING", IntakeState.TESTING);
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);
 
   }
+
   public void checkElectronics() {
     rollerMotor.checkElectronics();
     intakeDeployMotor.checkElectronics();
@@ -77,6 +82,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
+  }
+
+  public boolean isBallsStuck() {
+    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
+        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
+        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
+            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY)
+        || (getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
+            && getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
+  }
+
+  public void handleBallsStuck() {
+    shinuaSubsystem.setRollersDuty(-1);
+    shinuaSubsystem.setMecanumDuty(-1);
+    setRollerDuty(-1);
   }
 
   public IntakeState getState() {

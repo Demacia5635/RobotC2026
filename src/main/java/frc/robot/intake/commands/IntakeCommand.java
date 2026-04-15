@@ -34,20 +34,7 @@ public class IntakeCommand extends Command {
     builder.addDoubleProperty("Wanted duty intake", () -> wantedDuty, (x) -> wantedDuty = x);
   }
 
-  private boolean isBallsStuck() {
-    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
-        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
-          && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY)
-        || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && intakeSubsystem.getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
-  }
 
-  private void handleBallsStuck() {
-    shinuaSubsystem.setRollersDuty(-1);
-    shinuaSubsystem.setMecanumDuty(-1);
-    intakeSubsystem.setRollerDuty(-1);
-  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -60,8 +47,8 @@ public class IntakeCommand extends Command {
 
     switch (intakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-        if (isBallsStuck()) {
-          handleBallsStuck();
+        if (intakeSubsystem.isBallsStuck()) {
+          intakeSubsystem.handleBallsStuck();
         }
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
