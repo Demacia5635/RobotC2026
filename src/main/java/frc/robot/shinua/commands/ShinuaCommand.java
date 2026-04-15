@@ -7,9 +7,6 @@ package frc.robot.shinua.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.intake.IntakeConstants;
-import frc.robot.intake.subsystems.IntakeSubsystem;
-import frc.robot.shinua.ShinuaConstants;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
@@ -17,7 +14,6 @@ import frc.robot.shinua.subsystems.ShinuaSubsystem;
 public class ShinuaCommand extends Command {
   /** Creates a new ShinuaCommand. */
   private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
-  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
   private double wantedDutyRollers = 0;
   private double wantedDutyMecanum = 0;
 
@@ -38,33 +34,19 @@ public class ShinuaCommand extends Command {
   public void initialize() {
   }
 
-  private boolean isBallsStuck() {
-    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
-        || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && intakeSubsystem.getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY)
-        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
-            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY);
-  }
-
-  private void handleBallsStuck() {
-    shinuaSubsystem.setMecanumDuty(-1);
-    shinuaSubsystem.setRollersDuty(-1);
-    intakeSubsystem.setRollerDuty(-1);
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON, SHINUA_OFF, EJECTING:
-        if (isBallsStuck()) {
-          handleBallsStuck();
+        if (shinuaSubsystem.isBallsStuck()) {
+          shinuaSubsystem.handleBallsStuck();
         }
         shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
         shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
         break;
-      case Testing:
+      case TESTING:
         shinuaSubsystem.setMecanumDuty(wantedDutyMecanum);
         shinuaSubsystem.setRollersDuty(wantedDutyRollers);
         break;

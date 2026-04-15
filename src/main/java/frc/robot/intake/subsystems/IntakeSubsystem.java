@@ -35,7 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
     stateChooser.addOption("INTAKING", IntakeState.INTAKING);
     stateChooser.addOption("EJECTING", IntakeState.EJECTING);
     stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
-    stateChooser.addOption("CLOSED", IntakeState.CLOSED);
+    
     stateChooser.addOption("IDLE", IntakeState.IDLE);
     stateChooser.addOption("TESTING", IntakeState.TESTING);
     stateChooser.onChange(newState -> this.state = newState);
