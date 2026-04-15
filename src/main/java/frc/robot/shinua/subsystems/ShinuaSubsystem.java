@@ -4,6 +4,8 @@
 
 package frc.robot.shinua.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shinua.ShinuaConstants;
@@ -25,8 +27,20 @@ public class ShinuaSubsystem extends SubsystemBase {
   public ShinuaSubsystem() {
     mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
+    state = ShinuaState.SHINUA_OFF;
+    addNT();
   }
 
+    public void addNT() {
+    SendableChooser<ShinuaConstants.ShinuaState> stateChooser = new SendableChooser<>();
+    stateChooser.addOption("SHINUA_ON", ShinuaConstants.ShinuaState.SHINUA_ON);
+    stateChooser.addOption("SHINUA_OFF", ShinuaConstants.ShinuaState.SHINUA_OFF);
+    stateChooser.addOption("EJECTING", ShinuaConstants.ShinuaState.EJECTING);
+    stateChooser.addOption("TESTING", ShinuaConstants.ShinuaState.TESTING);
+    stateChooser.onChange(newState -> this.state = newState);
+    SmartDashboard.putData(getName() + "Shinua State Chooser", stateChooser);
+
+  }
   public void checkElectronics() {
     mecanumMotor.checkElectronics();
     rollersMotor.checkElectronics();

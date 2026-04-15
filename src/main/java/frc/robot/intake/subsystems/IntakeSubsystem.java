@@ -4,6 +4,8 @@
 
 package frc.robot.intake.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
@@ -26,8 +28,20 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     state = IntakeState.IDLE;
+    addNT();
   }
+    public void addNT() {
+    SendableChooser<IntakeState> stateChooser = new SendableChooser<>();
+    stateChooser.addOption("INTAKING", IntakeState.INTAKING);
+    stateChooser.addOption("EJECTING", IntakeState.EJECTING);
+    stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
+    stateChooser.addOption("CLOSED", IntakeState.CLOSED);
+    stateChooser.addOption("IDLE", IntakeState.IDLE);
+    stateChooser.addOption("TESTING", IntakeState.TESTING);
+    stateChooser.onChange(newState -> this.state = newState);
+    SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);
 
+  }
   public void checkElectronics() {
     rollerMotor.checkElectronics();
     intakeDeployMotor.checkElectronics();
