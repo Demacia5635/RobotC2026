@@ -77,11 +77,7 @@ public class RobotCommon {
             if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
                 return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
             }
-<<<<<<< HEAD:src/main/java/frc/robot/robotCommon.java
             else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
-=======
-            else return Pose2d.kZero; //TODO: update the point
->>>>>>> origin/shooter:src/main/java/frc/robot/RobotCommon.java
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
