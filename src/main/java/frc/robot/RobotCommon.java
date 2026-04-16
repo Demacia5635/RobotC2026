@@ -56,17 +56,37 @@ public class RobotCommon {
         isComp = newIsComp;
     }
 
-    public static Pose2d getDelveryPose(){
+    public static boolean getRobotCalibrated(){
+        return isRobotCalibrated;
+    }
+
+    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
+        isRobotCalibrated = newIsRobotCalibrated;
+    }
+
+    public static boolean getIsComp(){
+        return isComp;
+    }
+
+    public static void setIsComp(boolean newIsComp){
+        isComp = newIsComp;
+    }
+
+    public static Pose2d getDeliveryPose(){
         if(isRed()){
             if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
                 return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
             }
+<<<<<<< HEAD:src/main/java/frc/robot/robotCommon.java
             else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
+=======
+            else return Pose2d.kZero; //TODO: update the point
+>>>>>>> origin/shooter:src/main/java/frc/robot/RobotCommon.java
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
                 }
-                else return Pose2d.kZero;
+                else return Pose2d.kZero; //TODO: update the point
         }
     }
 
@@ -78,27 +98,27 @@ public class RobotCommon {
         robotAngle = newRobotAngle;
     }
 
-    public static Pose2d getRobotFucerPose(){
+    public static Pose2d getRobotFuturePose(){
         return futureRobotPose;
     }
 
-    public static void setRobotFucerPose(Pose2d newRobotFucerPose){
-        futureRobotPose = newRobotFucerPose;
+    public static void setRobotFuturePose(Pose2d newRobotFuturePose){
+        futureRobotPose = newRobotFuturePose;
     }
 
-    public static ChassisSpeeds getChassisfieldRelativeSpeeds(){
+    public static ChassisSpeeds getChassisFieldRelativeSpeeds(){
         return fieldRelativeSpeeds;
     }
 
-    public static void setChassisfieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
-        fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
+    public static void setChassisFieldRelativeSpeeds(ChassisSpeeds newChassisFieldRelativeSpeeds){
+        fieldRelativeSpeeds = newChassisFieldRelativeSpeeds;
     }
 
-    public static ChassisSpeeds getrobotRelativeSpeeds(){
+    public static ChassisSpeeds getRobotRelativeSpeeds(){
         return robotRelativeSpeeds;
     }
 
-    public static void setrobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
+    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
 
