@@ -36,8 +36,8 @@ public class RobotCommon {
     }
 
     public static Translation2d getHubPose(){
-        if(isRed()) return Field.HubRed.CENTER;
-        else return Field.HubRed.CENTER; 
+        return isRed() ? Field.HubRed.CENTER : Field.HubBlue.CENTER;
+        
     }
 
     public static boolean getRobotCalibrated(){
@@ -52,7 +52,11 @@ public class RobotCommon {
         return isComp;
     }
 
-    public static Pose2d getDeliveryPose(){
+    public static void setIsComp(boolean newIsComp){
+        isComp = newIsComp;
+    }
+
+    public static Pose2d getDelveryPose(){
         if(isRed()){
             if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
                 return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
@@ -74,27 +78,27 @@ public class RobotCommon {
         robotAngle = newRobotAngle;
     }
 
-    public static Pose2d getRobotFuturePose(){
+    public static Pose2d getRobotFucerPose(){
         return futureRobotPose;
     }
 
-    public static void setRobotFuturePose(Pose2d newRobotFuturePose){
-        futureRobotPose = newRobotFuturePose;
+    public static void setRobotFucerPose(Pose2d newRobotFucerPose){
+        futureRobotPose = newRobotFucerPose;
     }
 
-    public static ChassisSpeeds getChassisFieldRelativeSpeeds(){
+    public static ChassisSpeeds getChassisfieldRelativeSpeeds(){
         return fieldRelativeSpeeds;
     }
 
-    public static void setChassisFieldRelativeSpeeds(ChassisSpeeds newChassisFieldRelativeSpeeds){
-        fieldRelativeSpeeds = newChassisFieldRelativeSpeeds;
+    public static void setChassisfieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
+        fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
     }
 
-    public static ChassisSpeeds getRobotRelativeSpeeds(){
+    public static ChassisSpeeds getrobotRelativeSpeeds(){
         return robotRelativeSpeeds;
     }
 
-    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
+    public static void setrobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
 
