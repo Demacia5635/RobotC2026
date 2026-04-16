@@ -9,8 +9,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class RobotCommon {
-
-
     public static Pose2d currentRobotPose = Pose2d.kZero;
     private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
     private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
@@ -36,8 +34,8 @@ public class RobotCommon {
     }
 
     public static Translation2d getHubPose(){
-        return isRed() ? Field.HubRed.CENTER : Field.HubBlue.CENTER;
-        
+        if(isRed()) return Field.HubRed.CENTER;
+        else return Field.HubRed.CENTER; 
     }
 
     public static boolean getRobotCalibrated(){
@@ -66,7 +64,7 @@ public class RobotCommon {
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
                 }
-                else return Pose2d.kZero; //TODO: update the point
+                else return Pose2d.kZero;
         }
     }
 
@@ -82,11 +80,11 @@ public class RobotCommon {
         return futureRobotPose;
     }
 
-    public static void setRobotFucerPose(Pose2d newRobotFucerPose){
+    public static void setRobotFuturePose(Pose2d newRobotFucerPose){
         futureRobotPose = newRobotFucerPose;
     }
 
-    public static ChassisSpeeds getChassisfieldRelativeSpeeds(){
+    public static ChassisSpeeds getRobotRelativeSpeeds(){
         return fieldRelativeSpeeds;
     }
 
