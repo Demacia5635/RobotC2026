@@ -52,26 +52,6 @@ public class RobotCommon {
         return isComp;
     }
 
-    public static void setIsComp(boolean newIsComp){
-        isComp = newIsComp;
-    }
-
-    public static boolean getRobotCalibrated(){
-        return isRobotCalibrated;
-    }
-
-    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
-        isRobotCalibrated = newIsRobotCalibrated;
-    }
-
-    public static boolean getIsComp(){
-        return isComp;
-    }
-
-    public static void setIsComp(boolean newIsComp){
-        isComp = newIsComp;
-    }
-
     public static Pose2d getDeliveryPose(){
         if(isRed()){
             if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
