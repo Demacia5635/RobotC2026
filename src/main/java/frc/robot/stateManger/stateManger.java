@@ -52,6 +52,8 @@ public class stateManger extends SubsystemBase{
                     RobotContainer.turret.setState(TurretStates.DELIVERY);
                     RobotContainer.intake.setState(IntakeState.INTAKING);
                 }
+        }else{
+            RobotContainer.shooter.setShooterState(ShooterStates.TRANCH);
         }
     }  
 }
