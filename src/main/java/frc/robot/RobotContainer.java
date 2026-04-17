@@ -23,6 +23,7 @@ import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.stateManger.stateManger;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
 
