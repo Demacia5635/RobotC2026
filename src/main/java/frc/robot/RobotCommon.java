@@ -84,11 +84,11 @@ public class RobotCommon {
         futureRobotPose = newRobotFucerPose;
     }
 
-    public static ChassisSpeeds getRobotRelativeSpeeds(){
+    public static ChassisSpeeds getFieldRelativeSpeeds(){
         return fieldRelativeSpeeds;
     }
 
-    public static void setChassisfieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
+    public static void setFieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
         fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
     }
 
@@ -96,7 +96,7 @@ public class RobotCommon {
         return robotRelativeSpeeds;
     }
 
-    public static void setrobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
+    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
 
