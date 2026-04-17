@@ -12,10 +12,6 @@ import frc.robot.turret.TurretConstants.TurretStates;
 
 public class stateManger extends SubsystemBase{
 
-    public stateManger() {
-        
-    }
-
     public static boolean isWork;
     
    private static boolean isTrench() {
