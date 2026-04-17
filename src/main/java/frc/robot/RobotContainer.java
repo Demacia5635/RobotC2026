@@ -12,10 +12,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-// import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.robot.intake.commands.IntakeCommand;
+import frc.robot.intake.subsystems.IntakeSubsystem;
+import frc.robot.shinua.commands.ShinuaCommand;
+import frc.robot.shinua.subsystems.ShinuaSubsystem;
+import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.turret.commands.TurretCommand;
+import frc.robot.turret.subsystems.Turret;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,12 +36,15 @@ import frc.demacia.utils.controller.CommandController.ControllerType;
  */
 public class RobotContainer implements Sendable {
 
-  CommandController driverController = new CommandController(0, ControllerType.kPS5);
   // The robot's subsystems and commands are defined here...
   public static Chassis chassis;
+  public static IntakeSubsystem intake;
+  public static ShinuaSubsystem shinua;
+  public static Turret turret;
+  public static Shooter shooter;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-
+  CommandController driverController = new CommandController(0, ControllerType.kPS5);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -43,6 +54,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     configureBindings();
     setUserButton();
+    setDefaultCommands();
   }
 
   /**
@@ -61,6 +73,14 @@ public class RobotContainer implements Sendable {
    */
   private void configureBindings() {
 
+  }
+
+  private void setDefaultCommands() {
+    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
+    intake.setDefaultCommand(new IntakeCommand());
+    shinua.setDefaultCommand(new ShinuaCommand());
+    shooter.setDefaultCommand(new ShooterCommand(shooter));
+    turret.setDefaultCommand(new TurretCommand(turret));
   }
 
   private void setUserButton() {
