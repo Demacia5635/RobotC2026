@@ -43,7 +43,7 @@ public class RobotContainer implements Sendable {
   public static ShinuaSubsystem shinua = new ShinuaSubsystem();
   public static Turret turret = new Turret();
   public static Shooter shooter = new Shooter();
-  public stateManger stateManger = new stateManger();
+  public static stateManger stateManger = new stateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
