@@ -1,12 +1,17 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.turret.TurretConstants.TurretStates;
 
-public class stateManger {
+public class stateManger extends SubsystemBase{
 
-    public boolean isWork;
+    public stateManger() {
+    }
+
+    public static boolean isWork;
     
     private boolean isTranch(){
         if(RobotCommon.getRobotFucerPose().getX() > Field.TrenchBlueAudience.X_BACK - 0.5 && RobotCommon.getRobotFucerPose().getX() < Field.TrenchBlueAudience.X_FRONT + 0.5){

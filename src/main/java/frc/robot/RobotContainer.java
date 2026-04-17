@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.chassis.Chassis;
@@ -37,11 +38,12 @@ import frc.robot.turret.subsystems.Turret;
 public class RobotContainer implements Sendable {
 
   // The robot's subsystems and commands are defined here...
-  public static Chassis chassis;
-  public static IntakeSubsystem intake;
-  public static ShinuaSubsystem shinua;
-  public static Turret turret;
-  public static Shooter shooter;
+  public static Chassis chassis = new Chassis(null);
+  public static IntakeSubsystem intake = new IntakeSubsystem();
+  public static ShinuaSubsystem shinua = new ShinuaSubsystem();
+  public static Turret turret = new Turret();
+  public static Shooter shooter = new Shooter();
+  public stateManger stateManger = new stateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
@@ -72,7 +74,22 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
+    driverController.rightBumper().onFalse(new RunCommand(()-> stateManger.isWork = true, stateManger){
+      @Override
+      public void end(boolean interrupted) {
+        stateManger.isWork = false;
+      }
 
+      @Override
+      public boolean isFinished() {
+        return !driverController.rightBumper().getAsBoolean();
+      }
+
+      @Override
+      public boolean runsWhenDisabled() {
+        return false;
+      }
+    });
   }
 
   private void setDefaultCommands() {
