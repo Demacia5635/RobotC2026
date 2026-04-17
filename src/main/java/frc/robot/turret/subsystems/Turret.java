@@ -24,6 +24,10 @@ public class Turret extends SubsystemBase {
     isCalibrated = false;
   }
 
+  public void setNatrelMode(boolean isBrake){
+    turretMotor.setNeutralMode(isBrake);
+  }
+
   public void setTurretPower(double Power){
     turretMotor.setDuty(Power);
   }

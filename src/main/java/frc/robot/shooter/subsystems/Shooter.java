@@ -30,6 +30,14 @@ public class Shooter extends SubsystemBase {
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     
   }
+
+  public void setNatrelMode(boolean isBrake){
+    flywheel.setNeutralMode(isBrake);
+    hood.setNeutralMode(isBrake);
+    indexer.setNeutralMode(isBrake);
+    feeder.setNeutralMode(isBrake);
+  }
+
   public void setFlywheelPower(double power){
     flywheel.setDuty(power);
   }

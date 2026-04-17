@@ -76,6 +76,7 @@ public class RobotContainer implements Sendable {
    */
   private void configureBindings() {
     driverController.rightBumper().onFalse(new RunCommand(()-> stateManger.isWork = true, stateManger){
+      
       @Override
       public void end(boolean interrupted) {
         stateManger.isWork = false;
