@@ -31,17 +31,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.demacia.kinematics.DemaciaKinematics;
-import frc.demacia.odometry.DemaciaPoseEstimator.OdometryObservation;
-import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
-import frc.demacia.vision.utils.VisionConstants;
 import frc.robot.RobotCommon;
-import frc.robot.Shooter.utils.ShooterUtils;
-import frc.robot.Turret.Turret;
-import frc.robot.Turret.TurretConstants;
 
 /**
  * Main swerve drive chassis controller.
