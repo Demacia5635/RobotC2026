@@ -15,6 +15,7 @@ import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 
 public class Shooter extends SubsystemBase {
+  private static Shooter shooter;
   private TalonFXMotor flywheel;
   private TalonFXMotor hood;
   private TalonFXMotor indexer;
@@ -22,7 +23,7 @@ public class Shooter extends SubsystemBase {
   private ShooterStates shooterState;
 
   /** Creates a new Shooter. */
-  public Shooter() {
+  private Shooter() {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
@@ -30,6 +31,14 @@ public class Shooter extends SubsystemBase {
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     
   }
+
+  public static Shooter getInstance(){
+    if(shooter == null){
+      shooter = new Shooter();
+    }
+    return shooter;
+  }
+
   public void setFlywheelPower(double power){
     flywheel.setDuty(power);
   }

@@ -25,10 +25,8 @@ public class ShooterCommand extends Command {
   private Translation2d shooterToTarget;//TODO be in robot common
 
   /** Creates a new ShooterCommand. */
-  public ShooterCommand(Shooter shooter) {
-    this.shooter = shooter;
-    
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ShooterCommand() {
+    this.shooter = Shooter.getInstance();
     addRequirements(shooter);
   }
 
