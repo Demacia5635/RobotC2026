@@ -178,7 +178,7 @@ public class Chassis extends SubsystemBase {
     public void followTrajectory(SwerveSample sample) {
 
 
-        Pose2d pose = RobotCommon.getCurrentRobotPose();
+        Pose2d pose = RobotCommon.currentRobotPose;
 
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + xController.calculate(pose.getX(), sample.x),
