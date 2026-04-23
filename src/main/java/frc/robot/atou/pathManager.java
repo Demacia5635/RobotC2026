@@ -30,14 +30,14 @@ public class pathManager {
         this.LeftOrRight = LeftOrRight;
     }
 
-    enum path{
+    public enum path{
     firstPath,
     secondPath,
     thirdPath,
     fourthPath
     }
 
-    enum dercsean{
+    public enum dercsean{
         left,
         right,
         center

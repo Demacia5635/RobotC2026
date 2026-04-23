@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.atou.pathManager;
+import frc.robot.atou.pathManager.path;
+import frc.robot.atou.pathManager.dercsean;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,10 +28,11 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
   public static boolean isRed = false;
 
-  private pathManager pathManager = new pathManager(null, null, null, null);
+  private path pathNamber;
+  private dercsean LeftOrRight;
 
   // The robot's subsystems and commands are defined here...
-
+  private static final pathManager pathManager = new pathManager(null, null, null, null);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
