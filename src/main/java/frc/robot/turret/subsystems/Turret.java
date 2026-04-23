@@ -11,17 +11,25 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
+  private static Turret turret;
   private TalonFXMotor turretMotor;
   private LimitSwitch maxLimitSwitch;
   private LimitSwitch minLimitSwitch;
   private TurretStates turretStates;
   private boolean isCalibrated;
   /** Creates a new Turret. */
-  public Turret() {
+  private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
     maxLimitSwitch = new LimitSwitch(TurretConstants.MAX_LIMIT_SWITCH_CONFIG);
     minLimitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
     isCalibrated = false;
+  }
+
+  public static Turret getInstance(){
+    if (turret == null){
+      turret = new Turret();
+    }
+    return turret;
   }
 
   public void setTurretPower(double Power){
@@ -29,18 +37,18 @@ public class Turret extends SubsystemBase {
   }
 
   public void setTurretMotion(double position){
-    if(isCalibrated){
-      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGEL, TurretConstants.MAX_TURRET_ANGEL);
-      position = MathUtil.angleModulus(position);
+    if(isCalibrated){ //if not stop
+      position = MathUtil.inputModulus(position, 0, 360);
+      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
       turretMotor.setMotion(position);
     }
   }
 
   public void setPositionByLimit(){
     if(getMaxLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGEL);
+      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGLE);
     } else if(getMinLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGEL);
+      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGLE);
     }
   }
   public void stopMotor(){
@@ -69,5 +77,12 @@ public class Turret extends SubsystemBase {
 
   public void setCalibration(){
     isCalibrated = true;
+  }
+
+  @Override
+  public void periodic() {// like shooter, may not work couse not neer the other code
+      if (turretMotor.getCurrentCurrent() > TurretConstants.MAX_CURRENT && Math.abs(turretMotor.getCurrentVelocity()) < TurretConstants.MIN_VELOCITY){
+        stopMotor();
+      }
   }
 }

@@ -86,7 +86,7 @@ public class TagPose {
       }
 
       if (id > 0 && id < TAG_HEIGHT.length) {
-        pose = new Pose2d(getOriginToRobot(), RobotCommon.robotAngle);
+        pose = new Pose2d(getOriginToRobot(), RobotCommon.getRobotAngle());
         field.setRobotPose(pose);
         confidence = getConfidence();
         wantedPip = getDistFromCamera() > 1 ? 0 : 0;
@@ -135,7 +135,7 @@ public class TagPose {
     // LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
     // Add camera offset to get robot center to tag vector
     robotToTag = (camera.getRobotToCamPosition().toTranslation2d()
-        .plus(cameraToTag)).rotateBy(RobotCommon.robotAngle);
+        .plus(cameraToTag)).rotateBy(RobotCommon.getRobotAngle());
     // LogManager.log("Robot to Tag :" + robotToTag);
     return robotToTag;
   }
@@ -164,13 +164,13 @@ public class TagPose {
 
   private double getYawCrop() {
     double TagYaw = ((-camToTagYaw) + camera.getYaw()) / 31.25;
-    return TagYaw + RobotCommon.fieldRelativeSpeeds.vyMetersPerSecond * PREDICT_Y
-        + RobotCommon.fieldRelativeSpeeds.omegaRadiansPerSecond * PREDICT_OMEGA;
+    return TagYaw + RobotCommon.getChassisFieldRelativeSpeeds().vyMetersPerSecond * PREDICT_Y
+        + RobotCommon.getChassisFieldRelativeSpeeds().omegaRadiansPerSecond * PREDICT_OMEGA;
   }
 
   private double getPitchCrop() {
     double TagPitch = camToTagPitch / 24.45;
-    return TagPitch + RobotCommon.fieldRelativeSpeeds.vxMetersPerSecond * PREDICT_X;
+    return TagPitch + RobotCommon.getChassisFieldRelativeSpeeds().vxMetersPerSecond * PREDICT_X;
   }
 
   private void cropStop() {

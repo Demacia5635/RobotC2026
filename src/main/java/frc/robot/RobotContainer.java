@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import frc.demacia.utils.DemaciaUtils;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 
@@ -28,6 +30,7 @@ public class RobotContainer implements Sendable {
 
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
   // The robot's subsystems and commands are defined here...
+  public static Chassis chassis;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -35,6 +38,7 @@ public class RobotContainer implements Sendable {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     configureBindings();
@@ -67,9 +71,9 @@ public class RobotContainer implements Sendable {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("is comp", () -> RobotCommon.isComp, (isComp) -> RobotCommon.isComp = isComp);
-    builder.addBooleanProperty("is red", () -> RobotCommon.isRed, (isRed) -> RobotCommon.isRed = isRed);
-    builder.addBooleanProperty("change is Robot Calibrated for testing", () -> RobotCommon.isRobotCalibrated,
-        (isRobotCalibrated) -> RobotCommon.isRobotCalibrated = isRobotCalibrated);
+    builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
+    builder.addBooleanProperty("change is Robot Calibrated for testing", () -> RobotCommon.getRobotCalibrated(),
+        (isRobotCalibrated) -> RobotCommon.setIsRobotCalibrated(isRobotCalibrated));
   }
 
   /**

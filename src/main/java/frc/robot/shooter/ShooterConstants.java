@@ -27,7 +27,7 @@ public class ShooterConstants {
 
         public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME);
         public static final double MAX_FLYWHEEL_POWER = 1;
-        public static final double flywheelPositionOffset = 0.4;
+        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
     }
 
     public final static class HoodConstants {
@@ -37,9 +37,11 @@ public class ShooterConstants {
         public static final int HOOD_ID = 0;
 
         public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME);
-        public static final double hoodPositionOffset = 0.4;
+        public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = 0;
+        public static final double MAX_HOOD_CURRENT = 0;
+        public static final double MIN_HOOD_VELOCITY = 0;
     }
 
     public final static class IndexerConstants {
@@ -50,6 +52,9 @@ public class ShooterConstants {
 
         public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
         public static final double MAX_INDEXER_POWER = 1;
+
+        public static final double MAX_INDEXER_CURRENT = 0;
+        public static final double MIN_INDEXER_VELOCITY = 0;
     }
 
     public final static class FeederConstants {
@@ -60,6 +65,8 @@ public class ShooterConstants {
         
         public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME);
         public static final double MAX_FEEDER_POWER = 1;
+        public static final double MAX_FEEDER_CURRENT = 0;
+        public static final double MIN_FEEDER_VELOCITY = 0;
     }
     public enum ShooterStates {
         SHOOTER,

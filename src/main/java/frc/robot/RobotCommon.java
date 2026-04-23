@@ -1,19 +1,105 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class RobotCommon {
+
+
     public static Pose2d currentRobotPose = Pose2d.kZero;
-    public static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
-    public static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
-    public static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
-    public static Rotation2d robotAngle = Rotation2d.kZero;
+    private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
+    private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
+    private static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
+    private static Rotation2d robotAngle = Rotation2d.kZero;
 
-    public static Pose2d hubPose = new Pose2d();
+    private static Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    public static boolean isRed = false;
-    public static boolean isComp = false;
-    public static boolean isRobotCalibrated = false;
+    private static boolean isRed;
+
+    public static boolean isComp = false; 
+    private static boolean isRobotCalibrated = false; 
+
+    public static boolean isRed(){
+        if(alliance.get() == Alliance.Red) isRed = true;
+        else isRed = false;
+
+        return isRed;        
+    }
+
+    public static void setIsRed(boolean newIsRed){
+        isRed = newIsRed;
+    }
+
+    public static Translation2d getHubPose(){
+        if(isRed()) return Translation2d.kZero; //TODO: update point
+        else return Translation2d.kZero; //TODO: update point
+    }
+
+    public static boolean getRobotCalibrated(){
+        return isRobotCalibrated;
+    }
+
+    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
+        isRobotCalibrated = newIsRobotCalibrated;
+    }
+
+    public static boolean getIsComp(){
+        return isComp;
+    }
+
+    public static void setIsComp(boolean newIsComp){
+        isComp = newIsComp;
+    }
+
+    public static Pose2d getDeliveryPose(){
+        if(isRed()){
+            if(currentRobotPose.getX() > 8.07 /2){
+                return Pose2d.kZero; //TODO: update the point
+            }
+            else return Pose2d.kZero; //TODO: update the point
+        }else{
+            if(currentRobotPose.getX() > 8.07 /2){
+                    return Pose2d.kZero; //TODO: update the point
+                }
+                else return Pose2d.kZero; //TODO: update the point
+        }
+    }
+
+    public static Rotation2d getRobotAngle(){
+        return robotAngle;
+    }
+
+    public static void setRobotAngle(Rotation2d newRobotAngle){
+        robotAngle = newRobotAngle;
+    }
+
+    public static Pose2d getRobotFuturePose(){
+        return futureRobotPose;
+    }
+
+    public static void setRobotFuturePose(Pose2d newRobotFuturePose){
+        futureRobotPose = newRobotFuturePose;
+    }
+
+    public static ChassisSpeeds getChassisFieldRelativeSpeeds(){
+        return fieldRelativeSpeeds;
+    }
+
+    public static void setChassisFieldRelativeSpeeds(ChassisSpeeds newChassisFieldRelativeSpeeds){
+        fieldRelativeSpeeds = newChassisFieldRelativeSpeeds;
+    }
+
+    public static ChassisSpeeds getRobotRelativeSpeeds(){
+        return robotRelativeSpeeds;
+    }
+
+    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
+        robotRelativeSpeeds = newRobotRelativeSpeeds;
+    }
+
 }
