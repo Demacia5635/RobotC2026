@@ -28,8 +28,6 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
   public static boolean isRed = false;
 
-  private path pathNamber;
-  private dercsean LeftOrRight;
 
   // The robot's subsystems and commands are defined here...
   private static final pathManager pathManager = new pathManager(null, null, null, null);

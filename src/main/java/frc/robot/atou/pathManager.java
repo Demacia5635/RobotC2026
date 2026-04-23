@@ -6,6 +6,8 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.demacia.utils.chassis.Chassis;
 import frc.robot.RobotCommon;
@@ -24,10 +26,29 @@ public class pathManager {
 
     private AutoFactory factory;
 
-    public <ST> pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis, Consumer<Pose2d> startPoseConsumer){
+    public <ST> pathManager( Chassis chassis, Consumer<Pose2d> startPoseConsumer){
         factory = new AutoFactory(atouUtil.pose2DtoSupplierPose2d(RobotCommon.currentRobotPose), startPoseConsumer, chassis::followTrajectory, RobotCommon.isRed(), chassis);
-        this.pathNamber = pathNamber;
-        this.LeftOrRight = LeftOrRight;
+        addToNetworkTablePath();
+        addToNetworkTableDercsean();
+    }
+
+    public void addToNetworkTablePath(){
+        SendableChooser<path> pathChooser = new SendableChooser<>();
+        pathChooser.addOption("firstPath", path.firstPath);
+        pathChooser.addOption("secondPath", path.secondPath);
+        pathChooser.addOption("thirdPath", path.thirdPath);
+        pathChooser.addOption("fourthPath", path.fourthPath);
+        pathChooser.onChange(newPath -> this.pathNamber = newPath);
+        SmartDashboard.putData("Path Chooser", pathChooser);
+    }
+
+    public void addToNetworkTableDercsean(){
+        SendableChooser<dercsean> dercseanChooser = new SendableChooser<>();
+        dercseanChooser.addOption("left", dercsean.left);
+        dercseanChooser.addOption("right", dercsean.right);
+        dercseanChooser.addOption("center", dercsean.center);
+        dercseanChooser.onChange(newDercsean -> this.LeftOrRight = newDercsean);
+        SmartDashboard.putData("Dercsean Chooser", dercseanChooser);
     }
 
     public enum path{
