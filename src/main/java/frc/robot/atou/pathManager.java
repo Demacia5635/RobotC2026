@@ -22,8 +22,6 @@ public class pathManager {
     private path pathNamber;
     private dercsean LeftOrRight;
 
-    private boolean useBindings;
-
     private AutoFactory factory;
 
     public <ST> pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis, Consumer<Pose2d> startPoseConsumer){
