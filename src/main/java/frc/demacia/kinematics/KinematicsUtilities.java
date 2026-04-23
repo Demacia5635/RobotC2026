@@ -4,14 +4,20 @@
 
 package frc.demacia.kinematics;
 
+<<<<<<< HEAD
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import static frc.demacia.kinematics.KinematicsConstants.*;
+=======
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
 
 /** Add your docs here. */
 public class KinematicsUtilities {
 
+<<<<<<< HEAD
     public static double getAngleFromVector(double x, double y) {
         return Math.atan2(y, x);
     }
@@ -27,10 +33,25 @@ public class KinematicsUtilities {
     public static Translation2d limitVector(Translation2d vector, double limit) {
         double vectorNorm = vector.getNorm();
         if (vectorNorm > limit) {
+=======
+    public static double getAngleFromVector(double x, double y){
+        return Math.atan2(y, x);
+    }
+    public static double getNorm(double x, double y){
+        return Math.sqrt(x*x + y*y);
+    }
+    public static Translation2d limitVector(Translation2d vector, Translation2d limit){
+        return limitVector(vector, limit.getNorm());
+    }
+    public static Translation2d limitVector(Translation2d vector, double limit){
+        double vectorNorm = vector.getNorm();
+        if(vectorNorm > limit){
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
             return (vector.div(vectorNorm)).times(limit);
         }
         return vector;
     }
+<<<<<<< HEAD
 
     public static boolean isInRange(double value, double limit) {
         return Math.abs(value) <= limit;
@@ -115,3 +136,12 @@ public class KinematicsUtilities {
 
     }
 }
+=======
+    public static boolean isInRange(double value, double limit){
+        return Math.abs(value) <= limit;
+    }
+    public static boolean isInRange(ChassisSpeeds speeds, double limit){
+        return Math.abs(speeds.vxMetersPerSecond) <= limit && Math.abs(speeds.vyMetersPerSecond) <= limit && Math.abs(speeds.omegaRadiansPerSecond) <= limit;
+    }
+}
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025

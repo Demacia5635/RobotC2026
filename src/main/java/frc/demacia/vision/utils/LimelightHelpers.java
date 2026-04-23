@@ -864,7 +864,11 @@ public class LimelightHelpers {
         return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
     }
 
+<<<<<<< HEAD
     public static NetworkTable  getLimelightNTTable(String tableName) {
+=======
+    public static NetworkTable getLimelightNTTable(String tableName) {
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
         return NetworkTableInstance.getDefault().getTable(sanitizeName(tableName));
     }
 

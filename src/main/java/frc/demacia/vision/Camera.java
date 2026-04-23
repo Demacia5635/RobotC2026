@@ -6,7 +6,10 @@ package frc.demacia.vision;
 
 import edu.wpi.first.math.geometry.Translation3d;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
 /** Add your docs here. */
 
 public class Camera {
@@ -16,14 +19,21 @@ public class Camera {
     private double pitch;
     private double yaw;
     private String tableName;
+<<<<<<< HEAD
     private boolean isCroping;
     private boolean isObjectCamera = false;
 
     public Camera(String name, Translation3d robotToCamPosition, double pitch, double yaw, boolean isCroping, boolean isObjectCamera) {
+=======
+    private Enum<?> cameraType;
+
+    public Camera(String name, Translation3d robotToCamPosition, double pitch, double yaw, Enum<?> cameraType) {
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
         this.name = name;
         this.robotToCamPosition = robotToCamPosition;
         this.pitch = pitch;
         this.yaw = yaw;
+<<<<<<< HEAD
         this.tableName = "limelight-"+name;
         this.isCroping = isCroping;
         this.isObjectCamera = isObjectCamera;
@@ -31,6 +41,14 @@ public class Camera {
 
     public Translation3d getRobotToCamPosition() {
         return robotToCamPosition != null? robotToCamPosition  : new Translation3d();
+=======
+        this.cameraType = cameraType;
+        this.tableName = "limelight-"+name;
+    }
+
+    public Translation3d getRobotToCamPosition() {
+        return robotToCamPosition;
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
     }
 
     public double getHeight() {
@@ -52,6 +70,7 @@ public class Camera {
     public String getTableName() {
         return this.tableName;
     }
+<<<<<<< HEAD
 
 
     public boolean getIsCroping(){
@@ -61,4 +80,7 @@ public class Camera {
     public boolean getIsObjectCamera() {
         return isObjectCamera;
     }
+=======
+    public Enum<?> getCameraType(){return this.cameraType;}
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
 }

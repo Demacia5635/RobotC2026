@@ -11,24 +11,39 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.vision.Camera;
 
 // Subsystem that tracks and calculates the position of a vision target (object) on the field
 public class ObjectPose{
+=======
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.vision.Camera;
+
+// Subsystem that tracks and calculates the position of a vision target (object) on the field
+public class ObjectPose extends SubsystemBase {
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
   private Translation2d robotToObject;
   private Translation2d cameraToObject;
   private Translation2d OriginToObject;
 
+<<<<<<< HEAD
   // Previous cycle tracking
   private Pose2d previousObjectPose;
   private boolean hasPreviousTarget = false;
 
+=======
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
   private NetworkTable Table;
   private Field2d field;
   private Field2d robotfield;
 
+<<<<<<< HEAD
   private double camToObjectYaw;
   private double camToObjectPitch;
 
@@ -47,11 +62,31 @@ public class ObjectPose{
    * Sets up the NetworkTable connection to receive vision data from the camera.
    */
   public ObjectPose(Camera camera, Supplier<Rotation2d> getRobotAngle, Supplier<Pose2d> robotCurrentPose) {
+=======
+
+  private double camToObjectYaw;
+  private double camToObjectPitch;
+
+  
+  private Supplier<Rotation2d> getRobotAngle;
+  private Supplier<Pose2d> robotCurrentPose;
+
+
+  private Camera camera;
+  private Pose2d objectPose;
+
+/**
+   * Constructor - Initializes the object tracker with camera configuration and robot position suppliers.
+   * Sets up the NetworkTable connection to receive vision data from the camera.
+   */
+  public ObjectPose(Camera camera, Supplier<Rotation2d> getRobotAngle,Supplier<Pose2d> robotCurrentPose) {
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
     this.getRobotAngle = getRobotAngle;
     this.robotCurrentPose = robotCurrentPose;
     field = new Field2d();
     robotfield = new Field2d();
 
+<<<<<<< HEAD
     this.camera = camera;
     Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
 
@@ -128,6 +163,16 @@ public class ObjectPose{
     SmartDashboard.putNumber("Distance to Target", currentDistance);
     
     return currentObjectPose;
+=======
+
+
+    this.camera = camera;
+    Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
+
+     SmartDashboard.putData("fieldObject" + camera.getName(), field);
+     SmartDashboard.putData("fieldrobot" + camera.getName(), robotfield);
+
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
   }
 
   /**
@@ -135,6 +180,7 @@ public class ObjectPose{
    * Reads the latest vision data (pitch, yaw) from NetworkTables and updates the object's field position
    * if a valid target is detected.
    */
+<<<<<<< HEAD
   public void update(){
     objectPose = chooseObjectPose();
     
@@ -149,6 +195,26 @@ public class ObjectPose{
    */
   public Pose2d getPose2d() {
     if (objectPose == null) {
+=======
+  @Override
+  public void periodic() {
+    camToObjectPitch = Table.getEntry("ty").getDouble(0.0)+ camera.getPitch();
+    camToObjectYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
+    if(Table.getEntry("tv").getDouble(0.0) != 0){
+      objectPose = new Pose2d(getOriginToObject(), getRobotAngle.get());
+      field.setRobotPose(objectPose);
+      // robotfield.setRobotPose(robotCurrentPose.get());
+    }
+    
+  }
+
+   /**
+   * Returns the last calculated field pose of the tracked object.
+   * @return Pose2d containing the object's position and rotation on the field
+   */
+  public Pose2d getPose2d(){
+    if(objectPose == null){
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
       return Pose2d.kZero;
     }
     return objectPose;
@@ -159,6 +225,7 @@ public class ObjectPose{
    * Uses trigonometry with the camera height, mount angle, and target angle to compute the distance.
    * @return Distance from camera to object in the same units as camera height
    */
+<<<<<<< HEAD
   public double getDistcameraToObject() {
     double alpha = camToObjectPitch;
     alpha = Math.toRadians(alpha);
@@ -168,12 +235,28 @@ public class ObjectPose{
   }
 
   /**
+=======
+  public double getDistcameraToObject(){
+    double alpha = camToObjectPitch;
+    alpha = Math.toRadians(alpha);
+    double distX =  camera.getHeight()*(Math.tan(alpha));
+    double distFinal = distX /Math.cos(Math.toRadians(camToObjectYaw));
+    return Math.abs(distFinal);
+  }
+
+   /**
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
    * Calculates the translation vector from the robot's center to the detected object.
    * First calculates camera-to-object translation, then adds the camera's offset from robot center.
    * @return Translation2d from robot center to object in robot coordinates
    */
+<<<<<<< HEAD
   public Translation2d getRobotToObject() {
     cameraToObject = new Translation2d(getDistcameraToObject(), Rotation2d.fromDegrees(camToObjectYaw));
+=======
+  public Translation2d getRobotToObject(){
+    cameraToObject = new Translation2d(getDistcameraToObject(),Rotation2d.fromDegrees(camToObjectYaw));
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
     robotToObject = new Translation2d(camera.getRobotToCamPosition().getX(), camera.getRobotToCamPosition().getY()).plus(cameraToObject);
     return robotToObject;
   }
@@ -183,21 +266,48 @@ public class ObjectPose{
    * Rotates the robot-to-object vector by the robot's field angle, then adds the robot's field position.
    * @return Translation2d from field origin to object in field coordinates 0.775
    */
+<<<<<<< HEAD
   public Translation2d getOriginToObject() {
     if (robotCurrentPose.get() != null) {
       robotToObject = getRobotToObject().rotateBy(getRobotAngle.get());
       OriginToObject = robotToObject.plus(robotCurrentPose.get().getTranslation());
     } else {
+=======
+  public Translation2d getOriginToObject(){
+    if(robotCurrentPose.get() != null){
+      robotToObject = getRobotToObject().rotateBy(getRobotAngle.get());
+      OriginToObject = robotToObject.plus(robotCurrentPose.get().getTranslation());
+    }
+    else{
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
       return Translation2d.kZero;
     }
     return OriginToObject;
   }
 
   /**
+<<<<<<< HEAD
    * Returns the X coordinate of the object on the field.
    * @return X position in field coordinates
    */
   public double getX() {
+=======
+   * Configures the Shuffleboard/SmartDashboard display for this subsystem.
+   * Adds the X and Y coordinates of the tracked object to the dashboard.
+   */
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addDoubleProperty("object pos X:", this::getX, null);
+      builder.addDoubleProperty("object pos Y:", this::getY, null);
+  }
+
+  
+  /**
+   * Returns the X coordinate of the object on the field.
+   * @return X position in field coordinates
+   */
+  public double getX(){
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
     return this.OriginToObject.getX();
   }
 
@@ -205,7 +315,15 @@ public class ObjectPose{
    * Returns the Y coordinate of the object on the field.
    * @return Y position in field coordinates
    */
+<<<<<<< HEAD
   public double getY() {
     return this.OriginToObject.getY();
   }
+=======
+  public double getY(){
+    return this.OriginToObject.getY();
+  }
+
+  
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025
 }

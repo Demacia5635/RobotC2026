@@ -36,8 +36,24 @@ public class RobotCommon {
     }
 
     public static Translation2d getHubPose(){
-        if(isRed()) return Translation2d.kZero; //TODO: update point
-        else return Translation2d.kZero; //TODO: update point
+        if(isRed()) return Field.HubRed.CENTER;
+        else return Field.HubRed.CENTER; 
+    }
+
+    public static boolean getRobotCalibrated(){
+        return isRobotCalibrated;
+    }
+
+    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
+        newIsRobotCalibrated = isRobotCalibrated;
+    }
+
+    public static boolean getIsComp(){
+        return isComp;
+    }
+
+    public static void setIsComp(boolean newIsComp){
+        isComp = newIsComp;
     }
 
     public static boolean getRobotCalibrated(){
@@ -58,10 +74,14 @@ public class RobotCommon {
 
     public static Pose2d getDeliveryPose(){
         if(isRed()){
-            if(currentRobotPose.getX() > 8.07 /2){
-                return Pose2d.kZero; //TODO: update the point
+            if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
+                return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
             }
+<<<<<<< HEAD:src/main/java/frc/robot/RobotCommon.java
             else return Pose2d.kZero; //TODO: update the point
+=======
+            else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
+>>>>>>> 5876208a703990faca365c1e3e5f7933601df025:src/main/java/frc/robot/robotCommon.java
         }else{
             if(currentRobotPose.getX() > 8.07 /2){
                     return Pose2d.kZero; //TODO: update the point
