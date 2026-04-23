@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.atou.pathManager;
 import frc.robot.atou.pathManager.path;
@@ -30,7 +31,7 @@ public class RobotContainer implements Sendable{
 
 
   // The robot's subsystems and commands are defined here...
-  private static final pathManager pathManager = new pathManager(null, null, null, null);
+  private static final pathManager pathManager = new pathManager(null, null);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
