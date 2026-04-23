@@ -6,11 +6,7 @@ package frc.robot.turret.commands;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-<<<<<<< HEAD
-import frc.robot.ShotingWhileDriving;
-=======
 import frc.robot.ShootingWhileDriving;
->>>>>>> e9c405a96a559978dc3c5de11d45107a5fa354d8
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.subsystems.Turret;
