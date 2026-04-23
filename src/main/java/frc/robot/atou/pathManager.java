@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.demacia.utils.chassis.Chassis;
@@ -21,10 +22,12 @@ public class pathManager {
     private path pathNamber;
     private dercsean LeftOrRight;
 
+    private boolean useBindings;
+
     private AutoFactory factory;
 
     public <ST> pathManager(path pathNamber, dercsean LeftOrRight, Chassis chassis, Consumer<Pose2d> startPoseConsumer){
-        factory = new AutoFactory(atouUtil.pose2DtoSupplierPose2d(RobotCommon.currentRobotPose), startPoseConsumer, null, RobotCommon.isRed(), chassis);
+        factory = new AutoFactory(atouUtil.pose2DtoSupplierPose2d(RobotCommon.currentRobotPose), startPoseConsumer, chassis::followTrajectory, RobotCommon.isRed(), chassis);
         this.pathNamber = pathNamber;
         this.LeftOrRight = LeftOrRight;
     }
@@ -41,6 +44,8 @@ public class pathManager {
         right,
         center
     }
+
+
 
     public AutoRoutine getAuto(){
         if(pathNamber == path.firstPath){
