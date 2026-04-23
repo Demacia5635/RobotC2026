@@ -12,15 +12,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-<<<<<<< HEAD
 // import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
-=======
-import frc.demacia.utils.DemaciaUtils;
-import frc.demacia.utils.log.LogManager;
->>>>>>> 5876208a703990faca365c1e3e5f7933601df025
 
 /**
  * This class is where the bulk of the robot should be declared. Since
