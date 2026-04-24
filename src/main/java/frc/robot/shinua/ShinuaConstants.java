@@ -15,8 +15,8 @@ public class ShinuaConstants {
     public static final double MECANUM_BALLS_STUCK_VELOCITY = 0;
     public static final double MECANUM_GEAR_RATIO = 0.0;
     // stuck balls time constants
-    public static final double BALLS_STUCK_DURATION = 0.10000006200; 
-    public static final double BALLS_STUCK_HANDLING_TIME = 0.2;
+    public static final double BALLS_STUCK_DURATION = 0.1; 
+    public static final double BALLS_STUCK_HANDLING_TIME = 1.0;
 
     public static final TalonFXConfig MECANUM_CONFIG = new TalonFXConfig(MECANUM_ID, SHINUA_CANBUS, MECANUM_NAME)
             .withRadiansMotor(MECANUM_GEAR_RATIO)

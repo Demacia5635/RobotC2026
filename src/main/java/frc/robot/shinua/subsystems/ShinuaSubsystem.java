@@ -17,20 +17,20 @@ import frc.robot.shinua.ShinuaConstants.ShinuaState;
 public class ShinuaSubsystem extends SubsystemBase {
   private TalonFXMotor mecanumMotor;
   private TalonFXMotor rollersMotor;
-  private ShinuaConstants.ShinuaState state; //TODO import the ShinuaState
+  private ShinuaState state;
   private static ShinuaSubsystem instance;
   private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
   private Timer timerForStuckBalls;
   private boolean startedHandlingBalls = false;
 
-  public static ShinuaSubsystem getInstance() {
+  private static ShinuaSubsystem getInstance() {
     if (instance == null)
       instance = new ShinuaSubsystem();
     return instance;
   }
 
   /** Creates a new ShinuaSubsystem. */
-  public ShinuaSubsystem() {//TODO call super
+  public ShinuaSubsystem() {// TODO call super
     mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
     timerForStuckBalls = new Timer();
@@ -40,7 +40,7 @@ public class ShinuaSubsystem extends SubsystemBase {
 
   public void addNT() {
     SendableChooser<ShinuaConstants.ShinuaState> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("SHINUA_ON", ShinuaConstants.ShinuaState.SHINUA_ON); //TODO add in for
+    stateChooser.addOption("SHINUA_ON", ShinuaConstants.ShinuaState.SHINUA_ON); // TODO add in for
     stateChooser.addOption("SHINUA_OFF", ShinuaConstants.ShinuaState.SHINUA_OFF);
     stateChooser.addOption("EJECTING", ShinuaConstants.ShinuaState.EJECTING);
     stateChooser.addOption("TESTING", ShinuaConstants.ShinuaState.TESTING);
@@ -94,7 +94,7 @@ public class ShinuaSubsystem extends SubsystemBase {
     return rollersMotor.getCurrentCurrent();
   }
 
-  public boolean isBallsStuck() {//TODO add abs on intake, to put else where / check only shinoa motor stuck
+  public boolean isBallsStuck() {// TODO add abs on intake, to put else where / check only shinoa motor stuck
     return (getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
         && Math.abs(getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
         || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
@@ -118,7 +118,8 @@ public class ShinuaSubsystem extends SubsystemBase {
   }
 
   private boolean shouldHandleBallsStuck() {
-    return timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls && isBallsStuck();
+    return timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls
+        && isBallsStuck();
   }
 
   private boolean shouldStopHandlingBallsStuck() {
@@ -134,7 +135,7 @@ public class ShinuaSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() { //TODO deal in command, nead elses
+  public void periodic() { // TODO deal in command, nead elses
     if (shouldStartStuckBallsTimer()) {
       timerForStuckBalls.restart();
     }

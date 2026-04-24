@@ -4,8 +4,8 @@ import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 public class IntakeConstants {
-    public static final double BALLS_STUCK_DURATION = 0.10000006200; 
-    public static final double BALLS_STUCK_HANDLING_TIME = 0.2;
+    public static final double BALLS_STUCK_DURATION = 0.1; 
+    public static final double BALLS_STUCK_HANDLING_TIME = 1.0;
 
     // constants for roller motor
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
@@ -34,6 +34,8 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 0.0;
     public static final double MAX_ACCELERATION = 0.0;
     public static final double MAX_JERK = 0.0;
+    public static final double DEPLOY_CLOSED_ANGLE = 0.0;
+    public static final double DEPLOY_OPEN_ANGLE = 0.0;
 
     public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS, INTAKE_DEPLOY_NAME)
             .withMotionParam(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK)

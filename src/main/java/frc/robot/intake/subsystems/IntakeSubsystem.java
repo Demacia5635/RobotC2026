@@ -4,6 +4,7 @@
 
 package frc.robot.intake.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +14,7 @@ import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.shinua.ShinuaConstants;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
+
 //add calibration, TODO when have requiremant
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
@@ -24,31 +26,30 @@ public class IntakeSubsystem extends SubsystemBase {
   private boolean startedHandlingBalls = false;
   private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
-  //TODO do private couse its singalton
-  public static IntakeSubsystem getInstance() {
+  private static IntakeSubsystem getInstance() {
     if (instance == null)
       instance = new IntakeSubsystem();
     return instance;
   }
 
-  public IntakeSubsystem() {//TODO call super, 
+  public IntakeSubsystem() {// TODO call super,
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     timerForStuckBalls = new Timer();
     state = IntakeState.IDLE;
     addNT();
-    //TODO if add initsendable add smartdashboard.putData(this)
+    SmartDashboard.putData(this);
   }
 
   public void addNT() {
     SendableChooser<IntakeState> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("INTAKING", IntakeState.INTAKING); //TODO ADD as for
-    stateChooser.addOption("EJECTING", IntakeState.EJECTING);
-    stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
-    stateChooser.addOption("IDLE", IntakeState.IDLE);
-    stateChooser.addOption("TESTING", IntakeState.TESTING);
+    for (IntakeState intakeState : IntakeState.values()) {
+      stateChooser.addOption(intakeState.name(), intakeState);
+    }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);//TODO use name from constant
+    SmartDashboard.putData(getName() + " Intake State Chooser", stateChooser);
+  }
+//TODO use name from constant
 
   }
 
@@ -65,7 +66,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.setDuty(duty);
   }
 
-  public void setAngleIntakeDeploy(double angle) { //TODO set if in range
+  public void setAngleIntakeDeploy(double angle) {
+    angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
     intakeDeployMotor.setMotion(angle);
   }
 
@@ -88,7 +90,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
   }
-//TODO check in shinoa, do not nead to check here
+
+  // TODO check in shinoa, do not nead to check here
   public boolean isBallsStuck() {
     return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
         && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
@@ -98,11 +101,12 @@ public class IntakeSubsystem extends SubsystemBase {
             && getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
   }
 
-  public void handleBallsStuck() {//TODO not give power to other subsystem
+  public void handleBallsStuck() {// TODO not give power to other subsystem
     shinuaSubsystem.setRollersDuty(-1);
     shinuaSubsystem.setMecanumDuty(-1);
     setRollerDuty(-1);
   }
+
   public boolean BallsArentStuckAnymore() {
     return timerForStuckBalls.isRunning() && !isBallsStuck();
   }
@@ -112,7 +116,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private boolean shouldHandleBallsStuck() {
-    return timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls && isBallsStuck();
+    return timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls
+        && isBallsStuck();
   }
 
   private boolean shouldStopHandlingBallsStuck() {
