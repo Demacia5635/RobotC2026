@@ -5,15 +5,12 @@
 package frc.robot.intake.subsystems;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
-import frc.robot.shinua.ShinuaConstants;
-import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
 //add calibration, TODO when have requiremant
 public class IntakeSubsystem extends SubsystemBase {
@@ -22,20 +19,16 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
   private IntakeState state;
-  private Timer timerForStuckBalls;
-  private boolean startedHandlingBalls = false;
-  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
 
-  private static IntakeSubsystem getInstance() {
+  public static IntakeSubsystem getInstance() {
     if (instance == null)
       instance = new IntakeSubsystem();
     return instance;
   }
 
-  public IntakeSubsystem() {// TODO call super,
+  private IntakeSubsystem() {// TODO call super,
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    timerForStuckBalls = new Timer();
     state = IntakeState.IDLE;
     addNT();
     SmartDashboard.putData(this);
@@ -47,12 +40,9 @@ public class IntakeSubsystem extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData(getName() + " Intake State Chooser", stateChooser);
+    SmartDashboard.putData(" Intake State Chooser", stateChooser);
   }
-//TODO use name from constant
-
-  }
-
+  
   public void checkElectronics() {
     rollerMotor.checkElectronics();
     intakeDeployMotor.checkElectronics();
@@ -91,39 +81,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeDeployMotor.getCurrentCurrent();
   }
 
-  // TODO check in shinoa, do not nead to check here
-  public boolean isBallsStuck() {
-    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
-        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
-            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY)
-        || (getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
-  }
-
-  public void handleBallsStuck() {// TODO not give power to other subsystem
-    shinuaSubsystem.setRollersDuty(-1);
-    shinuaSubsystem.setMecanumDuty(-1);
-    setRollerDuty(-1);
-  }
-
-  public boolean BallsArentStuckAnymore() {
-    return timerForStuckBalls.isRunning() && !isBallsStuck();
-  }
-
-  private boolean shouldStartStuckBallsTimer() {
-    return isBallsStuck() && !timerForStuckBalls.isRunning();
-  }
-
-  private boolean shouldHandleBallsStuck() {
-    return timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls
-        && isBallsStuck();
-  }
-
-  private boolean shouldStopHandlingBallsStuck() {
-    return startedHandlingBalls && timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_HANDLING_TIME);
-  }
-
   public IntakeState getState() {
     return state;
   }
@@ -134,26 +91,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (shouldStartStuckBallsTimer()) {
-      timerForStuckBalls.restart();
-    }
-
-    if (BallsArentStuckAnymore()) {
-      timerForStuckBalls.stop();
-      timerForStuckBalls.reset();
-      startedHandlingBalls = false;
-    }
-
-    if (shouldHandleBallsStuck()) {
-      startedHandlingBalls = true;
-      handleBallsStuck();
-    }
-
-    if (shouldStopHandlingBallsStuck()) {
-      timerForStuckBalls.stop();
-      timerForStuckBalls.reset();
-      startedHandlingBalls = false;
-    }
+ 
     // This method will be called once per scheduler run
   }
 }
