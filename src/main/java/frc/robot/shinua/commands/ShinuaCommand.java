@@ -57,12 +57,11 @@ public class ShinuaCommand extends Command {
   }
 
   private boolean shouldStartStuckBallsTimer() {
-    return isBallsStuck() && !timerForStuckBalls.isRunning();
+    return !timerForStuckBalls.isRunning();
   }
 
   private boolean shouldHandleBallsStuck() {
-    return timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls
-        && isBallsStuck();
+    return timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls;
   }
 
   private boolean shouldStopHandlingBallsStuck() {
@@ -79,29 +78,19 @@ public class ShinuaCommand extends Command {
             timerForStuckBalls.restart();
           }
 
-          if (BallsArentStuckAnymore()) {
-            timerForStuckBalls.stop();
-            timerForStuckBalls.reset();
-            startedHandlingBalls = false;
-          }
-
           if (shouldHandleBallsStuck()) {
           startedHandlingBalls = true;
           RobotCommon.setStuck(true);
           shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.dutyMecanum);
-          shinuaSubsystem.setRollersDuty(ShinuaState.EJECTING.dutyRollers);;
 
-          }
-
-          if (shouldStopHandlingBallsStuck()) {
-            timerForStuckBalls.stop();
-            timerForStuckBalls.reset();
+          } else if (shouldStopHandlingBallsStuck()) {
             startedHandlingBalls = false;
             RobotCommon.setStuck(false);
+            timerForStuckBalls.stop();
+            timerForStuckBalls.reset();
           }
-          
         } else
-          shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
+        shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
         shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
         break;
       case TESTING:

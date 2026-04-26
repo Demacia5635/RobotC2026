@@ -9,16 +9,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
+import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 
-//add calibration, TODO when have requiremant
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
   private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
+  private LimitSwitch intakeDeployLimitSwitch;
   private IntakeState state;
+  private boolean isCalibrated;
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -29,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private IntakeSubsystem() {// TODO call super,
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
+    intakeDeployLimitSwitch = new LimitSwitch(IntakeConstants.INTAKE_DEPLOY_LIMIT_SWITCH);
     state = IntakeState.IDLE;
     addNT();
     SmartDashboard.putData(this);
@@ -55,10 +58,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setRollerDuty(double duty) {
     rollerMotor.setDuty(duty);
   }
+  public void setIntakeDeployDuty(double duty) {
+    intakeDeployMotor.setDuty(duty);
+  }
 
   public void setAngleIntakeDeploy(double angle) {
     angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
     intakeDeployMotor.setMotion(angle);
+  }
+
+  public void setEncoderIntakeDeploy(double angle) {
+    intakeDeployMotor.setEncoderPosition(angle);
   }
 
   public void stopRoller() {
@@ -85,13 +95,23 @@ public class IntakeSubsystem extends SubsystemBase {
     return state;
   }
 
+
   public void setState(IntakeState newState) {
     state = newState;
+  }
+  public boolean isIntakeDeployClosed() {
+    return intakeDeployLimitSwitch.get();
+  }
+
+  public boolean isCalibrated() {
+    return isCalibrated;
+  }
+  public void setCalibrated(){
+    isCalibrated = true;
   }
 
   @Override
   public void periodic() {
- 
     // This method will be called once per scheduler run
   }
 }

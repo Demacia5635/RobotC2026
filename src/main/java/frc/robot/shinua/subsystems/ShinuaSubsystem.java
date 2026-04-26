@@ -38,7 +38,6 @@ public class ShinuaSubsystem extends SubsystemBase {
     }
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData( " Intake State Chooser", stateChooser);
-
   }
 
   public void checkElectronics() {

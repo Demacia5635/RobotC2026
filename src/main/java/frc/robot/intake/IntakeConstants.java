@@ -1,5 +1,6 @@
 package frc.robot.intake;
 
+
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
@@ -15,7 +16,6 @@ public class IntakeConstants {
     public static final double ROLLER_BALLS_STUCK_CURRENT = 0;
     public static final double ROLLER_BALLS_STUCK_VELOCITY = 0;
     public static final double ROLLER_GEAR_RATIO = 0.0;
-
 
     public static final TalonFXConfig ROLLER_CONFIG = new TalonFXConfig(ROLLER_ID, INTAKE_CANBUS, ROLLER_NAME)
             .withRadiansMotor(ROLLER_GEAR_RATIO)
@@ -36,12 +36,21 @@ public class IntakeConstants {
     public static final double DEPLOY_CLOSED_ANGLE = 0.0;
     public static final double DEPLOY_OPEN_ANGLE = 0.0;
 
-    public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS, INTAKE_DEPLOY_NAME)
+    public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS,
+            INTAKE_DEPLOY_NAME)
             .withMotionParam(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK)
             .withRadiansMotor(INTAKE_DEPLOY_GEAR_RATIO)
             .withBrake(INTAKE_DEPLOY_BRAKE)
             .withInvert(INTAKE_DEPLOY_INVERTED)
             .withCurrent(INTAKE_DEPLOY_CURRENT_LIMIT);
+
+    // constants for intake deploy limit switch
+    public static final int INTAKE_DEPLOY_LIMIT_SWITCH_ID = 0;
+    public static final String INTAKE_DEPLOY_LIMIT_SWITCH_NAME = "Intake Deploy Limit Switch";
+    public static final boolean INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED = false;
+    public static final frc.demacia.utils.sensors.LimitSwitchConfig INTAKE_DEPLOY_LIMIT_SWITCH = new frc.demacia.utils.sensors.LimitSwitchConfig(
+            INTAKE_DEPLOY_LIMIT_SWITCH_ID, INTAKE_DEPLOY_LIMIT_SWITCH_NAME)
+            .withInvert(INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED);
 
     public static enum IntakeState {
         IDLE(0, 0),
