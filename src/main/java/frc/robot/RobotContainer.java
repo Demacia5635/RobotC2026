@@ -46,11 +46,11 @@ public class RobotContainer implements Sendable{
   private  double currentTime = timer.get();
 
   public boolean isRight(){
-    return timer.get() < 2.3 && timer.get() > 0;
+    return timer.get() < 2.3/3 && timer.get() > 0;
   }
 
   public boolean isReverse(){
-    return timer.get() < 2.9 && timer.get() >= 2.3;
+    return timer.get() < 2.9/3 && timer.get() >= 2.3/3;
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
