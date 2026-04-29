@@ -4,14 +4,21 @@
 
 package frc.robot;
 
+import java.security.PublicKey;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.utils.motors.TalonFXConfig;
+import frc.demacia.utils.motors.TalonFXMotor;
+import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,20 +31,54 @@ public class RobotContainer implements Sendable{
   public static boolean isComp = false;
   private static boolean hasRemovedFromLog = false;
   public static boolean isRed = false;
+  public static subsystem subsystem = new subsystem();
+
+  public Canbus canbus = Canbus.Rio;
 
   // The robot's subsystems and commands are defined here...
-
+  TalonFXConfig configRoler = new TalonFXConfig(34, canbus, "motor");
+  TalonFXConfig configMecanum = new TalonFXConfig(30, canbus, "motor");
+  TalonFXMotor motorRoler = new TalonFXMotor(configRoler);
+  TalonFXMotor motorMecanum = new TalonFXMotor(configMecanum);
+  private Timer timer = new Timer();  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  private  double currentTime = timer.get();
+
+  public boolean isRight(){
+    return timer.get() < 2.3 && timer.get() > 0;
+  }
+
+  public boolean isReverse(){
+    return timer.get() < 2.5 && timer.get() >= 2.3;
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    
+
+    timer.reset();
+    timer.start();
+
+    subsystem.setDefaultCommand(
+        new RunCommand(() -> {
+          LogManager.log("timer" + timer.get());
+            if (isRight()) {
+                motorRoler.setDuty(-0.5);
+                motorMecanum.setDuty(0.8);
+            } else if( isReverse()) {
+                motorRoler.setDuty(0.5);
+                motorMecanum.setDuty(0.8);  
+            }else{
+              timer.reset();
+            }
+        }, subsystem) 
+    );
+
     // Configure the trigger bindings
     configureBindings();
-  }
+}
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
