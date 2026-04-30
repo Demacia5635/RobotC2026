@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.chassis.Chassis;
 import frc.robot.RobotCommon;
 import frc.robot.atou.atouUtill.atouUtil;
@@ -26,8 +27,8 @@ public class pathManager {
 
     private AutoFactory factory;
 
-    public <ST> pathManager( Chassis chassis, Consumer<Pose2d> startPoseConsumer){
-        factory = new AutoFactory(atouUtil.pose2DtoSupplierPose2d(RobotCommon.currentRobotPose), startPoseConsumer, chassis::followTrajectory, RobotCommon.isRed(), chassis);
+    public <ST> pathManager(Chassis chassis){
+        factory = new AutoFactory(() ->RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, RobotCommon.isRed(), chassis);
         addToNetworkTablePath();
         addToNetworkTableDercsean();
     }

@@ -10,11 +10,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.atou.pathManager;
 import frc.robot.atou.pathManager.path;
+import frc.robot.chassis.MK5nChassisConstants;
 import frc.robot.atou.pathManager.dercsean;;
 
 /**
@@ -29,9 +31,8 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
   public static boolean isRed = false;
 
-
   // The robot's subsystems and commands are defined here...
-  private static final pathManager pathManager = new pathManager(null, null);
+  private static final pathManager pathManager = new pathManager(Chassis.getInstance());
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -39,6 +40,7 @@ public class RobotContainer implements Sendable{
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+    Chassis.initialize(MK5nChassisConstants.CHASSIS_CONFIG);
     
     // Configure the trigger bindings
     configureBindings();
