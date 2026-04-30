@@ -15,9 +15,7 @@ import frc.robot.RobotCommon;
 import frc.robot.atou.atouUtill.atouUtil;
 
 public class pathManager {
-    
-    private AutoFactory firstRightAutoFactory;
-    private AutoFactory firstLeftAutoFactory;
+
     
     private double MaxToleranceMeter = 0.5;
     private double MaxToleranceRotation = Math.toRadians(0.7);
@@ -26,9 +24,25 @@ public class pathManager {
     private dercsean LeftOrRight;
 
     private AutoFactory factory;
+    private AutoFactory firstRightAutoFactory; 
+    private AutoFactory firstLeftAutoFactory; 
+    private AutoFactory routineSecondPathLeft;
+    private AutoFactory routineSecondPathRight;
+    private AutoFactory routineThirdPath;
+    private AutoFactory routineFourthPathRight;
+    private AutoFactory routineFourthPathLeft;
 
     public <ST> pathManager(Chassis chassis){
-        factory = new AutoFactory(() ->RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, RobotCommon.isRed(), chassis);
+        factory = new AutoFactory(() -> RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, RobotCommon.isRed(), chassis);
+
+        firstRightAutoFactory = factory;
+        firstLeftAutoFactory = factory;  
+        routineSecondPathLeft = factory;
+        routineSecondPathRight = factory;
+        routineThirdPath = factory;
+        routineFourthPathRight = factory;
+        routineFourthPathLeft = factory;
+
         addToNetworkTablePath();
         addToNetworkTableDercsean();
     }
@@ -131,7 +145,7 @@ public class pathManager {
     }
 
     private AutoRoutine secondPathRight(){
-        AutoRoutine routineSecondPathRight = firstRightAutoFactory.newRoutine("secendPathRight");
+        AutoRoutine routineSecondPathRight = routineSecondPathRight.newRoutine("secendPathRight");
         AutoTrajectory traj = routineSecondPathRight.trajectory("secendPathRight");
 
         routineSecondPathRight.active().onTrue(Commands.sequence(
@@ -148,7 +162,7 @@ public class pathManager {
     }
 
     private AutoRoutine secondPathLeft(){
-        AutoRoutine routineSecondPathLeft = firstLeftAutoFactory.newRoutine("secendPathLeft");
+        AutoRoutine routineSecondPathLeft = routineSecondPathLeft.newRoutine("secendPathLeft");
         AutoTrajectory traj = routineSecondPathLeft.trajectory("secendPathLeft");
 
         routineSecondPathLeft.active().onTrue(Commands.sequence(
@@ -166,7 +180,7 @@ public class pathManager {
     }
 
     private AutoRoutine thirdPath(){
-        AutoRoutine routineThirdPath = firstRightAutoFactory.newRoutine("pathThree");
+        AutoRoutine routineThirdPath = routineThirdPath.newRoutine("pathThree");
         AutoTrajectory traj = routineThirdPath.trajectory("pathThree");
 
         routineThirdPath.active().onTrue(Commands.sequence(
@@ -183,7 +197,7 @@ public class pathManager {
     }
 
         private AutoRoutine fourthPathRight(){
-        AutoRoutine routineFourthPathRight = firstRightAutoFactory.newRoutine("rightPathFour");
+        AutoRoutine routineFourthPathRight = routineFourthPathRight.newRoutine("rightPathFour");
         AutoTrajectory traj = routineFourthPathRight.trajectory("rightPathFour");
 
         routineFourthPathRight.active().onTrue(Commands.sequence(
@@ -200,7 +214,7 @@ public class pathManager {
 
     
         private AutoRoutine fourthPathLeft(){
-        AutoRoutine routineFourthPathLeft = firstLeftAutoFactory.newRoutine("leftPathFour");
+        AutoRoutine routineFourthPathLeft = routineFourthPathLeft.newRoutine("leftPathFour");
         AutoTrajectory traj = routineFourthPathLeft.trajectory("leftPathFour");
 
         routineFourthPathLeft.active().onTrue(Commands.sequence(
