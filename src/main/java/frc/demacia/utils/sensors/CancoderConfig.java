@@ -4,6 +4,7 @@
 
 package frc.demacia.utils.sensors;
 
+import frc.demacia.utils.chassis.SwerveModuleConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 /**
