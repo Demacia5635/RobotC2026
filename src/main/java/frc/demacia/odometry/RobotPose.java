@@ -25,7 +25,7 @@ import frc.demacia.utils.log.LogManager;
 import frc.demacia.vision.subsystem.Quest;
 import frc.demacia.vision.utils.Vision;
 import frc.demacia.vision.utils.VisionConstants;
-
+import frc.robot.Field;
 import frc.robot.RobotContainer;
 
 public class RobotPose {
@@ -58,7 +58,14 @@ public class RobotPose {
         this.hasQuestDisconnected = false;
         this.poseEstimator = new DemaciaPoseEstimator(modulePositions, stateSTD, visionSTD);
         this.accelerometer = new BuiltInAccelerometer(); 
+        SmartDashboard.putData("Reset Pose Based Red Hub", new InstantCommand(() -> {
+            Chassis.getInstance().setYaw(Rotation2d.kZero);
+            setQuestPose(hubRedResetPose);
+            resetPose(hubRedResetPose);
+        }).ignoringDisable(true));
     }
+
+      private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,Rotation2d.kZero);
 
     public Quest getQuest() {
         return quest;

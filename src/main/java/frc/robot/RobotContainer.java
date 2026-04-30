@@ -13,10 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.DriveCommand;
+import frc.demacia.utils.controller.CommandController;
+import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.atou.pathManager;
 import frc.robot.atou.pathManager.path;
 import frc.robot.chassis.MK5nChassisConstants;
+import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.atou.pathManager.dercsean;;
 
 /**
@@ -32,16 +36,19 @@ public class RobotContainer implements Sendable{
   public static boolean isRed = false;
 
   // The robot's subsystems and commands are defined here...
-  private static final pathManager pathManager = new pathManager(Chassis.getInstance());
+  private final pathManager pathManager;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
+
+  private final CommandController DriveController = new CommandController(0, ControllerType.kPS5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    Chassis.initialize(MK5nChassisConstants.CHASSIS_CONFIG);
-    
+    Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), DriveController));
+    pathManager = new pathManager(Chassis.getInstance());
     // Configure the trigger bindings
     configureBindings();
   }
