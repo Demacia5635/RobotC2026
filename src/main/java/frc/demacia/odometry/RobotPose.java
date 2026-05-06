@@ -158,7 +158,7 @@ public class RobotPose {
         vision.updateValues();
         if (!quest.isConnected())
             // RobotContainer.getMainLeds().isQuestDisconnected = true;
-            LogManager.log("quest is not connected"); //TODO: cange to led signal
+            // LogManager.log("quest is not connected"); //TODO: cange to led signal
 
         if (Math.abs(accelerometer.getX()) < 0.3 && Math.abs(accelerometer.getZ()) < 0.3)
             addOdometryCalculation(odometryObservation);

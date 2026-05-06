@@ -126,7 +126,6 @@ public class DemaciaKinematics {
             double v = Math.hypot(vx, vy);
             angle = Math.atan2(vy, vx) - futureHeading;
             swerveStates[i] = new SwerveModuleState(v,new Rotation2d(angle));
-      
          
         }
 

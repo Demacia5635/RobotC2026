@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon;
 import frc.robot.atou.atouUtill.atouUtil;
 
@@ -20,14 +21,13 @@ public class pathManager {
     private double MaxToleranceMeter = 0.5;
     private double MaxToleranceRotation = Math.toRadians(0.7);
 
-    private path pathNamber;
-    private dercsean LeftOrRight;
+    public path pathNamber;
+    public dercsean LeftOrRight; // Direction fix
 
     private AutoFactory factory;
 
-    public <ST> pathManager(Chassis chassis){
-        factory = new AutoFactory(() -> RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, RobotCommon.isRed(), chassis);
-
+    public pathManager(Chassis chassis){
+        factory = new AutoFactory(() -> RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, true, chassis);
         addToNetworkTablePath();
         addToNetworkTableDercsean();
     }
@@ -38,8 +38,10 @@ public class pathManager {
         pathChooser.addOption("secondPath", path.secondPath);
         pathChooser.addOption("thirdPath", path.thirdPath);
         pathChooser.addOption("fourthPath", path.fourthPath);
-        pathChooser.onChange(newPath -> this.pathNamber = newPath);
+        pathChooser.onChange(newPath -> setPath(newPath));
         SmartDashboard.putData("Path Chooser", pathChooser);
+
+        pathNamber = path.secondPath;
     }
 
     public void addToNetworkTableDercsean(){
@@ -47,8 +49,9 @@ public class pathManager {
         dercseanChooser.addOption("left", dercsean.left);
         dercseanChooser.addOption("right", dercsean.right);
         dercseanChooser.addOption("center", dercsean.center);
-        dercseanChooser.onChange(newDercsean -> this.LeftOrRight = newDercsean);
+        dercseanChooser.onChange(newDercsean -> setLeftOrRight(newDercsean));
         SmartDashboard.putData("Dercsean Chooser", dercseanChooser);
+        LeftOrRight = dercsean.left;
     }
 
     public enum path{
@@ -68,8 +71,8 @@ public class pathManager {
         this.LeftOrRight = dercsean;
     }
 
-    public void setPath(){
-        
+    public void setPath(path path){
+        this.pathNamber = path;
     }
 
 
@@ -85,6 +88,7 @@ public class pathManager {
             if (LeftOrRight == dercsean.right) {
                 return secondPathRight();
             }else{
+                LogManager.log("sude run");
                 return secondPathLeft();
             }
         } else if(pathNamber == path.thirdPath){
@@ -98,6 +102,8 @@ public class pathManager {
         }else{
             return null;
         }
+        // LogManager.log("sode run");
+        // return secondPathLeft();
     }
 
     private AutoRoutine firstPathRight(){
@@ -146,10 +152,10 @@ public class pathManager {
             traj.cmd()
         ));
 
-        traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("humanPlayer", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
         return routineSecondPathRight;
     }
@@ -158,16 +164,23 @@ public class pathManager {
         AutoRoutine routineSecondPathLeft = factory.newRoutine("secendPathLeft");
         AutoTrajectory traj = routineSecondPathLeft.trajectory("secendPathLeft");
 
+        LogManager.log("------------------------------------------\n" + 
+            
+        " Trajectory " + traj.getInitialPose() + " t="
+          + traj.toString() + " l="
+          + traj.getRawTrajectory().getPoses().length + 
+          " \n-------------------------------------------------------\n");
+
         routineSecondPathLeft.active().onTrue(Commands.sequence(
             traj.resetOdometry(),
             traj.cmd()
         )
     );
     
-        traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
-        traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("startShoting", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("depot", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("startIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
+        // traj.atPose("stopIntake", MaxToleranceMeter, MaxToleranceRotation).onTrue(null);
 
         return routineSecondPathLeft;
     }

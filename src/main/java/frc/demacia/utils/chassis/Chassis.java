@@ -115,9 +115,9 @@ public class Chassis extends SubsystemBase {
     private Rotation2d lastGyroYaw;
     private double lastGyroAngularVelocity;
 
-    private final PIDController xController = new PIDController(0.2, 0.0, 0.0);
+    private final PIDController xController = new PIDController(2.4, 0.0, 0.0);
 
-    private final PIDController yController = new PIDController(0.2, 0.0, 0.0);
+    private final PIDController yController = new PIDController(2.2, 0.0, 0.0);
     private final PIDController headingController = new PIDController(0.03, 0.0, 0) {
         {
             enableContinuousInput(-Math.PI, Math.PI);
@@ -185,9 +185,7 @@ public class Chassis extends SubsystemBase {
                 sample.vy + yController.calculate(pose.getY(), sample.y),
                 -sample.omega + headingController.calculate(pose.getRotation().getRadians(), -sample.heading));
 
-
         
-
         SmartDashboard.putNumber("traj/current heading", pose.getRotation().getDegrees());
         SmartDashboard.putNumber("traj/heading error", sample.heading - pose.getRotation().getRadians());
         SmartDashboard.putNumber("traj/speeds omega", speeds.omegaRadiansPerSecond);

@@ -8,6 +8,8 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.odometry.RobotPose;
@@ -51,6 +53,7 @@ public class RobotContainer implements Sendable{
     pathManager = new pathManager(Chassis.getInstance());
     // Configure the trigger bindings
     configureBindings();
+    SmartDashboard.putData("scheduler", CommandScheduler.getInstance());
   }
 
   /**
@@ -99,6 +102,8 @@ public class RobotContainer implements Sendable{
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return pathManager.getAuto().cmd();
+    var a = pathManager.getAuto();
+    LogManager.log(" a = " + a);
+    return a.cmd();
   }
 }
