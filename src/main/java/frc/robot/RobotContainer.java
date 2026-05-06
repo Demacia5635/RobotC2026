@@ -19,11 +19,8 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
-import frc.robot.atou.pathManager;
-import frc.robot.atou.pathManager.path;
-import frc.robot.chassis.MK5nChassisConstants;
 import frc.robot.chassis.RobotBChassisConstants;
-import frc.robot.atou.pathManager.dercsean;;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,7 +35,6 @@ public class RobotContainer implements Sendable{
   public static boolean isRed = false;
 
   // The robot's subsystems and commands are defined here...
-  private final pathManager pathManager;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -50,7 +46,6 @@ public class RobotContainer implements Sendable{
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), DriveController));
-    pathManager = new pathManager(Chassis.getInstance());
     // Configure the trigger bindings
     configureBindings();
     SmartDashboard.putData("scheduler", CommandScheduler.getInstance());
@@ -102,8 +97,6 @@ public class RobotContainer implements Sendable{
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    var a = pathManager.getAuto();
-    LogManager.log(" a = " + a);
-    return a.cmd();
+    return null;
   }
 }
