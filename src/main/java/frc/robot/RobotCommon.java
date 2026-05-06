@@ -42,8 +42,8 @@ public class RobotCommon {
         return isRobotCalibrated;
     }
 
-    public static void setIsRobotCalibrated(boolean newIsRobotCalibrated){
-        newIsRobotCalibrated = isRobotCalibrated;
+    public static void setIsRobotCalibrated(boolean isCalibrated) {
+        this.isRobotCalibrated = isCalibrated;
     }
 
     public static boolean getIsComp(){
