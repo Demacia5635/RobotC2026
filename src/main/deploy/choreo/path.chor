@@ -1,5 +1,5 @@
 {
- "name":"newPath",
+ "name":"path",
  "version":2,
  "type":"Swerve",
  "variables":{
