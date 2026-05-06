@@ -75,8 +75,6 @@ public class pathManager {
         this.pathNamber = path;
     }
 
-
-
     public AutoRoutine getAuto(){
         if(pathNamber == path.firstPath){
             if (LeftOrRight == dercsean.right) {
@@ -102,8 +100,6 @@ public class pathManager {
         }else{
             return null;
         }
-        // LogManager.log("sode run");
-        // return secondPathLeft();
     }
 
     private AutoRoutine firstPathRight(){
