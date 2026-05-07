@@ -19,6 +19,7 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
+import frc.robot.atou.PathManger;
 import frc.robot.chassis.RobotBChassisConstants;
 
 
@@ -45,6 +46,7 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+    PathManger.initialize(Chassis.getInstance());
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), DriveController));
     // Configure the trigger bindings
     configureBindings();
@@ -97,6 +99,6 @@ public class RobotContainer implements Sendable{
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return PathManger.getInstance().getCommand();
   }
 }
