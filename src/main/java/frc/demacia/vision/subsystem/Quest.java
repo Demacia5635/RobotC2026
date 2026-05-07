@@ -6,8 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import gg.questnav.questnav.PoseFrame;
 import gg.questnav.questnav.QuestNav;
@@ -49,10 +51,12 @@ public class Quest extends SubsystemBase {
   private void addLog() {
     LogManager.addEntry("Quest/Latency", questNav::getLatency).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP);
     LogManager.addEntry("Quest/Battery", questNav::getBatteryPercent).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP);
-    LogManager.addEntry("Quest/LibVersion", questNav::getLibVersion).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP);
+    // LogManager.addEntry("Quest/LibVersion", questNav::getLibVersion).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP);
 
+    SmartDashboard.putData("Quest/Reset Quest Pose", new InstantCommand(()->RobotPose.getInstance().setQuestPose()).ignoringDisable(true));
     // SmartDashboard.putData("Quest/Field", field);
     SmartDashboard.putData("Quest/robotField", robotField);
+    
 
   }
 
@@ -76,6 +80,10 @@ public class Quest extends SubsystemBase {
     return questNav.isConnected();
   }
 
+  public boolean isWorking() {
+    return isConnected() && isTracking() && questNav.getBatteryPercent().getAsInt() > 10;
+  }
+
 
   // Check if Quest is tracking
   public boolean isTracking() {
@@ -97,8 +105,6 @@ public class Quest extends SubsystemBase {
 
       // the quest x & y
 
-      SmartDashboard.putNumber("Quest/X", getRobotPose2d().getX());
-      SmartDashboard.putNumber("Quest/Y", getRobotPose2d().getY());
 
       // the quest x & y
 
@@ -119,7 +125,8 @@ public class Quest extends SubsystemBase {
   }
 
 
-  public void questResetfromRobotToQuest(Rotation2d angle){
+  
+  public void setHeading(Rotation2d angle){
     setQuestPose(new Pose3d(getRobotPose2d().getX(),getRobotPose2d().getY(),currentQuestPose.getZ(),new Rotation3d(angle)));
   }
 }

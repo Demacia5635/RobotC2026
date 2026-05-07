@@ -10,7 +10,6 @@ import frc.demacia.utils.leds.LedConstants;
 import frc.demacia.utils.leds.LedStrip;
 
 import frc.robot.RobotCommon;
-import frc.robot.RobotCommon.Shifts;
 import frc.robot.RobotContainer;
 import frc.robot.StateManager;
 
