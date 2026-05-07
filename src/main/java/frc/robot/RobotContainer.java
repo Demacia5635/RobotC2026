@@ -62,6 +62,11 @@ public class RobotContainer implements Sendable{
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+   private void smartDesbord(){
+    
+   }
+
   private void configureBindings() {
     
   }
@@ -88,7 +93,7 @@ public class RobotContainer implements Sendable{
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addBooleanProperty("isRed", RobotContainer::getIsRed, RobotContainer::setIsRed);
+    builder.addBooleanProperty("isRed", RobotCommon::isRed, RobotCommon::setIsRed);
     builder.addBooleanProperty("isComp", RobotContainer::getIsComp, RobotContainer::setIsComp);
   }
 

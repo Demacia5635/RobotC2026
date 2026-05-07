@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotCommon {
 
 
@@ -25,10 +26,7 @@ public class RobotCommon {
     private static boolean isRobotCalibrated = false; 
 
     public static boolean isRed(){
-        if(alliance.get() == Alliance.Red) isRed = true;
-        else isRed = false;
-
-        return isRed;        
+        return isRed;   
     }
 
     public static void setIsRed(boolean newIsRed){
