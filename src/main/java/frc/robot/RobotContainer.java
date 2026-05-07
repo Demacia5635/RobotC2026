@@ -36,8 +36,8 @@ public class RobotContainer implements Sendable{
   public Canbus canbus = Canbus.Rio;
 
   // The robot's subsystems and commands are defined here...
-  TalonFXConfig configRoler = new TalonFXConfig(34, canbus, "motor");
-  TalonFXConfig configMecanum = new TalonFXConfig(30, canbus, "motor");
+  TalonFXConfig configRoler = new TalonFXConfig(34, canbus, "motor1");
+  TalonFXConfig configMecanum = new TalonFXConfig(30, canbus, "motor2");
   TalonFXMotor motorRoler = new TalonFXMotor(configRoler);
   TalonFXMotor motorMecanum = new TalonFXMotor(configMecanum);
   private Timer timer = new Timer();  
@@ -66,10 +66,10 @@ public class RobotContainer implements Sendable{
           LogManager.log("timer" + timer.get());
             if (isRight()) {
                 motorRoler.setDuty(-0.5);
-                motorMecanum.setDuty(0.8);
+                motorMecanum.setDuty(1);
             } else if( isReverse()) {
                 motorRoler.setDuty(0.5);
-                motorMecanum.setDuty(0.8);  
+                motorMecanum.setDuty(1);  
             }else{
               timer.reset();
             }
