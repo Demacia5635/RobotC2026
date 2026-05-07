@@ -38,14 +38,6 @@ public class RobotCommon {
         else return Field.HubRed.CENTER; 
     }
 
-    public static boolean getRobotCalibrated(){
-        return isRobotCalibrated;
-    }
-
-    public static void setIsRobotCalibrated(boolean isCalibrated) {
-        this.isRobotCalibrated = isCalibrated;
-    }
-
     public static boolean getIsComp(){
         return isComp;
     }

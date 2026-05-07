@@ -4,13 +4,21 @@
 
 package frc.demacia.utils.chassis;
 
-// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import java.lang.reflect.Array;
+import java.security.PublicKey;
+import java.util.Arrays;
+
+import org.ejml.simple.SimpleMatrix;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+
+import choreo.trajectory.SwerveSample;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,28 +27,21 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import frc.demacia.kinematics.DemaciaKinematics;
-import frc.demacia.odometry.DemaciaPoseEstimator;
-import frc.demacia.odometry.RobotPose;
-import frc.demacia.odometry.DemaciaPoseEstimator.OdometryObservation;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.demacia.kinematics.DemaciaKinematics;
+import frc.demacia.odometry.DemaciaPoseEstimator.OdometryObservation;
+import frc.demacia.odometry.RobotPose;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
-import frc.demacia.vision.ObjectPose;
-import frc.demacia.vision.TagPose;
-import frc.demacia.vision.subsystem.Quest;
-import frc.robot.RobotCommon;
-
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static frc.demacia.vision.utils.VisionConstants.*;
-
-import org.ejml.simple.SimpleMatrix;
+import frc.demacia.vision.utils.VisionConstants;
 
 /**
  * Main swerve drive chassis controller.
@@ -88,26 +89,49 @@ import org.ejml.simple.SimpleMatrix;
  */
 public class Chassis extends SubsystemBase {
 
-    ChassisConfig chassisConfig;
+    private static Chassis instance;
+
+    public static void initialize(ChassisConfig chassisConfig) {
+        if (instance == null)
+            instance = new Chassis(chassisConfig);
+    }
+
+    public static Chassis getInstance() {
+        return instance;
+    }
+
+    private final ChassisConfig chassisConfig;
+
     public SwerveModule[] modules;
     private Pigeon gyro;
-
     private DemaciaKinematics demaciaKinematics;
     private SwerveDriveKinematics wpilibKinematics;
-    private DemaciaPoseEstimator demaciaPoseEstimator;
+
     private Field2d field;
 
-    public TagPose[] tags;
-    private Field2d tagsField;
-    public Quest quest;
-    private Field2d questField;
-    public ObjectPose objectPose;
-
     private StatusSignal<Angle> gyroYawStatus;
+    private StatusSignal<AngularVelocity> gyroAngularVelocityStatus;
 
     private Rotation2d lastGyroYaw;
+    private double lastGyroAngularVelocity;
 
-    public Chassis(ChassisConfig chassisConfig) {
+    private final PIDController xController = new PIDController(2.4, 0.0, 0.0);
+
+    private final PIDController yController = new PIDController(2.2, 0.0, 0.0);
+    private final PIDController headingController = new PIDController(0.03, 0.0, 0) {
+        {
+            enableContinuousInput(-Math.PI, Math.PI);
+        }
+    };
+    private int index = 0;
+
+    private boolean isRotateToHub = false;
+
+    Rotation2d gyroAngle;
+
+    OdometryObservation observation;
+
+    private Chassis(ChassisConfig chassisConfig) {
         setName(getName());
 
         this.chassisConfig = chassisConfig;
@@ -120,55 +144,64 @@ public class Chassis extends SubsystemBase {
         }
 
         gyro = new Pigeon(chassisConfig.pigeonConfig);
-        quest = new Quest();
+
         addStatus();
         demaciaKinematics = new DemaciaKinematics(modulePositions);
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
-        demaciaPoseEstimator = new DemaciaPoseEstimator(
-                modulePositions,
-                new Matrix<>(VecBuilder.fill(0.02, 0.02, 0)),
-                new Matrix<>(VecBuilder.fill(0.7, 0.7, Double.POSITIVE_INFINITY)));
-
+      
         field = new Field2d();
-        questField = new Field2d();
-        tagsField = new Field2d();
-
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
                 new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("chassis/field", field);
-        SmartDashboard.putData("chassis/quest field", questField);
-        SmartDashboard.putData("chassis/tags field", tagsField);
+        // SmartDashboard.putData("chassis/quest field", questField);
+        // SmartDashboard.putData("chassis/tags field", tagsField);
         SmartDashboard.putData("chassis/set coast",
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-        SmartDashboard.putData("chassis", this);
 
-        int c = 0;
-        for (int i = 0; i < chassisConfig.tags.length; i++) {
-            if (!chassisConfig.tags[i].getIsObjectCamera()) {
-                c++;
-            }
-        }
-        tags = new TagPose[c];
-        int count = 0;
-        for (int i = 0; i < chassisConfig.tags.length; i++) {
-            if (!chassisConfig.tags[i].getIsObjectCamera()) {
-                tags[count] = chassisConfig.tags[i];
-                count++;
-            }
-        }
         RobotPose.initialize(modulePositions, new Matrix<>(
                 new SimpleMatrix(
-                        new double[] { 0.03, 0.03, 99999999 })),
-                QUEST_STD);
+                        new double[] { 0.03, 0.03, 0 })),
+                VisionConstants.QUEST_STD);
+
+        SmartDashboard.putData("reset with 3d",
+                new InstantCommand(() -> RobotPose.getInstance().setAngle3DLimelight()).ignoringDisable(true));
+
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+        LogManager.log(chassisConfig.name + " initalize");
     }
 
-    private void addStatus() {
-        gyroYawStatus = gyro.getYaw();
-        lastGyroYaw = new Rotation2d(gyroYawStatus.getValueAsDouble());
+    public void followTrajectory(SwerveSample sample) {
+
+
+        Pose2d pose = getPose();
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + xController.calculate(pose.getX(), sample.x),
+                sample.vy + yController.calculate(pose.getY(), sample.y),
+                -sample.omega + headingController.calculate(pose.getRotation().getRadians(), -sample.heading));
+
+        
+        SmartDashboard.putNumber("traj/current heading", pose.getRotation().getDegrees());
+        SmartDashboard.putNumber("traj/heading error", sample.heading - pose.getRotation().getRadians());
+        SmartDashboard.putNumber("traj/speeds omega", speeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("traj/sample time", sample.getTimestamp());
+
+        field.getObject("trajectory point #" + index).setPose(sample.getPose());
+        index++;
+
+        setVelocities(speeds);
+    }
+
+    public void resetTrajectory() {
+        for (int i = index; i >= 0; i--) {
+            field.getObject("trajectory point #" + i).setPose(Pose2d.kZero);
+        }
+        index = 0;
     }
 
     public void setDrivePower(double pow, int id) {
@@ -178,6 +211,14 @@ public class Chassis extends SubsystemBase {
     public void setDrivePower(double pow) {
         for (int i = 0; i < 4; i++)
             setDrivePower(pow, i);
+    }
+
+    public double getMaxDriveVelocity(){
+        return chassisConfig.maxDriveVelocity;
+    }
+
+    public double getMaxRotationalVelocity(){
+        return chassisConfig.maxRotationalVelocity;
     }
 
     /**
@@ -201,7 +242,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public void resetPose(Pose2d pose) {
-        demaciaPoseEstimator.resetPose(pose);
+        RobotPose.getInstance().resetPose(pose);
     }
 
     /**
@@ -221,14 +262,6 @@ public class Chassis extends SubsystemBase {
                 currentPose.getRotation().plus(new Rotation2d(currentSpeeds.omegaRadiansPerSecond * dt)));
     }
 
-    private double targetAngle = 0;
-
-    private boolean isRotateToHub = false;
-
-    public void setTargetAngle(double targetAngle) {
-        this.targetAngle = targetAngle;
-    }
-
     public void setRotateToHub() {
         this.isRotateToHub = !isRotateToHub;
     }
@@ -245,18 +278,8 @@ public class Chassis extends SubsystemBase {
      */
 
     public void setVelocities(ChassisSpeeds speeds) {
-        if (isRotateToHub) {
-            speeds.omegaRadiansPerSecond = -1.5
-                    * MathUtil.angleModulus(targetAngle - getPose().getRotation().getRadians());
 
-        }
-
-        SwerveModuleState[] states = demaciaKinematics
-                .toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle()));
-        // SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStatesWithLimit(
-        // speeds,
-        // getChassisSpeedsFieldRel(),
-        // getGyroAngle());
+        SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStates(speeds, getGyroAngle());
         setModuleStates(states);
     }
 
@@ -305,7 +328,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public ChassisSpeeds getRobotRelVelocities() {
-        return ChassisSpeeds.fromFieldRelativeSpeeds(getChassisSpeedsRobotRel(), getGyroAngle());
+        return ChassisSpeeds.fromFieldRelativeSpeeds(getChassisSpeedsFieldRel(), getGyroAngle());
     }
 
     public void setRobotRelVelocities(ChassisSpeeds speeds) {
@@ -331,12 +354,16 @@ public class Chassis extends SubsystemBase {
         return lastGyroYaw;
     }
 
-    private SwerveModulePosition[] getModulePositions() {
-        SwerveModulePosition[] arr = new SwerveModulePosition[modules.length];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = modules[i].getModulePosition();
+    public double getGyroAngularVelocity() {
+        gyroAngularVelocityStatus.refresh();
+        if (gyroAngularVelocityStatus.getStatus() == StatusCode.OK) {
+            lastGyroAngularVelocity = gyroAngularVelocityStatus.getValue().in(Units.RadiansPerSecond);
         }
-        return arr;
+        return lastGyroAngularVelocity;
+    }
+
+    public void setModuleState(SwerveModuleState state) {
+        setModuleStates(new SwerveModuleState[] { state, state, state, state });
     }
 
     public void setModuleStates(SwerveModuleState[] states) {
@@ -345,135 +372,37 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    private void updateVision(Pose2d pose) {
-        demaciaPoseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
-        demaciaPoseEstimator.setVisionMeasurementStdDevs(getSTD());
-        tagsField.setRobotPose(pose);
-    }
-
-    // private void updateQuest(Pose2d questPose) {
-    // demaciaPoseEstimator.addVisionMeasurement(questPose, Timer.getFPGATimestamp()
-    // - 0.05);
-    // demaciaPoseEstimator.setVisionMeasurementStdDevs(QUEST_STD);
-    // questField.setRobotPose(questPose);
-    // }
-
-    // private Matrix<N3, N1> getSTD() {
-    // double x = 0.05;
-    // double y = 0.05;
-    // double theta = 0.03;
-    private void updateQuest(Pose2d questPose) {
-        demaciaPoseEstimator.addVisionMeasurement(questPose, Timer.getFPGATimestamp() - 0.05);
-        demaciaPoseEstimator.setVisionMeasurementStdDevs(QUEST_STD);
-        questField.setRobotPose(questPose);
-    }
-
-    private Matrix<N3, N1> getSTD() {
-        double x = 0.05;
-        double y = 0.05;
-        double theta = 0.03;
-
-        // ChassisSpeeds currentSpeeds = getChassisSpeedsRobotRel();
-        // double speed = Utilities.hypot(currentSpeeds.vxMetersPerSecond,
-        // currentSpeeds.vyMetersPerSecond);
-
-        // // Vision confidence adjustment
-        // // if (visionFuse != null && visionFuse.getVisionConfidence() < 0.3) {
-        // // x += 0.3;
-        // // y += 0.3;
-        // // }
-        // Vision confidence adjustment
-        // if (visionFuse != null && visionFuse.getVisionConfidence() < 0.3) {
-        // x += 0.3;
-        // y += 0.3;
-        // }
-
-        // // Speed-based confidence calculation
-        // if (speed > WORST_RELIABLE_SPEED) {
-        // // Maximum uncertainty for high speeds
-        // x += 0.02;
-        // y += 0.02;
-        // } else if (speed <= BEST_RELIABLE_SPEED) {
-        // // Minimum uncertainty for low speeds
-        // x -= 0.02;
-        // y -= 0.02;
-        // } else {
-        // // Calculate normalized speed for the falloff range
-        // double normalizedSpeed = (speed - BEST_RELIABLE_SPEED)
-        // / (WORST_RELIABLE_SPEED - BEST_RELIABLE_SPEED);
-
-        // // Apply exponential falloff to calculate additional uncertainty
-        // double speedConfidence = Math.exp(-3 * normalizedSpeed);
-
-        // // Scale the uncertainty adjustment based on confidence
-        // double adjustment = 0.02 * (1 - speedConfidence);
-        // x += adjustment;
-        // y += adjustment;
-        // }
-
-        return new Matrix<N3, N1>(new SimpleMatrix(new double[] { x, y, theta }));
-    }
-
-    Pose2d questPoseEstimation;
-
-    Rotation2d gyroAngle;
-
-    private boolean hasVisionUpdated = false;
-
     @Override
     public void periodic() {
-        // visionFusePoseEstimation = visionFuse.getPoseEstimation();
-        // gyroAngle = getGyroAngle();
-
-        // OdometryObservation observation = new OdometryObservation(
-        // Timer.getFPGATimestamp(),
-        // getGyroAngle(),
-        // getModulePositions());
-
-        // demaciaPoseEstimator.addOdometryCalculation(observation,
-        // getChassisSpeedsVector());
-        // field.setRobotPose(getPose());
-
-        // if (visionFusePoseEstimation != null) {
-        // if (!hasVisionUpdated && quest.isConnected() && quest.isTracking()) {
-        // hasVisionUpdated = true;
-        // quest.setQuestPose(new Pose3d(new
-        // Pose2d(visionFusePoseEstimation.getTranslation(), gyroAngle)));
-        // }
-
-        // updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(),
-        // gyroAngle));
-        // visionFusePoseEstimation = null;
-        // }
-        // if (hasVisionUpdated && quest.isConnected() && quest.isTracking()) {
-        // updateQuest(quest.getRobotPose2d());
-        // }
-
-        updateCommon();
-
-        OdometryObservation observation = new OdometryObservation(
+        // updateCommon();
+        //TODO: RETORN IT 
+        observation = new OdometryObservation(
                 Timer.getFPGATimestamp(),
                 getGyroAngle(),
                 getModulePositions());
 
-        RobotPose.getInstance().update(observation, getVelocityAsVector());
+        RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
+        // field.getObject("Turret").setPose(new Pose2d(RobotCommon.getCurrentRobotPose().getTranslation()
+        //         .plus(TurretConstants.TURRET_POSITION_ON_ROBOT.rotateBy(RobotCommon.getRobotAngle())),
+        //         Rotation2d.fromRadians(RobotCommon.getRobotAngle().getRadians()
+        //                 + MathUtil.angleModulus(Turret.getInstance().getTurretAngle()))));
+        // field.getObject("estimation").setPose(ShooterUtils.computeFuturePosition(getChassisSpeedsFieldRel(), getPose(), 0.1));
     }
 
-    public void updateCommon() {
-        RobotCommon.currentRobotPose = getPose();
-        RobotCommon.setRobotFuturePose(getFuturePose(0.04));
-        RobotCommon.setFieldRelativeSpeeds(getChassisSpeedsFieldRel());
-        RobotCommon.setRobotRelativeSpeeds(getRobotRelVelocities());
-        RobotCommon.setRobotAngle(getGyroAngle());
-    }
+    // public void updateCommon() {
+    //     RobotCommon.setRobotAngle(getGyroAngle());
+    //     RobotCommon.setCurrentRobotPose(getPose());
+    //     RobotCommon.setFieldRelativeSpeeds(getChassisSpeedsFieldRel());
+    //     RobotCommon.setFutureRobotPose(getFuturePose(0.2));
+    // } 
+    //TODO: reotrn it
 
     public Pose2d getFuturePose(double dtSeconds) {
-        Pose2d poseAtTime = getPose().exp(new Twist2d(
+        return getPose().exp(new Twist2d(
                 (getChassisSpeedsFieldRel().vxMetersPerSecond * dtSeconds),
                 (getChassisSpeedsFieldRel().vyMetersPerSecond * dtSeconds),
                 getChassisSpeedsFieldRel().omegaRadiansPerSecond * dtSeconds));
-        return poseAtTime;
     }
 
     /**
@@ -495,7 +424,7 @@ public class Chassis extends SubsystemBase {
     public ChassisSpeeds getChassisSpeedsFieldRel() {
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 demaciaKinematics.toChassisSpeeds(getModuleStates(),
-                        gyro.getAngularVelocityZWorld().getValue().in(RadiansPerSecond)),
+                        getGyroAngularVelocity()),
                 getGyroAngle());
     }
 
@@ -530,10 +459,10 @@ public class Chassis extends SubsystemBase {
     public void setYaw(Rotation2d angle) {
         if (angle != null) {
             gyro.setYaw(angle.getDegrees());
-            quest.questResetfromRobotToQuest(angle);
-            demaciaPoseEstimator
+            RobotPose.getInstance().setQuestHeading(angle);
+            RobotPose.getInstance()
                     .resetPose(
-                            new Pose2d(demaciaPoseEstimator.getEstimatedPose().getTranslation(), gyro.getRotation2d()));
+                            new Pose2d(Translation2d.kZero, gyro.getRotation2d()));
         }
     }
 
@@ -548,5 +477,20 @@ public class Chassis extends SubsystemBase {
         for (SwerveModule i : modules) {
             i.stop();
         }
+    }
+
+    private void addStatus() {
+        gyroYawStatus = gyro.getYaw();
+        lastGyroYaw = new Rotation2d(gyroYawStatus.getValueAsDouble());
+        gyroAngularVelocityStatus = gyro.getAngularVelocityZWorld();
+        lastGyroAngularVelocity = gyroAngularVelocityStatus.getValue().in(Units.RadiansPerSecond);
+    }
+
+    private SwerveModulePosition[] getModulePositions() {
+        SwerveModulePosition[] arr = new SwerveModulePosition[modules.length];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = modules[i].getModulePosition();
+        }
+        return arr;
     }
 }
