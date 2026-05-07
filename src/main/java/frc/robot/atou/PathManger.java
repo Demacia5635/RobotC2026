@@ -25,7 +25,7 @@ public class PathManger {
         return instance;
     }
 
-    public PathManger(Chassis chassis){
+    private PathManger(Chassis chassis){
         factory = new AutoFactory(() -> RobotCommon.currentRobotPose, (pose) -> RobotPose.getInstance().resetPose(pose), chassis::followTrajectory, RobotCommon.isRed(), chassis);
         chooser = new AutoChooser();
 
