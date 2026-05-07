@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.odometry.RobotPose;
-import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
@@ -44,9 +43,8 @@ public class RobotContainer implements Sendable{
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
-    new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+    // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
-    PathManger.initialize(Chassis.getInstance());
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), DriveController));
     // Configure the trigger bindings
     configureBindings();
@@ -62,10 +60,6 @@ public class RobotContainer implements Sendable{
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-
-   private void smartDesbord(){
-    
-   }
 
   private void configureBindings() {
     
@@ -106,4 +100,5 @@ public class RobotContainer implements Sendable{
     // An example command will be run in autonomous
     return PathManger.getInstance().getCommand();
   }
+
 }
