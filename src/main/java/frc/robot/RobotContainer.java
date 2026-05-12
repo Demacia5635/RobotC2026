@@ -17,13 +17,14 @@ import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.stateManger.stateManger;
+import frc.robot.stateManger.StateManger;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
 
@@ -39,12 +40,11 @@ import frc.robot.turret.subsystems.Turret;
 public class RobotContainer implements Sendable {
 
   // The robot's subsystems and commands are defined here...
-  public static Chassis chassis = new Chassis(null);
   public static IntakeSubsystem intake = new IntakeSubsystem();
   public static ShinuaSubsystem shinua = new ShinuaSubsystem();
   public static Turret turret = new Turret();
   public static Shooter shooter = new Shooter();
-  public static stateManger stateManger = new stateManger();
+  public static StateManger stateManger = new StateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
@@ -52,9 +52,9 @@ public class RobotContainer implements Sendable {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
     configureBindings();
     setUserButton();
     setDefaultCommands();
@@ -95,7 +95,7 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
+    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), driverController));
     intake.setDefaultCommand(new IntakeCommand());
     shinua.setDefaultCommand(new ShinuaCommand());
     shooter.setDefaultCommand(new ShooterCommand(shooter));
@@ -111,8 +111,8 @@ public class RobotContainer implements Sendable {
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("is comp", () -> RobotCommon.isComp, (isComp) -> RobotCommon.isComp = isComp);
     builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
-    builder.addBooleanProperty("change is Robot Calibrated for testing", () -> RobotCommon.getRobotCalibrated(),
-        (isRobotCalibrated) -> RobotCommon.setIsRobotCalibrated(isRobotCalibrated));
+    // builder.addBooleanProperty("change is Robot Calibrated for testing", () -> RobotCommon.getRobotCalibrated(),
+    //     (isRobotCalibrated) -> RobotCommon.setIsRobotCalibrated(isRobotCalibrated));
   }
 
   /**

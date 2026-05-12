@@ -10,7 +10,7 @@ import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.stateManger.utils.stateMangerUtils;
 import frc.robot.turret.TurretConstants.TurretStates;
 
-public class stateManger extends SubsystemBase{
+public class StateManger extends SubsystemBase{
 
     public static boolean isWork;
     
