@@ -20,7 +20,6 @@ public class RobotCommon {
     private static boolean isRed;
 
     public static boolean isComp = false; 
-    private static boolean isRobotCalibrated = false; 
 
     public static boolean isRed(){
         if(alliance.get() == Alliance.Red) isRed = true;

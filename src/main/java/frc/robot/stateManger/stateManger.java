@@ -31,7 +31,7 @@ public class StateManger extends SubsystemBase{
 
 
     private static boolean isHub(){
-        return stateMangerUtils.isPastHub(RobotCommon.currentRobotPose.getX(), RobotCommon.currentRobotPose.getY(), Field.HubBlue.CENTER) ||stateMangerUtils.isPastHub(RobotCommon.currentRobotPose.getX(), RobotCommon.currentRobotPose.getY(), Field.HubRed.CENTER);
+        return stateMangerUtils.isPastBlueHub(RobotCommon.currentRobotPose.getX()) || stateMangerUtils.isPastRedHub(RobotCommon.currentRobotPose.getX());
     }
 
 
