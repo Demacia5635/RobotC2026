@@ -19,14 +19,14 @@ public class stateManger extends SubsystemBase{
     double x = pose.getX();
     double y = pose.getY();
 
-    return stateMangerUtils.inRange(x, Field.TrenchBlueAudience.X_BACK,  Field.TrenchBlueAudience.X_FRONT)
-         && stateMangerUtils.inRange(x, Field.TrenchBlueScoring.X_BACK,   Field.TrenchBlueScoring.X_FRONT)
-        && stateMangerUtils.inRange(y, Field.TrenchBlueAudience.Y_FRONT,  Field.TrenchBlueAudience.Y_BACK)
-        && stateMangerUtils.inRange(y, Field.TrenchBlueScoring.Y_FRONT,   Field.TrenchBlueScoring.Y_BACK)
-        && stateMangerUtils.inRange(x, Field.TrenchRedAudience.X_FRONT,  Field.TrenchRedAudience.X_BACK)
-        && stateMangerUtils.inRange(x, Field.TrenchRedScoring.X_FRONT,   Field.TrenchRedScoring.X_BACK)
-        && stateMangerUtils.inRange(y, Field.TrenchRedAudience.Y_FRONT,  Field.TrenchRedAudience.Y_BACK)
-        && stateMangerUtils.inRange(y, Field.TrenchRedScoring.Y_FRONT,   Field.TrenchRedScoring.Y_BACK);
+    return stateMangerUtils.inRange(x, Field.TrenchBlueAudience.X_BACK+0.5,  Field.TrenchBlueAudience.X_FRONT-0.5)
+         && stateMangerUtils.inRange(x, Field.TrenchBlueScoring.X_BACK+0.5,   Field.TrenchBlueScoring.X_FRONT-0.5)
+        && stateMangerUtils.inRange(y, Field.TrenchBlueAudience.Y_FRONT+0.5,  Field.TrenchBlueAudience.Y_BACK-0.5)
+        && stateMangerUtils.inRange(y, Field.TrenchBlueScoring.Y_FRONT+0.5,   Field.TrenchBlueScoring.Y_BACK-0.5)
+        && stateMangerUtils.inRange(x, Field.TrenchRedAudience.X_FRONT+0.5,  Field.TrenchRedAudience.X_BACK-0.5)
+        && stateMangerUtils.inRange(x, Field.TrenchRedScoring.X_FRONT+0.5,   Field.TrenchRedScoring.X_BACK-0.5)
+        && stateMangerUtils.inRange(y, Field.TrenchRedAudience.Y_FRONT+0.5,  Field.TrenchRedAudience.Y_BACK-0.5)
+        && stateMangerUtils.inRange(y, Field.TrenchRedScoring.Y_FRONT+0.5,   Field.TrenchRedScoring.Y_BACK-0.5);
 }
 
 
