@@ -18,14 +18,16 @@ import frc.robot.shinua.subsystems.ShinuaSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShinuaCommand extends Command {
   /** Creates a new ShinuaCommand. */
-  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
-  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private final ShinuaSubsystem shinuaSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
   private double wantedDutyRollers = 0;
   private double wantedDutyMecanum = 0;
   private Timer timerForStuckBalls;
   private boolean startedHandlingBalls = false;
 
-  public ShinuaCommand() {
+  public ShinuaCommand(ShinuaSubsystem shinuaSubsystem, IntakeSubsystem intakeSubsystem) {
+    this.shinuaSubsystem = shinuaSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
     addRequirements(shinuaSubsystem);
     SmartDashboard.putData("Shinua Testing", this);
     timerForStuckBalls = new Timer();
@@ -44,13 +46,12 @@ public class ShinuaCommand extends Command {
   }
 
   public boolean isBallsStuck() {
-    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
-        || (intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && Math.abs(intakeSubsystem.getRollerVelocity()) < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY)
-        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
-            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY);
-  }
+    return shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
+        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY
+        || intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
+        || shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
+            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY;
+  } 
 
   public boolean BallsArentStuckAnymore() {
     return timerForStuckBalls.isRunning() && !isBallsStuck();

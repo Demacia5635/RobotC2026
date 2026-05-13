@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommon;
+import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -15,9 +16,10 @@ public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   private double wantedAngle = 0;
   private double wantedDuty = 0;
-  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
+  private final IntakeSubsystem intakeSubsystem;
 
-  public IntakeCommand() {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
     SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -49,6 +51,11 @@ public class IntakeCommand extends Command {
         else
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
+        if (intakeSubsystem.getIntakeDeployAngle()<IntakeConstants.ANGLE_IS_COAST) {
+          intakeSubsystem.setNeutralModeRoller(true);
+        } else {
+          intakeSubsystem.setNeutralModeRoller(false);
+        }
         break;
 
       case TESTING:

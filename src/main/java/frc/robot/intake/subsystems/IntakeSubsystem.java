@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData(" Intake State Chooser", stateChooser);
   }
-  
+
   public void checkElectronics() {
     rollerMotor.checkElectronics();
     intakeDeployMotor.checkElectronics();
@@ -58,6 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setRollerDuty(double duty) {
     rollerMotor.setDuty(duty);
   }
+
   public void setIntakeDeployDuty(double duty) {
     intakeDeployMotor.setDuty(duty);
   }
@@ -91,14 +92,18 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeDeployMotor.getCurrentCurrent();
   }
 
+  public double getIntakeDeployAngle() {
+    return intakeDeployMotor.getCurrentPosition();
+  }
+
   public IntakeState getState() {
     return state;
   }
 
-
   public void setState(IntakeState newState) {
     state = newState;
   }
+
   public boolean isIntakeDeployClosed() {
     return intakeDeployLimitSwitch.get();
   }
@@ -106,7 +111,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean isCalibrated() {
     return isCalibrated;
   }
-  public void setCalibrated(){
+
+  public void setCalibrated() {
     isCalibrated = true;
   }
 
