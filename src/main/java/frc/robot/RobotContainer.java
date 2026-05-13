@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.security.PublicKey;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -16,8 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.log.LogManager;
-import frc.demacia.utils.motors.TalonFXConfig;
-import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 /**
@@ -32,18 +29,11 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
   public static boolean isRed = false;
   public static subsystem subsystem = new subsystem();
+  public static SubsystemIntake subsystemIntake = new SubsystemIntake();
 
-  public Canbus canbus = Canbus.Rio;
+  public static Canbus canbus = Canbus.Rio;
 
-  // The robot's subsystems and commands are defined here...
-  TalonFXConfig configRoler = new TalonFXConfig(34, canbus, "motor1");
-  TalonFXConfig configMecanum = new TalonFXConfig(30, canbus, "motor2");
-  TalonFXMotor motorRoler = new TalonFXMotor(configRoler);
-  TalonFXMotor motorMecanum = new TalonFXMotor(configMecanum);
-  private Timer timer = new Timer();  
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private  double currentTime = timer.get();
+  private Timer timer = new Timer();
 
   public boolean isRight(){
     return timer.get() < 2.3/3 && timer.get() > 0;
@@ -60,16 +50,16 @@ public class RobotContainer implements Sendable{
 
     timer.reset();
     timer.start();
-
+    subsystemIntake.setDefaultCommand(new RunCommand(() -> subsystemIntake.setIntakeDuty(1), subsystemIntake));
     subsystem.setDefaultCommand(
         new RunCommand(() -> {
           LogManager.log("timer" + timer.get());
             if (isRight()) {
-                motorRoler.setDuty(-0.5);
-                motorMecanum.setDuty(1);
+                subsystem.getMotorRoler().setDuty(-0.5);
+                subsystem.getMotorMecanum().setDuty(1);
             } else if( isReverse()) {
-                motorRoler.setDuty(0.5);
-                motorMecanum.setDuty(1);  
+                subsystem.getMotorRoler().setDuty(0.5);
+                subsystem.getMotorMecanum().setDuty(1);  
             }else{
               timer.reset();
             }
