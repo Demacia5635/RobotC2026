@@ -23,6 +23,7 @@ public class ShinuaCommand extends Command {
   private double wantedDutyRollers = 0;
   private double wantedDutyMecanum = 0;
   private Timer timerForStuckBalls;
+  private Timer timerForReleasingPressure;
   private boolean startedHandlingBalls = false;
 
   public ShinuaCommand(ShinuaSubsystem shinuaSubsystem, IntakeSubsystem intakeSubsystem) {
@@ -31,6 +32,7 @@ public class ShinuaCommand extends Command {
     addRequirements(shinuaSubsystem);
     SmartDashboard.putData("Shinua Testing", this);
     timerForStuckBalls = new Timer();
+    timerForReleasingPressure = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -43,6 +45,8 @@ public class ShinuaCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timerForStuckBalls.reset();
+    timerForReleasingPressure.restart();
   }
 
   public boolean isBallsStuck() {
@@ -51,7 +55,7 @@ public class ShinuaCommand extends Command {
         || intakeSubsystem.getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
         || shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
             && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY;
-  } 
+  }
 
   public boolean BallsArentStuckAnymore() {
     return timerForStuckBalls.isRunning() && !isBallsStuck();
@@ -78,11 +82,10 @@ public class ShinuaCommand extends Command {
           if (shouldStartStuckBallsTimer()) {
             timerForStuckBalls.restart();
           }
-
           if (shouldHandleBallsStuck()) {
-          startedHandlingBalls = true;
-          RobotCommon.setStuck(true);
-          shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.dutyMecanum);
+            startedHandlingBalls = true;
+            RobotCommon.setStuck(true);
+            shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.dutyMecanum);
 
           } else if (shouldStopHandlingBallsStuck()) {
             startedHandlingBalls = false;
@@ -90,10 +93,15 @@ public class ShinuaCommand extends Command {
             timerForStuckBalls.stop();
             timerForStuckBalls.reset();
           }
-        } else
+        } else if (timerForReleasingPressure.get() % 5 < 0.5) {
+          shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.dutyMecanum);
+        }
+        else 
         shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
         shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
+      
         break;
+
       case TESTING:
         shinuaSubsystem.setMecanumDuty(wantedDutyMecanum);
         shinuaSubsystem.setRollersDuty(wantedDutyRollers);
