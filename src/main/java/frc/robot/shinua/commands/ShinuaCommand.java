@@ -95,10 +95,10 @@ public class ShinuaCommand extends Command {
         // timerForStuckBalls.reset();
         // }
         if (timerForReleasingPressure.get() % 5 < 0.5) {
-          shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.dutyMecanum);
+          shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.velocityRollers);
         } else {
           shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
-          shinuaSubsystem.setRollersDuty(shinuaSubsystem.getState().dutyRollers);
+          shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
         }
         break;
 

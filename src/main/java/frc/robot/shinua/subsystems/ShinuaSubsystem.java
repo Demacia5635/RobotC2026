@@ -61,6 +61,10 @@ public class ShinuaSubsystem extends SubsystemBase {
     rollersMotor.setDuty(duty);
   }
 
+  public void setVelocityRollers(double velocity) {
+    rollersMotor.setVelocity(velocity);
+  }
+
   public void stopMecanum() {
     mecanumMotor.stop();
   }

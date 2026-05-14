@@ -33,12 +33,21 @@ public class ShinuaConstants {
     public static final double ROLLERS_BALLS_STUCK_CURRENT = 0;
     public static final double ROLLERS_BALLS_STUCK_VELOCITY = 0;
     public static final double ROLLERS_GEAR_RATIO = 0.0;
+    public static double kp = 6.0;
+    public static final double ki = 0.0;
+    public static final double kd = 0.0;
+    public static double ks = 0.0;
+    public static double kv = 0.0;
+    public static double ka = 0.0;
+    public static double kg = 0.0;
+
 
     public static final TalonFXConfig ROLLERS_CONFIG = new TalonFXConfig(ROLLERS_ID, SHINUA_CANBUS, ROLLERS_NAME)
             .withRadiansMotor(ROLLERS_GEAR_RATIO)
             .withBrake(ROLLERS_BRAKE)
             .withInvert(ROLLERS_INVERTED)
-            .withCurrent(ROLLERS_CURRENT_LIMIT);
+            .withCurrent(ROLLERS_CURRENT_LIMIT)
+            .withPID(kp, ki, kd,ks, kv, ka, kg);
 
     public static enum ShinuaState {
         SHINUA_ON(1, 1),
@@ -46,11 +55,11 @@ public class ShinuaConstants {
         EJECTING(-1, -1),
         TESTING(0, 0);
 
-        public double dutyRollers;
+        public double velocityRollers;
         public double dutyMecanum;
 
-        ShinuaState(double dutyRollers, double dutyMecanum) {
-            this.dutyRollers = dutyRollers;
+        ShinuaState(double velocityRollers, double dutyMecanum) {
+            this.velocityRollers = velocityRollers;
             this.dutyMecanum = dutyMecanum;
         }
     

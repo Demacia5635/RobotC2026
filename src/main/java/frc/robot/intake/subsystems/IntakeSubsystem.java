@@ -83,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getRollerCurrent() {
     return rollerMotor.getCurrentCurrent();
   }
-
+  
   public double getRollerVelocity() {
     return rollerMotor.getCurrentVelocity();
   }
