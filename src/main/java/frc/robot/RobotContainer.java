@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
+import frc.robot.intake.commands.IntakeCommand;
+import frc.robot.intake.subsystems.IntakeSubsystem;
+import frc.robot.shinua.commands.ShinuaCommand;
+import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,7 +32,10 @@ public class RobotContainer implements Sendable{
 
   // The robot's subsystems and commands are defined here...
   public static Chassis chassis;
-
+  public static IntakeSubsystem intakeSubsystem;
+  public static IntakeCommand intakeCommand;
+  public static ShinuaCommand shinuaCommand;
+  public static ShinuaSubsystem shinuaSubsystem ;
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -36,7 +43,13 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    
+    intakeSubsystem = IntakeSubsystem.getInstance();
+    shinuaSubsystem = ShinuaSubsystem.getInstance();
+    shinuaCommand = new ShinuaCommand(shinuaSubsystem);
+    intakeCommand = new IntakeCommand(intakeSubsystem);
+    shinuaSubsystem.setDefaultCommand(shinuaCommand);
+    intakeSubsystem.setDefaultCommand(intakeCommand);
+
     // Configure the trigger bindings
     configureBindings();
   }

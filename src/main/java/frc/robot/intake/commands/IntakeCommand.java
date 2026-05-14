@@ -7,7 +7,6 @@ package frc.robot.intake.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotCommon;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.subsystems.IntakeSubsystem;
@@ -45,10 +44,10 @@ public class IntakeCommand extends Command {
 
     switch (intakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-        if (RobotCommon.IsStuck()) {
-          intakeSubsystem.setRollerDuty(IntakeState.EJECTING.duty);
-        } 
-        else
+        // if (RobotCommon.IsStuck()) {
+        //   intakeSubsystem.setRollerDuty(IntakeState.EJECTING.duty);
+        // } 
+        // else
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         if (intakeSubsystem.getIntakeDeployAngle()<IntakeConstants.ANGLE_IS_COAST) {
