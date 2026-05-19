@@ -23,10 +23,11 @@ public class SwerveModuleConfig {
 
     public final String name;             // Name of the motor - used for logging
 
-    public final BaseMotorConfig<?> steerConfig;
-    public final BaseMotorConfig<?> driveConfig;
-    public final CancoderConfig cancoderConfig;
-    public double steerOffset = 0;
+    public BaseMotorConfig<?> steerConfig;
+    public BaseMotorConfig<?> driveConfig;
+    public CancoderConfig cancoderConfig;
+    public double steerOffset;
+
 
     public Translation2d position = Translation2d.kZero;
 
