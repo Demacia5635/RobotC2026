@@ -6,6 +6,7 @@ package frc.robot.shooter.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
@@ -97,6 +98,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterState(ShooterStates state){
+    LogManager.log("Last state: " + shooterState + " Curr state: " + state);
     shooterState = state;
   }
 

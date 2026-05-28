@@ -7,7 +7,9 @@ package frc.demacia.utils.chassis;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.controller.CommandController;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon;
+import frc.robot.ShootingWhileDriving;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveCommand extends Command {
@@ -49,16 +51,18 @@ public class DriveCommand extends Command {
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
     
-    // Calculate r]otation from trigger axes
-    double rot = controller.getLeftTrigger() - controller.getRightTrigger();
+    // Calculate rotation from trigger axes
+    // double rot = controller.getLeftTrigger() - controller.getRightTrigger(); //TODO: to change back to the normal
     
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
-    double velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
+    // double velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
+    double velRot = ShootingWhileDriving.getTurretAngle() * (-10);
+    // LogManager.log("velRot: " + velRot);
     if(precisionMode){
         velX /= 4;
         velY /= 4;
-        velRot /= 4;
+        // velRot /= 4;
     }
     
     speeds = new ChassisSpeeds(velX, velY,velRot);

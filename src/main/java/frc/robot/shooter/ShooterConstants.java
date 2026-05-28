@@ -16,6 +16,7 @@ public class ShooterConstants {
     public static final Translation2d HUB = Translation2d.kZero;
     static{
         LOOK_UP_TABLE.add(0, 0, 0, 0);
+        LOOK_UP_TABLE.add(1, 1, 1, 1);
     }
 
 

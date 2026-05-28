@@ -31,6 +31,7 @@ public class TurretConstants {
 
     //TODO: Set the turret pose to the actaual
     public static final Pose2d TURRET_POSE = new Pose2d();
+    public static final double TURRET_ANGLE = 0;
 
     public enum TurretStates{
         IDLE,

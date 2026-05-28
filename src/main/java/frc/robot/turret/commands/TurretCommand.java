@@ -35,7 +35,7 @@ public class TurretCommand extends Command {
         targetAngle = testAngle;
         break;
       case SHOOTING:
-        targetAngle = ShootingWhileDriving.getTurretAngle();
+        targetAngle = TurretConstants.TURRET_ANGLE;  //TODO: change it to targetAngle = ShootingWhileDriving.getTurretAngle();
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {

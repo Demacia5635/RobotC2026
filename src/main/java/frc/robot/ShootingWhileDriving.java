@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.shooter.ShooterConstants;
 
 /** Add your docs here. */
@@ -50,6 +51,7 @@ public class ShootingWhileDriving {
         lut = ShooterConstants.LOOK_UP_TABLE.get(distance);
         hoodAngle = lut[1];
         velocity = lut[0];
+        LogManager.log("targetPose: " + targetPose + " robotFutureX: " + robotFutureX + " robotFutureY: " + robotFutureY);
         turretAngle = new Translation2d(targetPose.getX() - robotFutureX, targetPose.getY() - robotFutureY).getAngle().getRadians();
     }
 

@@ -10,11 +10,17 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.DriveCommand;
 // import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.robot.chassis.RobotBChassisConstants;
+import frc.robot.shooter.ShooterConstants.ShooterStates;
+import frc.robot.shooter.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,7 +33,8 @@ import frc.demacia.utils.controller.CommandController.ControllerType;
  */
 public class RobotContainer implements Sendable {
 
-  CommandController driverController = new CommandController(0, ControllerType.kPS5);
+  private static Chassis chassis;
+  private static CommandController driverController = new CommandController(0, ControllerType.kPS5);
   // The robot's subsystems and commands are defined here...
 
 
@@ -39,6 +46,9 @@ public class RobotContainer implements Sendable {
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+    Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+    chassis = Chassis.getInstance();
+    
     configureBindings();
     setUserButton();
   }
@@ -58,10 +68,13 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
+    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
 
+    driverController.upButton().onTrue(new InstantCommand(() -> Shooter.getInstance().setShooterState(ShooterStates.SHOOTER)));
   }
 
   private void setUserButton() {
+    
     // new Trigger(() -> !DriverStation.isEnabled() && RobotController.getUserButton())
     //     .onTrue(new SetRobotNeutralMode(chassis, intake, shinua, turret, shooter).ignoringDisable(true));
   }
