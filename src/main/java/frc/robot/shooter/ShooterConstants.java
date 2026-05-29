@@ -44,18 +44,18 @@ public class ShooterConstants {
         public static final double MIN_HOOD_VELOCITY = 0;
     }
 
-    public final static class IndexerConstants {
-        //TODO: Set the motor config
-        public static final Canbus INDEXER_CANBUS = Canbus.Rio;
-        public static final String INDEXER_NAME = "indexer motor";
-        public static final int INDEXER_ID = 0;
+    // public final static class IndexerConstants {
+    //     //TODO: Set the motor config
+    //     public static final Canbus INDEXER_CANBUS = Canbus.Rio;
+    //     public static final String INDEXER_NAME = "indexer motor";
+    //     public static final int INDEXER_ID = 0;
 
-        public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
-        public static final double MAX_INDEXER_POWER = 1;
+    //     public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
+    //     public static final double MAX_INDEXER_POWER = 1;
 
-        public static final double MAX_INDEXER_CURRENT = 0;
-        public static final double MIN_INDEXER_VELOCITY = 0;
-    }
+    //     public static final double MAX_INDEXER_CURRENT = 0;
+    //     public static final double MIN_INDEXER_VELOCITY = 0;
+    // }
 
     public final static class FeederConstants {
         //TODO: Set the motor config

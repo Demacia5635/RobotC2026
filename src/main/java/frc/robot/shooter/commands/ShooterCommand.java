@@ -12,7 +12,7 @@ import frc.robot.ShootingWhileDriving;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
-import frc.robot.shooter.ShooterConstants.IndexerConstants;
+// import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.subsystems.Shooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -20,7 +20,7 @@ public class ShooterCommand extends Command {
   private Shooter shooter;
   private double flywheelVelocity = 0;
   private double hoodPosition = 0;
-  private double indexerPower = 0;
+  // private double indexerPower = 0;
   private double feederPower = 0;
   private Translation2d shooterToTarget;//TODO be in robot common
 
@@ -34,7 +34,7 @@ public class ShooterCommand extends Command {
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("FlywheelVelocity", () -> flywheelVelocity, (vel) -> flywheelVelocity = vel);
       builder.addDoubleProperty("HoodPosition", () -> hoodPosition, (position) -> hoodPosition = position);
-      builder.addDoubleProperty("IndexerPower", () -> indexerPower, (power) -> indexerPower = power);
+      // builder.addDoubleProperty("IndexerPower", () -> indexerPower, (power) -> indexerPower = power);
       builder.addDoubleProperty("FeederPower", () -> feederPower, (power) -> feederPower = power);
   }
 
@@ -47,16 +47,16 @@ public class ShooterCommand extends Command {
         ShootingWhileDriving.calculate(RobotCommon.getHubPose());
         flywheelVelocity = ShootingWhileDriving.getFlywheelVel();
         hoodPosition = ShootingWhileDriving.getHoodAngle();
-        indexerPower = 0;
+        // indexerPower = 0;
         feederPower = FeederConstants.MAX_FEEDER_POWER;
         if(shooter.isReady()){
-          indexerPower = IndexerConstants.MAX_INDEXER_POWER;
+          // indexerPower = IndexerConstants.MAX_INDEXER_POWER;
         }
         break;
       case IDLE:
         flywheelVelocity = 0;
         hoodPosition = 0;
-        indexerPower = 0;
+        // indexerPower = 0;
         feederPower = 0;
         break;
       case TEST:
@@ -68,7 +68,7 @@ public class ShooterCommand extends Command {
         hoodPosition = 45;
         flywheelVelocity = FlywheelConstants.MAX_FLYWHEEL_POWER;
         if (shooter.isReady()){
-          indexerPower = IndexerConstants.MAX_INDEXER_POWER;
+          // indexerPower = IndexerConstants.MAX_INDEXER_POWER;
         }
         break;
       case TRANCH:
@@ -78,7 +78,7 @@ public class ShooterCommand extends Command {
     }
     shooter.setFlywheelVelocity(flywheelVelocity);
     shooter.setHoodMotion(hoodPosition);
-    shooter.setIndexerPower(indexerPower);
+    // shooter.setIndexerPower(indexerPower);
     shooter.setFeederPower(feederPower);
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
       shooter.stopFeeder();
@@ -86,9 +86,9 @@ public class ShooterCommand extends Command {
     if (shooter.getHoodCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(shooter.getHoodVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
       shooter.stopHood();
     }
-    if (shooter.getIndexerCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(shooter.getIndexerVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
-      shooter.stopIndexer();
-    }
+    // if (shooter.getIndexerCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(shooter.getIndexerVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
+    //   shooter.stopIndexer();
+    // }
   }
 
   // Called once the command ends or is interrupted.

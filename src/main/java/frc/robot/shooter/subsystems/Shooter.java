@@ -11,14 +11,14 @@ import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
-import frc.robot.shooter.ShooterConstants.IndexerConstants;
+// import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 
 public class Shooter extends SubsystemBase {
   private static Shooter shooter;
   private TalonFXMotor flywheel;
   private TalonFXMotor hood;
-  private TalonFXMotor indexer;
+  // private TalonFXMotor indexer;
   private TalonFXMotor feeder;
   private ShooterStates shooterState;
 
@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
-    indexer = new TalonFXMotor(ShooterConstants.IndexerConstants.INDEXER_CONFIG);
+    // indexer = new TalonFXMotor(ShooterConstants.IndexerConstants.INDEXER_CONFIG);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     
   }
@@ -47,9 +47,9 @@ public class Shooter extends SubsystemBase {
     hood.setDuty(power);
    }
    
-  public void setIndexerPower (double power){ 
-    indexer.setDuty(power);
-  }
+  // public void setIndexerPower (double power){ 
+  //   indexer.setDuty(power);
+  // }
 
   public void setFeederPower (double power){
     feeder.setDuty(power);
@@ -67,9 +67,9 @@ public class Shooter extends SubsystemBase {
     return hood.getCurrentCurrent();
   }
 
-  public double getIndexerCurrent(){
-    return indexer.getCurrentCurrent();
-  }
+  // public double getIndexerCurrent(){
+  //   return indexer.getCurrentCurrent();
+  // }
 
   public double getFeederCurrent(){
     return feeder.getCurrentCurrent();
@@ -79,9 +79,9 @@ public class Shooter extends SubsystemBase {
     return hood.getCurrentVelocity();
   }
 
-  public double getIndexerVelocity(){
-    return indexer.getCurrentVelocity();
-  }
+  // public double getIndexerVelocity(){
+  //   return indexer.getCurrentVelocity();
+  // }
 
   public double getFeederVelocity(){
     return feeder.getCurrentVelocity();
@@ -107,7 +107,7 @@ public class Shooter extends SubsystemBase {
   public void stopAll(){
     flywheel.stop();
     hood.stop();
-    indexer.stop();
+    // indexer.stop();
     feeder.stop();
   }
 
@@ -129,9 +129,9 @@ public class Shooter extends SubsystemBase {
     hood.stop();
   }
 
-  public void stopIndexer() {
-    indexer.stop();
-  }
+  // public void stopIndexer() {
+  //   indexer.stop();
+  // }
 
   @Override
   public void periodic() { //TODO to make you change it in elastic,  may not work because not neer the other code
@@ -141,8 +141,8 @@ public class Shooter extends SubsystemBase {
       if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
         hood.stop();
       }
-      if (indexer.getCurrentCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(indexer.getCurrentVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
-        indexer.stop();
-      }
+      // if (indexer.getCurrentCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(indexer.getCurrentVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
+      //   indexer.stop();
+      // }
   }
 }
