@@ -25,7 +25,7 @@ public class ShooterConstants {
         public static final String FLYWEEL_NAME = "fly weel motor";
         public static final int FLYWEEL_ID = 0;
 
-        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME).withInverted(true);
+        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME).withInvert(true);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
     }
@@ -36,7 +36,7 @@ public class ShooterConstants {
         public static final String HOOD_NAME = "hood motor";
         public static final int HOOD_ID = 0;
 
-        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME).withGearRatio(127.445312);
+        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME).withRadiansMotor(127.445312);
         public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = 0;
@@ -63,7 +63,7 @@ public class ShooterConstants {
         public static final String FEEDER_NAME = "feeder motor";
         public static final int  FEEDER_ID = 0;
         
-        public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME).withInverted(true);
+        public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME).withInvert(true);
         public static final double MAX_FEEDER_POWER = 1;
         public static final double MAX_FEEDER_CURRENT = 0;
         public static final double MIN_FEEDER_VELOCITY = 0;
