@@ -22,13 +22,15 @@ public class ShooterConstants {
     public final static class FlywheelConstants {
         //TODO: Set the motor config
         public static final Canbus FLYWEEL_CANBUS = Canbus.Rio;
-        public static final String FLYWEEL_NAME = "fly weel motor";
+        public static final String FLYWEEL_NAME = "fly wheel motor";
         public static final int FLYWEEL_ID = 30;
 
-        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME).withInvert(true).withBrake(false);
+        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME).
+            withInvert(true).withBrake(false).withMeterMotor(1,2*0.0254);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
     }
+    
 
     public final static class HoodConstants {
         //TODO: Set the motor config

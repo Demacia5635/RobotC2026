@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
@@ -26,6 +27,7 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   private Shooter() {
+    super();
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
@@ -38,9 +40,11 @@ public class Shooter extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("Flywheel Velocity", () -> flywheel.getCurrentVelocity(), null);
+      builder.addDoubleProperty("Flywheel Position", () -> flywheel.getCurrentPosition(), null);
       builder.addDoubleProperty("Feeder Velocity", () -> feeder.getCurrentVelocity(), null);
       builder.addDoubleProperty("Hood Position", () -> hood.getCurrentPosition(), null);
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
+      builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
   }
 
   public static Shooter getInstance(){
@@ -152,6 +156,11 @@ public class Shooter extends SubsystemBase {
       if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
         hood.stop();
       }
+      double v = flywheel.getVelocity().getValueAsDouble();
+      if(Math.abs(v) > 0.1) {
+        LogManager.log("v = " + v);
+      }
+      // LogManager.log("voltage " + flywheel.getMotorVoltage().getValueAsDouble());
       // if (indexer.getCurrentCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(indexer.getCurrentVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
       //   indexer.stop();
       // }

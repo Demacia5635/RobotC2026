@@ -239,8 +239,7 @@ public class LogEntry<T> {
      * @param metaData The metadata to append
      */
     public void addData(String name, Data<T> data, String metaData, boolean isRio){
-        this.name = this.name + " | " + name;
-        this.metaData = this.metaData + " | " + metaData;
+        this.name = this.name + " | " + name;        this.metaData = this.metaData + " | " + metaData;
         if (this.data.getSignalArray() != null){
             this.data.expandWithSignals(data.getSignalArray(), isRio);
         } else {
@@ -252,5 +251,9 @@ public class LogEntry<T> {
 
     public void addData(String name, Data<T> data, String metaData){
         addData(name, data, metaData, true);
+    }
+
+    public boolean isChanged() {
+        return data.hasChanged();
     }
 }

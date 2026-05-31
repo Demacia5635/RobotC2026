@@ -82,7 +82,8 @@ public class LogManager extends SubsystemBase {
    * @return A new LogEntryBuilder
    */
   @SuppressWarnings("unchecked")
-  public static <T> LogEntryBuilder<T> addEntry(String name, StatusSignal<T>... statusSignals) {
+  public static <T> LogEntryBuilder<T> addEntry(String name, 
+        StatusSignal<T>... statusSignals) {
     return new LogEntryBuilder<T>(name, statusSignals);
   }
 
@@ -206,7 +207,7 @@ public class LogManager extends SubsystemBase {
     LogEntry<T> entry = null;
 
     int categoryIndex = logManager.getCategoryIndex(data, logLevel, isSeparated);
-
+    
     if (categoryIndex == -1){
       entry = new LogEntry<T>(name, data, logLevel, metaData);
       logManager.individualLogEntries.add(entry);

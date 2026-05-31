@@ -11,6 +11,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.units.measure.Frequency;
+import frc.demacia.utils.log.LogManager;
 
 /**
  * A generic wrapper class for data sources (StatusSignals or Suppliers).
@@ -86,6 +87,10 @@ public class Data<T> {
 
     /** Registers this instance's signals to the static master list */
     private void registerSignal() {
+     /*   for(var s : signal) {
+            LogManager.log("Added signal " + s.getName());            
+            rioSignals.add(s);
+        } */
         signalInstances.add(this);
     }
 
@@ -189,6 +194,7 @@ public class Data<T> {
                 if (doubleArrayValues[i] != signal[i].getValueAsDouble()) {
                     changed = true;
                     doubleArrayValues[i] = signal[i].getValueAsDouble();
+                    floatArrayValues[i] = (float)doubleArrayValues[i];
                 }
                 // if (floatArrayValues[i] != (float) signal[i].getValueAsDouble()) {
                 //     changed = true;
