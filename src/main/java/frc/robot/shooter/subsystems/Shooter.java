@@ -5,6 +5,8 @@
 package frc.robot.shooter.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.shooter.ShooterConstants;
@@ -29,7 +31,16 @@ public class Shooter extends SubsystemBase {
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
     // indexer = new TalonFXMotor(ShooterConstants.IndexerConstants.INDEXER_CONFIG);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
-    
+    SmartDashboard.putData("shooter",this);
+    shooterState = ShooterStates.TEST;
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addDoubleProperty("Flywheel Velocity", () -> flywheel.getCurrentVelocity(), null);
+      builder.addDoubleProperty("Feeder Velocity", () -> feeder.getCurrentVelocity(), null);
+      builder.addDoubleProperty("Hood Position", () -> hood.getCurrentPosition(), null);
+      builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
   }
 
   public static Shooter getInstance(){

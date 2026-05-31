@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,6 +30,7 @@ import frc.demacia.utils.controller.CommandController.ControllerType;
 public class RobotContainer implements Sendable {
 
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
+  private Shooter shooter = Shooter.getInstance();
   // The robot's subsystems and commands are defined here...
 
 
@@ -39,6 +42,7 @@ public class RobotContainer implements Sendable {
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+    shooter.setDefaultCommand(new ShooterCommand());
     configureBindings();
     setUserButton();
   }
@@ -58,7 +62,7 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
-
+    // driverController.downButton().onTrue(new ShooterCommand());
   }
 
   private void setUserButton() {

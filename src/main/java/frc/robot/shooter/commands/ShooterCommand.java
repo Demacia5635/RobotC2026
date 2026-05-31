@@ -6,6 +6,7 @@ package frc.robot.shooter.commands;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommon;
 import frc.robot.ShootingWhileDriving;
@@ -26,14 +27,15 @@ public class ShooterCommand extends Command {
 
   /** Creates a new ShooterCommand. */
   public ShooterCommand() {
-    this.shooter = Shooter.getInstance();
+    this.shooter =  Shooter.getInstance();
     addRequirements(shooter);
+    SmartDashboard.putData("shooter command", this);
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("FlywheelVelocity", () -> flywheelVelocity, (vel) -> flywheelVelocity = vel);
-      builder.addDoubleProperty("HoodPosition", () -> hoodPosition, (position) -> hoodPosition = position);
+      builder.addDoubleProperty("HoodPosition", () -> Math.toDegrees(hoodPosition), (position) -> hoodPosition = Math.toRadians(position));
       // builder.addDoubleProperty("IndexerPower", () -> indexerPower, (power) -> indexerPower = power);
       builder.addDoubleProperty("FeederPower", () -> feederPower, (power) -> feederPower = power);
   }
@@ -76,7 +78,7 @@ public class ShooterCommand extends Command {
         feederPower = 0;
         break;
     }
-    shooter.setFlywheelVelocity(flywheelVelocity);
+    shooter.setFlywheelPower(flywheelVelocity);
     shooter.setHoodMotion(hoodPosition);
     // shooter.setIndexerPower(indexerPower);
     shooter.setFeederPower(feederPower);
