@@ -45,7 +45,7 @@ public class ShooterConstants {
         public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME)
         .withInvert(true)
         .withRadiansMotor(72)
-        .withPID(25, 0, 0, 0.0561,1.0495 , 0.0501, 0)
+        .withPID(60, 6, 0, 0.0561,1.0495 , 0.0501, 0)
         .withMotionParam(6, 30, 240);
         public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
