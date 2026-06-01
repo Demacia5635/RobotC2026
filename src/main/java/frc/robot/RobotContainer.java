@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.commands.hoodTesting;
 import frc.robot.shooter.subsystems.Shooter;
 
 /**
@@ -43,6 +44,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     shooter.setDefaultCommand(new ShooterCommand());
+    // shooter.setDefaultCommand(new hoodTesting(shooter, driverController));
     configureBindings();
     setUserButton();
   }

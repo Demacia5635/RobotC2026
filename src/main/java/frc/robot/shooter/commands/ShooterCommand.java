@@ -78,7 +78,7 @@ public class ShooterCommand extends Command {
         feederPower = 0;
         break;
     }
-    shooter.setFlywheelPower(flywheelVelocity);
+    shooter.setFlywheelVelocity(flywheelVelocity);
     shooter.setHoodMotion(hoodPosition);
     // shooter.setIndexerPower(indexerPower);
     shooter.setFeederPower(feederPower);

@@ -25,10 +25,14 @@ public class ShooterConstants {
         public static final String FLYWEEL_NAME = "fly wheel motor";
         public static final int FLYWEEL_ID = 30;
 
-        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME).
-            withInvert(true).withBrake(false).withMeterMotor(1,2*0.0254);
+        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME)
+        .withInvert(true)
+        .withBrake(false)
+        .withMeterMotor(1,2*0.0254)
+        .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
+        public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2
     }
     
 
@@ -38,10 +42,14 @@ public class ShooterConstants {
         public static final String HOOD_NAME = "hood motor";
         public static final int HOOD_ID = 50;
 
-        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME).withRadiansMotor(127.445312);
+        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME)
+        .withInvert(true)
+        .withRadiansMotor(72)
+        .withPID(25, 0, 0, 0.0561,1.0495 , 0.0501, 0)
+        .withMotionParam(6, 30, 240);
         public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
-        public static final double MAX_POSITION = 0;
+        public static final double MAX_POSITION = Math.toRadians(60);
         public static final double MAX_HOOD_CURRENT = 0;
         public static final double MIN_HOOD_VELOCITY = 0;
     }
