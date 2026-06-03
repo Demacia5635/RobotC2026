@@ -20,6 +20,7 @@ import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
+import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
 
 /**
@@ -34,6 +35,7 @@ import frc.robot.shooter.subsystems.Shooter;
 public class RobotContainer implements Sendable {
 
   private static Chassis chassis;
+  private static Shooter shooter;
   private static CommandController driverController = new CommandController(0, ControllerType.kPS5);
   // The robot's subsystems and commands are defined here...
 
@@ -48,6 +50,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
     chassis = Chassis.getInstance();
+    shooter = Shooter.getInstance();
     
     configureBindings();
     setUserButton();
@@ -69,7 +72,7 @@ public class RobotContainer implements Sendable {
    */
   private void configureBindings() {
     chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
-
+    shooter.setDefaultCommand(new ShooterCommand());
     driverController.upButton().onTrue(new InstantCommand(() -> Shooter.getInstance().setShooterState(ShooterStates.SHOOTER)));
   }
 

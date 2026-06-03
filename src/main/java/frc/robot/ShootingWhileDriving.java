@@ -48,6 +48,7 @@ public class ShootingWhileDriving {
             timeOfFlight = newTimeOfFlight; 
         }
         distance = Math.hypot(targetPose.getX() - robotFutureX, targetPose.getY() - robotFutureY);
+        LogManager.log("targetPose: " + targetPose + " robotFutureX: " + robotFutureX + " robotFutureY: " + robotFutureY);
         lut = ShooterConstants.LOOK_UP_TABLE.get(distance);
         hoodAngle = lut[1];
         velocity = lut[0];
