@@ -40,6 +40,7 @@ import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
 import frc.demacia.vision.utils.VisionConstants;
+import frc.robot.RobotCommon;
 
 /**
  * Main swerve drive chassis controller.
@@ -375,7 +376,7 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // updateCommon();
+        updateCommon();
         //TODO: RETORN IT 
         observation = new OdometryObservation(
                 Timer.getFPGATimestamp(),
@@ -391,12 +392,12 @@ public class Chassis extends SubsystemBase {
         // field.getObject("estimation").setPose(ShooterUtils.computeFuturePosition(getChassisSpeedsFieldRel(), getPose(), 0.1));
     }
 
-    // public void updateCommon() {
-    //     RobotCommon.setRobotAngle(getGyroAngle());
-    //     RobotCommon.setCurrentRobotPose(getPose());
-    //     RobotCommon.setFieldRelativeSpeeds(getChassisSpeedsFieldRel());
-    //     RobotCommon.setFutureRobotPose(getFuturePose(0.2));
-    // } 
+    public void updateCommon() {
+        RobotCommon.setRobotAngle(getGyroAngle());
+        RobotCommon.setCurrentRobotPose(getPose());
+        RobotCommon.setChassisFieldRelativeSpeeds(getChassisSpeedsFieldRel());
+        RobotCommon.setRobotFuturePose(getFuturePose(0.2));
+    } 
     //TODO: reotrn it
 
     public Pose2d getFuturePose(double dtSeconds) {

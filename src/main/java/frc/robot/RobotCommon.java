@@ -104,4 +104,11 @@ public class RobotCommon {
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
 
+    public static void setCurrentRobotPose(Pose2d newCurrentRobotPose){
+        currentRobotPose = newCurrentRobotPose;
+    }
+
+     public static Pose2d getCurrentRobotPose(){
+        return currentRobotPose;
+     }
 }
