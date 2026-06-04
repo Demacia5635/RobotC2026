@@ -42,7 +42,6 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LogManager.log("Shooter State: " + shooter.getShooterState());
     switch (shooter.getShooterState()) {
       case SHOOTER:
         //TODO: Change the position of the calculate

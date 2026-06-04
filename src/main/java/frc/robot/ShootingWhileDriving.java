@@ -27,7 +27,7 @@ public class ShootingWhileDriving {
     public static void calculate(Translation2d targetPose){
         robotVel = RobotCommon.getRobotRelativeSpeeds();
         robotPose = RobotCommon.getRobotFuturePose();
-        
+
         distance = Math.hypot(targetPose.getX() - robotPose.getX(), targetPose.getY() - robotPose.getY());
 
         timeOfFlight = ShooterConstants.LOOK_UP_TABLE.get(distance)[2];
@@ -37,29 +37,28 @@ public class ShootingWhileDriving {
 
         for (int i = 0; i < 10; i++) {
             distance = Math.hypot(targetPose.getX() - robotFutureX, targetPose.getY() - robotFutureY);
-           double  newTimeOfFlight = ShooterConstants.LOOK_UP_TABLE.get(distance)[2];
+            double newTimeOfFlight = ShooterConstants.LOOK_UP_TABLE.get(distance)[2];
 
-            robotFutureX += (timeOfFlight - robotFutureX/robotVel.vxMetersPerSecond) * TIME_DIFFRENCE;
-            robotFutureY += (timeOfFlight - robotFutureY/robotVel.vyMetersPerSecond) * TIME_DIFFRENCE;
-
+            if (robotVel.vxMetersPerSecond != 0) {
+                robotFutureX += (timeOfFlight - robotFutureX/robotVel.vxMetersPerSecond) * TIME_DIFFRENCE;
+            }
+            if (robotVel.vyMetersPerSecond != 0) {
+                robotFutureY += (timeOfFlight - robotFutureY/robotVel.vyMetersPerSecond) * TIME_DIFFRENCE;
+            }
             if(Math.abs(timeOfFlight - newTimeOfFlight) < 0.1) {
                  break;
             }
             timeOfFlight = newTimeOfFlight; 
         }
         distance = Math.hypot(targetPose.getX() - robotFutureX, targetPose.getY() - robotFutureY);
-        LogManager.log("targetPose: " + targetPose + " robotFutureX: " + robotFutureX + " robotFutureY: " + robotFutureY);
+
         lut = ShooterConstants.LOOK_UP_TABLE.get(distance);
         hoodAngle = lut[1];
         velocity = lut[0];
-        LogManager.log("targetPose: " + targetPose + " robotFutureX: " + robotFutureX + " robotFutureY: " + robotFutureY);
-        turretAngle = new Translation2d(targetPose.getX() - robotFutureX, targetPose.getY() - robotFutureY).getAngle().getRadians();
-    }
-
-    public static double getHoodAngle(){
-        return hoodAngle;
-    }
-
+        LogManager.log("Distance: " + distance + " Target Pose: " + targetPose + " Robot Future X: " + robotFutureX + " Robot Future Y: " + robotFutureY);
+        turretAngle = new Translation2d(robotFutureX - targetPose.getX(), robotFutureY - targetPose.getY()).getAngle().getRadians();
+        LogManager.log("targetPose: " + targetPose + " robotFutureX: " + robotFutureX + " robotFutureY: " + robotFutureY + " turretAngle: " + turretAngle + "time of flight" + timeOfFlight);
+    }i
     public static double getFlywheelVel(){
         return velocity;
     }

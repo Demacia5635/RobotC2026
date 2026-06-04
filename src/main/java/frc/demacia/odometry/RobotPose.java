@@ -26,6 +26,7 @@ import frc.demacia.vision.subsystem.Quest;
 import frc.demacia.vision.utils.Vision;
 import frc.demacia.vision.utils.VisionConstants;
 
+import frc.robot.Field;
 import frc.robot.RobotContainer;
 
 public class RobotPose {
@@ -46,6 +47,9 @@ public class RobotPose {
     
     private BuiltInAccelerometer accelerometer;
 
+    private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
+            Rotation2d.kZero);
+
     private RobotPose(Translation2d[] modulePositions, Matrix<N3, N1> stateSTD,
             Matrix<N3, N1> questSTD) {
         this.vision = new Vision((VisionConstants.Tags.TAGS_ARRAY));
@@ -58,6 +62,12 @@ public class RobotPose {
         this.hasQuestDisconnected = false;
         this.poseEstimator = new DemaciaPoseEstimator(modulePositions, stateSTD, visionSTD);
         this.accelerometer = new BuiltInAccelerometer(); 
+
+        SmartDashboard.putData("Reset Pose Based Red Hub",  new InstantCommand(() -> {
+            Chassis.getInstance().setYaw(Rotation2d.kZero);
+            setQuestPose(hubRedResetPose);
+            resetPose(hubRedResetPose);
+        }));
     }
 
     public Quest getQuest() {

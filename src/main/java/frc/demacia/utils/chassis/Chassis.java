@@ -159,7 +159,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("chassis/set coast",
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
-                new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
+                new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true)); 
 
         RobotPose.initialize(modulePositions, new Matrix<>(
                 new SimpleMatrix(
@@ -351,7 +351,7 @@ public class Chassis extends SubsystemBase {
     public Rotation2d getGyroAngle() {
         gyroYawStatus.refresh();
         if (gyroYawStatus.getStatus() == StatusCode.OK) {
-            lastGyroYaw = new Rotation2d(gyroYawStatus.getValue());
+            lastGyroYaw = new Rotation2d(gyroYawStatus.getValue()).div(358).times(360); //TODO: remove 358/360 ratio
         }
         return lastGyroYaw;
     }

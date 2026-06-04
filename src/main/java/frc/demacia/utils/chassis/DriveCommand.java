@@ -4,6 +4,7 @@
 
 package frc.demacia.utils.chassis;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.controller.CommandController;
@@ -57,7 +58,7 @@ public class DriveCommand extends Command {
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
     // double velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
-    double velRot = ShootingWhileDriving.getTurretAngle() * (-10);
+    double velRot = (MathUtil.angleModulus(chassis.getGyroAngle().getRadians()) - ShootingWhileDriving.getTurretAngle()) * (1);
     // LogManager.log("velRot: " + velRot);
     if(precisionMode){
         velX /= 4;
