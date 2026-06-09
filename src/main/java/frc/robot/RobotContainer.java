@@ -44,7 +44,7 @@ public class RobotContainer implements Sendable {
   public static ShinuaSubsystem shinua = new ShinuaSubsystem();
   public static Turret turret = new Turret();
   public static Shooter shooter = new Shooter();
-  public static StateManger stateManger = new StateManger();
+  // public static StateManger stateManger = new StateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
@@ -75,31 +75,31 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.rightBumper().onFalse(new RunCommand(()-> stateManger.isWork = true, stateManger){
+    // driverController.rightBumper().onFalse(new RunCommand(()-> stateManger.isWork = true, stateManger){
       
-      @Override
-      public void end(boolean interrupted) {
-        stateManger.isWork = false;
-      }
+    //   @Override
+    //   public void end(boolean interrupted) {
+    //     stateManger.isWork = false;
+    //   }
 
-      @Override
-      public boolean isFinished() {
-        return !driverController.rightBumper().getAsBoolean();
-      }
+    //   @Override
+    //   public boolean isFinished() {
+    //     return !driverController.rightBumper().getAsBoolean();
+    //   }
 
-      @Override
-      public boolean runsWhenDisabled() {
-        return false;
-      }
-    });
+    //   @Override
+    //   public boolean runsWhenDisabled() {
+    //     return false;
+    //   }
+    // });
   }
 
   private void setDefaultCommands() {
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), driverController));
-    intake.setDefaultCommand(new IntakeCommand());
-    shinua.setDefaultCommand(new ShinuaCommand());
-    shooter.setDefaultCommand(new ShooterCommand(shooter));
-    turret.setDefaultCommand(new TurretCommand(turret));
+    // intake.setDefaultCommand(new IntakeCommand());
+    // shinua.setDefaultCommand(new ShinuaCommand());
+    // shooter.setDefaultCommand(new ShooterCommand(shooter));
+    // turret.setDefaultCommand(new TurretCommand(turret));
   }
 
   private void setUserButton() {
