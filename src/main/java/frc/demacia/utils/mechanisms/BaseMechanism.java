@@ -32,7 +32,6 @@ public class BaseMechanism extends SubsystemBase{
     protected HashMap<String, SensorInterface> sensors;
 
     protected MotorInterface[] motorArray;
-    protected SensorInterface[] sensorArray;
 
     protected boolean hasCalibrated = true;
 
@@ -50,7 +49,6 @@ public class BaseMechanism extends SubsystemBase{
         this.name = name;
         setName(name);
         motorArray = motors;
-        sensorArray = sensors;
         // Initialize motors map
         this.motors = new HashMap<>();
         for (MotorInterface motor : motors) {
@@ -73,9 +71,9 @@ public class BaseMechanism extends SubsystemBase{
 
         // Create global Brake/Coast buttons for the whole mechanism
         SmartDashboard.putData(getName() + "/set coast all", 
-                new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
+                new InstantCommand(() -> setNeutralModeAll(false)).ignoringDisable(true));
         SmartDashboard.putData(getName() + "/set brake all", 
-                new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
+                new InstantCommand(() -> setNeutralModeAll(true)).ignoringDisable(true));
         
         SmartDashboard.putData(name, this);
     }
@@ -148,7 +146,7 @@ public class BaseMechanism extends SubsystemBase{
     /**
      * Stops all motors in this mechanism.
      */
-    public void stop(){
+    public void stopAll(){
         if (motors == null) return;
         for (MotorInterface motor : motors.values()){
             motor.stop();
@@ -161,7 +159,7 @@ public class BaseMechanism extends SubsystemBase{
      */
     public void stop(String motorName){
         if (isValidMotor(motorName)){
-            motors.get(motorName).stop();
+            motors.get(motorName).setDuty(0);
         }
     }
 
@@ -171,7 +169,7 @@ public class BaseMechanism extends SubsystemBase{
      */
     public void stop(int motorIndex){
         if (isValidMotor(motorIndex)){
-            motorArray[motorIndex].stop();
+            motorArray[motorIndex].setDuty(0);
         }
     }
 
@@ -275,24 +273,46 @@ public class BaseMechanism extends SubsystemBase{
     }
 
     /**
-     * Sets the position for a specific motor.
-     * @param motorName The name of the motor
-     * @param position The position to set
+     * Sets the Motion for all motors.
+     * @param motion The Motion to set
      */
-    public void setMotion(String motorName, double position){
-        if (isValidMotor(motorName) && hasCalibrated){
-            motors.get(motorName).setMotion(position);
+    public void setMotionAll(double motion) {
+        if (motors == null || !hasCalibrated) return;
+        for (MotorInterface motor : motors.values()){
+            motor.setMotion(motion);
         }
     }
 
     /**
-     * Sets the position for a specific motor.
-     * @param motorIndex The index of the motor
-     * @param position The position to set
+     * Sets the Motion for a specific motor.
+     * @param motorName The name of the motor
+     * @param motion The Motion to set
      */
-    public void setMotion(int motorIndex, double position){
+    public void setMotion(String motorName, double motion){
+        if (isValidMotor(motorName) && hasCalibrated){
+            motors.get(motorName).setMotion(motion);
+        }
+    }
+
+    /**
+     * Sets the Motion for a specific motor.
+     * @param motorIndex The index of the motor
+     * @param motion The Motion to set
+     */
+    public void setMotion(int motorIndex, double motion){
         if (isValidMotor(motorIndex) && hasCalibrated){
-            motorArray[motorIndex].setMotion(position);
+            motorArray[motorIndex].setMotion(motion);
+        }
+    }
+
+    /**
+     * Sets the Angle for all motors.
+     * @param angle The Angle to set
+     */
+    public void setAngleAll(double angle) {
+        if (motors == null || !hasCalibrated) return;
+        for (MotorInterface motor : motors.values()){
+            motor.setAngle(angle);
         }
     }
 
@@ -322,7 +342,7 @@ public class BaseMechanism extends SubsystemBase{
      * Sets the neutral mode (Brake or Coast) for all motors.
      * @param isBrake true for Brake mode, false for Coast mode
      */
-    public void setNeutralMode(boolean isBrake) {
+    public void setNeutralModeAll(boolean isBrake) {
         if (motors == null) return;
         for (MotorInterface motor : motors.values()) {
             if (motor != null) motor.setNeutralMode(isBrake);
@@ -354,7 +374,7 @@ public class BaseMechanism extends SubsystemBase{
     /**
      * Triggers the electronics check for all motors and sensors.
      */
-    public void checkElectronics() {
+    public void checkElectronicsAll() {
         if (motors == null) return;
         for (MotorInterface motor : motors.values()) {
             if (motor != null) motor.checkElectronics();
@@ -392,16 +412,6 @@ public class BaseMechanism extends SubsystemBase{
     public void checkElectronicsSensor(String sensorName){
         if (isValidSensor(sensorName)){
             sensors.get(sensorName).checkElectronics();
-        }
-    }
-
-    /**
-     * Checks electronics for a specific sensor.
-     * @param sensorName The index of the sensor
-     */
-    public void checkElectronicsSensor(int sensorIndex){
-        if (isValidSensor(sensorIndex)){
-            sensorArray[sensorIndex].checkElectronics();
         }
     }
 
@@ -452,20 +462,6 @@ public class BaseMechanism extends SubsystemBase{
     }
 
     /**
-     * Retrieves a sensor object by its index.
-     * Logs an error if the sensor index is invalid.
-     * @param sensorIndex The index of the sensor
-     * @return The SensorInterface object, or null if not found
-     */
-    public SensorInterface getSensor(int sensorIndex) {
-        if (!isValidSensor(sensorIndex)){
-            LogManager.log("Invalid sensor: " + sensorIndex);
-            return null;
-        }
-        return sensorArray[sensorIndex];
-    }
-
-    /**
      * Checks if a motor name exists in the map.
      * @param motorName The name to check
      * @return true if valid, false otherwise
@@ -490,14 +486,5 @@ public class BaseMechanism extends SubsystemBase{
      */
     protected boolean isValidSensor(String sensorName) {
         return sensors.containsKey(sensorName);
-    }
-
-    /**
-     * Checks if a sensor index exists in the map.
-     * @param sensorIndex The index to check
-     * @return true if valid, false otherwise
-     */
-    protected boolean isValidSensor(int sensorIndex) {
-        return sensorIndex >= 0 && sensorIndex < sensorArray.length;
     }
 }

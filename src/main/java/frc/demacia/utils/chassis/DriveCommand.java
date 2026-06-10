@@ -22,7 +22,7 @@ public class DriveCommand extends Command {
     this.chassis = chassis;
     this.controller = controller;
     precisionMode = false;
-    addRequirements(chassis);
+    addRequirements(Chassis.getInstance());
   }
 
   public void invertPrecisionMode() {

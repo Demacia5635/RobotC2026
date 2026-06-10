@@ -1,6 +1,5 @@
 package frc.demacia.utils;
 
-import static edu.wpi.first.units.Units.Hertz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +8,6 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-
-import edu.wpi.first.units.measure.Frequency;
 
 /**
  * A generic wrapper class for data sources (StatusSignals or Suppliers).
@@ -55,8 +52,7 @@ public class Data<T> {
      * 
      * @param signal Variable arguments of StatusSignals
      */
-    @SuppressWarnings("unchecked")
-    public Data(StatusSignal<T>... signal) {
+    public Data(StatusSignal<T>[] signal, boolean isRio) {
         this.signal = signal;
         length = signal.length;
 
@@ -64,6 +60,11 @@ public class Data<T> {
         allocateCachedArrays();
 
         registerSignal();
+        if (isRio) {
+            rioSignals.addAll(Arrays.asList(signal));
+        } else {
+            canivoreSignals.addAll(Arrays.asList(signal));
+        }
         refresh();
     }
 
@@ -176,6 +177,13 @@ public class Data<T> {
         }
     }
 
+    public static void addSignals(boolean isRio, StatusSignal<?>... signals) {
+        if (isRio) 
+            rioSignals.addAll(Arrays.asList(signals));
+        else
+            canivoreSignals.addAll(Arrays.asList(signals));
+    }
+
     /**
      * Updates the internal primitive arrays from the signals.
      * Sets the 'changed' flag if values have changed.
@@ -190,10 +198,10 @@ public class Data<T> {
                     changed = true;
                     doubleArrayValues[i] = signal[i].getValueAsDouble();
                 }
-                // if (floatArrayValues[i] != (float) signal[i].getValueAsDouble()) {
-                //     changed = true;
-                //     floatArrayValues[i] = (float) signal[i].getValueAsDouble();
-                // }
+                if (floatArrayValues[i] != (float) signal[i].getValueAsDouble()) {
+                    changed = true;
+                    floatArrayValues[i] = (float) signal[i].getValueAsDouble();
+                }
             }
         } else if (isBoolean) {
             if (booleanArrayValues == null)
@@ -232,11 +240,11 @@ public class Data<T> {
                     changed = true;
                     doubleArrayValues[i] = newVal;
                 }
-                // float newFloatVal = ((Number) supplier[i].get()).floatValue();
-                // if (floatArrayValues[i] != newFloatVal) {
-                //     changed = true;
-                //     floatArrayValues[i] = newFloatVal;
-                // }
+                float newFloatVal = ((Number) supplier[i].get()).floatValue();
+                if (floatArrayValues[i] != newFloatVal) {
+                    changed = true;
+                    floatArrayValues[i] = newFloatVal;
+                }
             }
         } else if (isBoolean) {
             if (booleanArrayValues == null)
@@ -262,8 +270,8 @@ public class Data<T> {
     }
 
     public static void setFrequancyAll() {
-        StatusSignal.setUpdateFrequencyForAll(Frequency.ofBaseUnits(100, Hertz), rioSignals);
-        StatusSignal.setUpdateFrequencyForAll(Frequency.ofBaseUnits(100, Hertz), canivoreSignals);
+       // StatusSignal.setUpdateFrequencyForAll(Frequency.ofBaseUnits(100, Hertz), rioSignals);
+       // StatusSignal.setUpdateFrequencyForAll(Frequency.ofBaseUnits(100, Hertz), canivoreSignals);
     }
 
     /**
@@ -552,11 +560,6 @@ public class Data<T> {
         detectTypeFromSignal();
         allocateCachedArrays();
 
-        if (isRio) {
-            rioSignals.addAll(Arrays.asList(newSignals));
-        } else {
-            canivoreSignals.addAll(Arrays.asList(newSignals));
-        }
         refresh();
     }
 

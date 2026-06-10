@@ -2,6 +2,7 @@ package frc.demacia.utils.motors;
 
 import java.util.function.Supplier;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
@@ -42,6 +43,12 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   private double lastAcceleration;
   private double setPoint = 0;
   private double lastTime = 0;
+
+  // Motor Stalling
+  private final Timer stallTimer = new Timer();
+  private boolean conditionActive = false;
+  private boolean IsDone = false;
+  private boolean isStalled = false;
 
   /**
    * Creates a new Spark Max motor wrapper.
@@ -163,6 +170,11 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void setNeutralMode(boolean isBrake) {
     cfg.idleMode(isBrake ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
     configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+  }
+
+  @Override
+  public REVLibError clearFaults() {
+    return super.clearFaults();
   }
 
   @Override
@@ -417,6 +429,34 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
       }
     });
   }
+  public void updateStallDetection() {
+    if (config.conditionIsTrue == null || config.lowVelocityThreshold == 0)
+      return;
+    double currentVelocity = Math.abs(getCurrentVelocity());
+    double currentCurrent = getCurrentCurrent();
+    if (currentCurrent > config.highCurrentThreshold && currentVelocity < config.lowVelocityThreshold) {
+      if (!conditionActive) {
+        stallTimer.restart();
+        conditionActive = true;
+        IsDone = false;
+        isStalled = true;
+
+      }
+      if (stallTimer.hasElapsed(config.secondsThreshold) && !IsDone) {
+        config.conditionIsTrue.accept(config);
+        IsDone = true;
+      }
+    } else if (conditionActive) {
+      stallTimer.stop();
+      stallTimer.reset();
+      conditionActive = false;
+      IsDone = false;
+      isStalled = false;
+    }
+  }
+  public boolean getStallDetection() {
+  return isStalled;
+}
 
   public double gearRatio() {
     return config.motorRatio;

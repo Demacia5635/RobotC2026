@@ -17,6 +17,8 @@ import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.robot.chassis.MK5nChassisConstants;
+import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
@@ -24,7 +26,8 @@ import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.stateManger.StateManger;
+import frc.robot.stateManger.utils.stateMangerUtils;
+// import frc.robot.stateManger.StateManger;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
 
@@ -40,21 +43,23 @@ import frc.robot.turret.subsystems.Turret;
 public class RobotContainer implements Sendable {
 
   // The robot's subsystems and commands are defined here...
-  public static IntakeSubsystem intake = new IntakeSubsystem();
-  public static ShinuaSubsystem shinua = new ShinuaSubsystem();
-  public static Turret turret = new Turret();
-  public static Shooter shooter = new Shooter();
+  // public static IntakeSubsystem intake = new IntakeSubsystem();
+  // public static ShinuaSubsystem shinua = new ShinuaSubsystem();
+  // public static Turret turret = new Turret();
+  // public static Shooter shooter = new Shooter();
+  public static Chassis chassis;
   // public static StateManger stateManger = new StateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandController driverController = new CommandController(0, ControllerType.kPS5);
+  CommandController driverController = new CommandController(1, ControllerType.kXbox);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
+    chassis = Chassis.getInstance();
     configureBindings();
     setUserButton();
     setDefaultCommands();
@@ -95,7 +100,7 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), driverController));
+    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
     // intake.setDefaultCommand(new IntakeCommand());
     // shinua.setDefaultCommand(new ShinuaCommand());
     // shooter.setDefaultCommand(new ShooterCommand(shooter));
