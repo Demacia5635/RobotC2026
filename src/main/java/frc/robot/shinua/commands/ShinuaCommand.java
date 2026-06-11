@@ -119,7 +119,6 @@ public class ShinuaCommand extends Command {
   public void end(boolean interrupted) {
     shinuaSubsystem.stopMecanum();
     shinuaSubsystem.stopRollers();
-    shinuaSubsystem.setState(ShinuaState.SHINUA_OFF);
   }
 
   // Returns true when the command should end.

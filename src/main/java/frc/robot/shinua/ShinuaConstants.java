@@ -50,9 +50,9 @@ public class ShinuaConstants {
             .withPID(kp, ki, kd,ks, kv, ka, kg);
 
     public static enum ShinuaState {
-        SHINUA_ON(1, 1),
+        SHINUA_ON(0.3, 0.9),
         SHINUA_OFF(0, 0),
-        EJECTING(-1, -1),
+        EJECTING(-0.3, -0.9),
         TESTING(0, 0);
 
         public double velocityRollers;
