@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
       instance = new IntakeSubsystem();
     return instance;
   }
-
+  
   private IntakeSubsystem() {// TODO call super,
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);

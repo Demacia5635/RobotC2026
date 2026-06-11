@@ -44,10 +44,6 @@ public class IntakeCommand extends Command {
 
     switch (intakeSubsystem.getState()) {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
-        // if (RobotCommon.IsStuck()) {
-        //   intakeSubsystem.setRollerDuty(IntakeState.EJECTING.duty);
-        // } 
-        // else
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         if (intakeSubsystem.getIntakeDeployAngle()<IntakeConstants.ANGLE_IS_COAST) {

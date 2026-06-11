@@ -8,7 +8,7 @@ public class IntakeConstants {
 
     // constants for roller motor
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
-    public static final int ROLLER_ID = 0;
+    public static final int ROLLER_ID = 51;
     public static final String ROLLER_NAME = "Intake Roller Motor";
     public static final boolean ROLLER_INVERTED = false;
     public static final double ROLLER_CURRENT_LIMIT = 40.0;
@@ -23,9 +23,9 @@ public class IntakeConstants {
             .withCurrent(ROLLER_CURRENT_LIMIT);
 
     // constants for intake deploy motor
-    public static final int INTAKE_DEPLOY_ID = 0;
+    public static final int INTAKE_DEPLOY_ID = 50;
     public static final String INTAKE_DEPLOY_NAME = "Intake Deploy Motor";
-    public static final boolean INTAKE_DEPLOY_INVERTED = false;
+    public static final boolean INTAKE_DEPLOY_INVERTED = false; 
     public static final double INTAKE_DEPLOY_CURRENT_LIMIT = 40.0;
     public static final boolean INTAKE_DEPLOY_BRAKE = true;
     public static final double INTAKE_DEPLOY_GEAR_RATIO = 1/64;
