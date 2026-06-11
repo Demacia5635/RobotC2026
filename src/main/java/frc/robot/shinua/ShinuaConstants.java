@@ -8,7 +8,7 @@ public class ShinuaConstants {
     public static final Canbus SHINUA_CANBUS = Canbus.Rio;
     public static final int MECANUM_ID = 41;
     public static final String MECANUM_NAME = "Mecanum Motor";
-    public static final boolean MECANUM_INVERTED = true;
+    public static final boolean MECANUM_INVERTED = false;
     public static final double MECANUM_CURRENT_LIMIT = 40.0;
     public static final boolean MECANUM_BRAKE = true;
     public static final double MECANUM_BALLS_STUCK_CURRENT = 0;
@@ -36,9 +36,9 @@ public class ShinuaConstants {
     public static double kp = 6.0;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
-    public static double ks = 0.0;
-    public static double kv = 0.0;
-    public static double ka = 0.0;
+    public static double ks = 0.07668;
+    public static double kv = 0.07353;
+    public static double ka = 0.00793;
     public static double kg = 0.0;
 
 
