@@ -17,23 +17,29 @@ public class ShinuaCommand extends Command {
   private final ShinuaSubsystem shinuaSubsystem;
   private double wantedDutyRollers = 0;
   private double wantedDutyMecanum = 0;
+  private double wantedvelDutyRollers = 0;
+
   // private Timer timerForStuckBalls;
   // private boolean startedHandlingBalls = false;
   private Timer timerForReleasingPressure;
 
   public ShinuaCommand() {
+    super();
     shinuaSubsystem = ShinuaSubsystem.getInstance();
-    SmartDashboard.putData("Shinua Testing", this);
     // timerForStuckBalls = new Timer();
     timerForReleasingPressure = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shinuaSubsystem);
+
+    SmartDashboard.putData("Shinua Testing", this);
   }
 
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addDoubleProperty("Wanted duty rollers", () -> wantedDutyRollers, (x) -> wantedDutyRollers = x);
     builder.addDoubleProperty("Wanted duty mecanum", () -> wantedDutyMecanum, (x) -> wantedDutyMecanum = x);
+    builder.addDoubleProperty("Wanted vel rollers", () -> wantedvelDutyRollers, (x) -> wantedvelDutyRollers = x);
+
   }
 
   // Called when the command is initially scheduled.
@@ -104,7 +110,7 @@ public class ShinuaCommand extends Command {
 
       case TESTING:
         shinuaSubsystem.setMecanumDuty(wantedDutyMecanum);
-        shinuaSubsystem.setRollersDuty(wantedDutyRollers);
+        shinuaSubsystem.setVelocityRollers(wantedvelDutyRollers);
         break;
       default:
         shinuaSubsystem.setState(ShinuaState.SHINUA_OFF);
