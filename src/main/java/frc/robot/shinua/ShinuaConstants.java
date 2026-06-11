@@ -6,14 +6,14 @@ import frc.demacia.utils.motors.TalonFXConfig;
 public class ShinuaConstants {
     // constants for the mecanum motor
     public static final Canbus SHINUA_CANBUS = Canbus.Rio;
-    public static final int MECANUM_ID = 0;
+    public static final int MECANUM_ID = 41;
     public static final String MECANUM_NAME = "Mecanum Motor";
-    public static final boolean MECANUM_INVERTED = false;
+    public static final boolean MECANUM_INVERTED = true;
     public static final double MECANUM_CURRENT_LIMIT = 40.0;
     public static final boolean MECANUM_BRAKE = true;
     public static final double MECANUM_BALLS_STUCK_CURRENT = 0;
     public static final double MECANUM_BALLS_STUCK_VELOCITY = 0;
-    public static final double MECANUM_GEAR_RATIO = 0.0;
+    public static final double MECANUM_GEAR_RATIO = 1/4d;
     // stuck balls time constants
     public static final double BALLS_STUCK_DURATION = 0.1; 
     public static final double BALLS_STUCK_HANDLING_TIME = 1.0;
@@ -25,14 +25,14 @@ public class ShinuaConstants {
             .withCurrent(MECANUM_CURRENT_LIMIT);
 
     // constants for the rollers motor
-    public static final int ROLLERS_ID = 0;
+    public static final int ROLLERS_ID = 40;
     public static final String ROLLERS_NAME = "Rollers Motor";
     public static final boolean ROLLERS_INVERTED = false;
     public static final double ROLLERS_CURRENT_LIMIT = 40.0;
     public static final boolean ROLLERS_BRAKE = true;
     public static final double ROLLERS_BALLS_STUCK_CURRENT = 0;
     public static final double ROLLERS_BALLS_STUCK_VELOCITY = 0;
-    public static final double ROLLERS_GEAR_RATIO = 0.0;
+    public static final double ROLLERS_GEAR_RATIO = 1/4;
     public static double kp = 6.0;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
