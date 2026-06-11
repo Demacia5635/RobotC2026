@@ -98,7 +98,7 @@ public class MK5nChassisConstansRobotC {
       new double[] {
         /* Front Left Offset: */ -0.497803 * 2 * Math.PI,
         /* Front Right Offset: */  -0.38501 * 2 * Math.PI,
-        /* Back Left Offset: */  -0.38501 * 2 * Math.PI,
+        /* Back Left Offset: */  -0.478271 * 2 * Math.PI,
         /* Back Right Offset: */  0.316895 * 2 * Math.PI
       });
 
