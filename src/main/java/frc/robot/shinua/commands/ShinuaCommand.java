@@ -21,13 +21,13 @@ public class ShinuaCommand extends Command {
   // private boolean startedHandlingBalls = false;
   private Timer timerForReleasingPressure;
 
-  public ShinuaCommand(ShinuaSubsystem shinuaSubsystem) {
-    this.shinuaSubsystem = shinuaSubsystem;
-    addRequirements(shinuaSubsystem);
+  public ShinuaCommand() {
+    shinuaSubsystem = ShinuaSubsystem.getInstance();
     SmartDashboard.putData("Shinua Testing", this);
     // timerForStuckBalls = new Timer();
     timerForReleasingPressure = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shinuaSubsystem);
   }
 
   public void initSendable(SendableBuilder builder) {

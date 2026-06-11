@@ -30,21 +30,21 @@ public class RobotContainer implements Sendable{
   public static boolean isRed = false;
 
   // The robot's subsystems and commands are defined here...
-  public static Chassis chassis;
-  public static IntakeSubsystem intakeSubsystem;
-  public static IntakeCommand intakeCommand;
+  // public static Chassis chassis;
+  // public static IntakeSubsystem intakeSubsystem;
+  // public static IntakeCommand intakeCommand;
   public static ShinuaCommand shinuaCommand;
   public static frc.robot.shinua.subsystems.ShinuaSubsystem shinuaSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    chassis = new Chassis(null);
+    // chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    intakeSubsystem = IntakeSubsystem.getInstance();
-    intakeCommand = new IntakeCommand(intakeSubsystem);
-    shinuaCommand = new ShinuaCommand(shinuaSubsystem);
+    // intakeSubsystem = IntakeSubsystem.getInstance();
+    // intakeCommand = new IntakeCommand(intakeSubsystem);
+    shinuaCommand = new ShinuaCommand();
     shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
     shinuaSubsystem.setDefaultCommand(shinuaCommand);
     // Configure the trigger bindings
