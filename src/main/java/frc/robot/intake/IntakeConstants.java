@@ -44,11 +44,6 @@ public class IntakeConstants {
             .withInvert(INTAKE_DEPLOY_INVERTED)
             .withCurrent(INTAKE_DEPLOY_CURRENT_LIMIT);
 
-    // constants for intake deploy limit switch
-    public static final int INTAKE_DEPLOY_LIMIT_SWITCH_ID = 9;
-    public static final String INTAKE_DEPLOY_LIMIT_SWITCH_NAME = "Intake Deploy Limit Switch";
-    public static final boolean INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED = false;
-    public static final LimitSwitchConfig LIMET_SWITCH = new LimitSwitchConfig(8,"hi");
     
     public static enum IntakeState {
         TESTING(0, 0),

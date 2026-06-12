@@ -24,7 +24,11 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
   private boolean isCalibrated;
+<<<<<<< HEAD
   private LimitSwitch limeSwitch;
+=======
+  
+>>>>>>> b380d4b (Add ControllerCommand and refactor intake subsystem for improved control)
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
