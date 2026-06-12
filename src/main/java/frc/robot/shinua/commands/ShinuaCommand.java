@@ -100,6 +100,7 @@ public class ShinuaCommand extends Command {
         // timerForStuckBalls.stop();
         // timerForStuckBalls.reset();
         // }
+        
         if (timerForReleasingPressure.get() % 5 < 0.5) {
           shinuaSubsystem.setMecanumDuty(ShinuaState.EJECTING.velocityRollers);
         } else {
@@ -113,7 +114,6 @@ public class ShinuaCommand extends Command {
         shinuaSubsystem.setVelocityRollers(wantedvelDutyRollers);
         break;
       default:
-        shinuaSubsystem.setState(ShinuaState.SHINUA_OFF);
         shinuaSubsystem.stopMecanum();
         shinuaSubsystem.stopRollers();
         break;

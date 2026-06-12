@@ -24,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput limitSwitchDeploy;
   private IntakeState state;
   private boolean isCalibrated;
+  
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
