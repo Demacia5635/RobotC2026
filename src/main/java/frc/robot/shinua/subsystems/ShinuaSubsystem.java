@@ -24,7 +24,8 @@ public class ShinuaSubsystem extends SubsystemBase {
   }
 
   /** Creates a new ShinuaSubsystem. */
-  private ShinuaSubsystem() {// TODO call super
+  private ShinuaSubsystem() {
+    super();
     mecanumMotor = new TalonFXMotor(ShinuaConstants.MECANUM_CONFIG);
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
     state = ShinuaState.SHINUA_OFF;

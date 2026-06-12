@@ -5,6 +5,9 @@
 package frc.robot.intake.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
-  private LimitSwitch intakeDeployLimitSwitch;
+  private DigitalInput limitSwitchDeploy;
   private IntakeState state;
   private boolean isCalibrated;
 
@@ -28,11 +31,12 @@ public class IntakeSubsystem extends SubsystemBase {
     return instance;
   }
   
-  private IntakeSubsystem() {// TODO call super,
+  private IntakeSubsystem() {
+    super();
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    intakeDeployLimitSwitch = new LimitSwitch(IntakeConstants.INTAKE_DEPLOY_LIMIT_SWITCH);
-    state = IntakeState.IDLE;
+    limitSwitchDeploy = new DigitalInput(9);
+    state = IntakeState.CLOSED;
     addNT();
     SmartDashboard.putData(this);
   }
@@ -44,6 +48,12 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData(" Intake State Chooser", stateChooser);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      super.initSendable(builder);
+      SmartDashboard.putBoolean("lim 2", isIntakeDeployClosed());
   }
 
   public void checkElectronics() {
@@ -105,7 +115,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean isIntakeDeployClosed() {
-    return intakeDeployLimitSwitch.get();
+    return !limitSwitchDeploy.get();
   }
 
   public boolean isCalibrated() {

@@ -44,16 +44,7 @@ public class IntakeConstants {
             .withInvert(INTAKE_DEPLOY_INVERTED)
             .withCurrent(INTAKE_DEPLOY_CURRENT_LIMIT);
 
-    // constants for intake deploy limit switch
-    public static final int INTAKE_DEPLOY_LIMIT_SWITCH_ID = 0;
-    public static final String INTAKE_DEPLOY_LIMIT_SWITCH_NAME = "Intake Deploy Limit Switch";
-    public static final boolean INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED = false;
-    public static final frc.demacia.utils.sensors.LimitSwitchConfig INTAKE_DEPLOY_LIMIT_SWITCH = new frc.demacia.utils.sensors.LimitSwitchConfig(
- INTAKE_DEPLOY_LIMIT_SWITCH_ID, INTAKE_DEPLOY_LIMIT_SWITCH_NAME)
-            .withInvert(INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED);
-
     public static enum IntakeState {
-        IDLE(0, 0),
         TESTING(0, 0),
         INTAKING(1, 0),
         EJECTING(-1, 0),

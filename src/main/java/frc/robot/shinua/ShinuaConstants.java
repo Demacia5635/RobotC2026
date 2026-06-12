@@ -51,9 +51,9 @@ public class ShinuaConstants {
             .withRampTime(0.8);
 
     public static enum ShinuaState {
-        SHINUA_ON(0.3, 0.9),
+        SHINUA_ON(-50, 0.9),
         SHINUA_OFF(0, 0),
-        EJECTING(-0.3, -0.9),
+        EJECTING(-50, -0.9),
         TESTING(0, 0);
 
         public double velocityRollers;
