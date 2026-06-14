@@ -29,9 +29,9 @@ public class IntakeConstants {
     public static final double INTAKE_DEPLOY_CURRENT_LIMIT = 40.0;
     public static final boolean INTAKE_DEPLOY_BRAKE = true;
     public static final double  INTAKE_DEPLOY_GEAR_RATIO = 64;
-    public static final double MAX_VELOCITY = 0.0;
-    public static final double MAX_ACCELERATION = 0.0;
-    public static final double MAX_JERK = 0.0;
+    public static final double MAX_VELOCITY = 1.3;//3
+    public static final double MAX_ACCELERATION =2.5;//15 
+    public static final double MAX_JERK = 25;//150
     public static final double DEPLOY_CLOSED_ANGLE = 0.0;
     public static final double DEPLOY_OPEN_ANGLE = 0.0;
     public static final double ANGLE_IS_COAST = 10.0;

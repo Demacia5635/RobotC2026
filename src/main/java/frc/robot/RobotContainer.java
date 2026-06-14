@@ -38,7 +38,7 @@ public class RobotContainer implements Sendable {
   // The robot's subsystems and commands are defined here...
   // public static Chassis chassis;
   public static IntakeSubsystem intakeSubsystem;
-  public static ControllerCommand intakeCommand;
+  public static IntakeCommand intakeCommand;
   public static CommandController controllerCommand;
   // public static ShinuaCommand shinuaCommand;
   // public static frc.robot.shinua.subsystems.ShinuaSubsystem shinuaSubsystem;
@@ -52,7 +52,7 @@ public class RobotContainer implements Sendable {
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
      intakeSubsystem = IntakeSubsystem.getInstance();
      controllerCommand = new CommandController(0, ControllerType.kPS5);
-     intakeCommand = new ControllerCommand(controllerCommand);
+     intakeCommand = new IntakeCommand();
      intakeSubsystem.setDefaultCommand(intakeCommand);
         // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
         // shinuaCommand = new ShinuaCommand();
