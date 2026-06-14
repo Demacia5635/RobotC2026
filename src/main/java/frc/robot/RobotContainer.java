@@ -49,8 +49,8 @@ public class RobotContainer implements Sendable {
     // chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-     intakeSubsystem = IntakeSubsystem.getInstance();
-      intakeCommand = new ControllerCommand(new CommandController(1, ControllerType.kPS5));
+    intakeSubsystem = IntakeSubsystem.getInstance();
+    intakeCommand = new IntakeCommand();
         // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
         // shinuaCommand = new ShinuaCommand();
      intakeSubsystem.setDefaultCommand(intakeCommand);

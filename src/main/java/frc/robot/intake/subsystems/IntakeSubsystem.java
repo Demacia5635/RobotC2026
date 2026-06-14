@@ -7,10 +7,6 @@ package frc.robot.intake.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-<<<<<<< HEAD
-=======
-import edu.wpi.first.wpilibj.DigitalOutput;
->>>>>>> b380d4b184cd0c18851193f392f8d1e562d4aef9
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,17 +21,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
-<<<<<<< HEAD
   private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
   private boolean isCalibrated;
   private LimitSwitch limeSwitch;
-=======
-  private DigitalInput limitSwitchDeploy;
-  private IntakeState state;
-  private boolean isCalibrated;
-  
->>>>>>> b380d4b184cd0c18851193f392f8d1e562d4aef9
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -48,17 +37,10 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     intakeDeployLimitSwitch = new DigitalInput(9);
-    state = IntakeState.IDLE;
+    state = IntakeState.CLOSED;
     addNT();
     limeSwitch= new LimitSwitch(IntakeConstants.LIMET_SWITCH);
     SmartDashboard.putData(this);
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
-    // use a BooleanSupplier for the getter and a no-op BooleanConsumer for a read-only property
-    builder.addBooleanProperty("limit switch", ()-> isClose(), null);
   }
 
   public void addNT() {
@@ -139,7 +121,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean isIntakeDeployClosed() {
-    return !limitSwitchDeploy.get();
+    return !intakeDeployLimitSwitch.get();
   }
 
   public boolean isCalibrated() {
