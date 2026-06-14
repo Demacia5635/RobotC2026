@@ -38,10 +38,10 @@ public class IntakeConstants {
     public static final double kp = 0.0;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
-    public static final double ks = 0.0;
-    public static final double kv = 0.0;
-    public static final double ka = 0.0;
-    public static final double kg = 0.0;
+    public static final double ks = 0.65244;
+    public static final double kv = 0.60098;
+    public static final double ka = 0.0948;
+    public static final double kg = -0.1745;
 
     public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS,
             INTAKE_DEPLOY_NAME)
