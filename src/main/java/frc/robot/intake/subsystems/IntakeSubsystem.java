@@ -5,9 +5,12 @@
 package frc.robot.intake.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.intake.IntakeConstants;
@@ -18,9 +21,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
-  private LimitSwitch intakeDeployLimitSwitch;
+  private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
   private boolean isCalibrated;
+  private LimitSwitch limeSwitch;
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -28,13 +32,22 @@ public class IntakeSubsystem extends SubsystemBase {
     return instance;
   }
   
-  private IntakeSubsystem() {// TODO call super,
+  private IntakeSubsystem() {
+    super();
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    intakeDeployLimitSwitch = new LimitSwitch(IntakeConstants.INTAKE_DEPLOY_LIMIT_SWITCH);
+    intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.IDLE;
     addNT();
+    limeSwitch= new LimitSwitch(IntakeConstants.LIMET_SWITCH);
     SmartDashboard.putData(this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    // use a BooleanSupplier for the getter and a no-op BooleanConsumer for a read-only property
+    builder.addBooleanProperty("limit switch", ()-> isClose(), null);
   }
 
   public void addNT() {
@@ -49,6 +62,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void checkElectronics() {
     rollerMotor.checkElectronics();
     intakeDeployMotor.checkElectronics();
+  }
+
+  public boolean isClose(){
+    return limeSwitch.get();
   }
 
   public void setNeutralModeRoller(boolean isBrake) {
@@ -119,5 +136,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    LogManager.log("limet" + intakeDeployLimitSwitch.get());
   }
+
 }

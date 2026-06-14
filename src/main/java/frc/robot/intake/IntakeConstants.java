@@ -1,7 +1,7 @@
 package frc.robot.intake;
 
-
 import frc.demacia.utils.motors.TalonFXConfig;
+import frc.demacia.utils.sensors.LimitSwitchConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
 public class IntakeConstants {
@@ -45,13 +45,11 @@ public class IntakeConstants {
             .withCurrent(INTAKE_DEPLOY_CURRENT_LIMIT);
 
     // constants for intake deploy limit switch
-    public static final int INTAKE_DEPLOY_LIMIT_SWITCH_ID = 0;
+    public static final int INTAKE_DEPLOY_LIMIT_SWITCH_ID = 9;
     public static final String INTAKE_DEPLOY_LIMIT_SWITCH_NAME = "Intake Deploy Limit Switch";
     public static final boolean INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED = false;
-    public static final frc.demacia.utils.sensors.LimitSwitchConfig INTAKE_DEPLOY_LIMIT_SWITCH = new frc.demacia.utils.sensors.LimitSwitchConfig(
- INTAKE_DEPLOY_LIMIT_SWITCH_ID, INTAKE_DEPLOY_LIMIT_SWITCH_NAME)
-            .withInvert(INTAKE_DEPLOY_LIMIT_SWITCH_INVERTED);
-
+    public static final LimitSwitchConfig LIMET_SWITCH = new LimitSwitchConfig(8,"hi");
+    
     public static enum IntakeState {
         IDLE(0, 0),
         TESTING(0, 0),
