@@ -9,12 +9,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
-import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
@@ -24,11 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
   private boolean isCalibrated;
-<<<<<<< HEAD
-  private LimitSwitch limeSwitch;
-=======
-  
->>>>>>> b380d4b (Add ControllerCommand and refactor intake subsystem for improved control)
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -43,7 +38,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.CLOSED;
     addNT();
-    limeSwitch= new LimitSwitch(IntakeConstants.LIMET_SWITCH);
+    SmartDashboard.putData("reset encoder intake deploy", new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+    SmartDashboard.putData("set brake deploy" , new InstantCommand(() -> {
+      setNeutralModeIntakeDeploy(true);}).ignoringDisable(true));
+      SmartDashboard.putData("set coast deploy" , new InstantCommand(() -> {
+        setNeutralModeIntakeDeploy(false);}).ignoringDisable(true));
     SmartDashboard.putData(this);
   }
 
@@ -54,12 +53,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData(" Intake State Chooser", stateChooser);
+
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
       super.initSendable(builder);
-      SmartDashboard.putBoolean("lim 2", isIntakeDeployClosed());
+      builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
+      builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
   }
 
   public void checkElectronics() {
@@ -67,12 +68,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor.checkElectronics();
   }
 
-  public boolean isClose(){
-    return limeSwitch.get();
-  }
-
   public void setNeutralModeRoller(boolean isBrake) {
     rollerMotor.setNeutralMode(isBrake);
+  }
+  public void setNeutralModeIntakeDeploy(boolean isBrake) {
+    intakeDeployMotor.setNeutralMode(isBrake);
   }
 
   public void setRollerDuty(double duty) {
@@ -90,6 +90,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setEncoderIntakeDeploy(double angle) {
     intakeDeployMotor.setEncoderPosition(angle);
+  }
+  public void resetEncoderIntakeDeploy() {
+    intakeDeployMotor.setEncoderPosition(0);
   }
 
   public void stopRoller() {
@@ -139,7 +142,6 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    LogManager.log("limet" + intakeDeployLimitSwitch.get());
   }
 
 }

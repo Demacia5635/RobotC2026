@@ -14,6 +14,7 @@ import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.commands.ControllerCommand;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
@@ -38,9 +39,9 @@ public class RobotContainer implements Sendable {
   // public static Chassis chassis;
   public static IntakeSubsystem intakeSubsystem;
   public static ControllerCommand intakeCommand;
+  public static CommandController controllerCommand;
   // public static ShinuaCommand shinuaCommand;
   // public static frc.robot.shinua.subsystems.ShinuaSubsystem shinuaSubsystem;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -50,10 +51,11 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("RC", this);
     new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
      intakeSubsystem = IntakeSubsystem.getInstance();
-      intakeCommand = new ControllerCommand(new CommandController(1, ControllerType.kPS5));
+     controllerCommand = new CommandController(0, ControllerType.kPS5);
+     intakeCommand = new ControllerCommand(controllerCommand);
+     intakeSubsystem.setDefaultCommand(intakeCommand);
         // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
         // shinuaCommand = new ShinuaCommand();
-     intakeSubsystem.setDefaultCommand(intakeCommand);
     // Configure the trigger bindings
     configureBindings();
   }
