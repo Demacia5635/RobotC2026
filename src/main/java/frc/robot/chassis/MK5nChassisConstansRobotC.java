@@ -44,12 +44,14 @@ public class MK5nChassisConstansRobotC {
   public static final double MAX_DRIVE_VELOCITY = 5d;
 
   public static final double RAMP_TIME_STEER = 0.25;
-  // x:27 y:32
+
+  
+
   public static final Translation2d[] MODULE_LOCATIONS = {
-  /* Front Left Offset: */  new Translation2d(0.27, 0.32),
-  /* Front Right Offset: */  new Translation2d(-0.27, 0.32),
-  /* Back Left Offset: */  new Translation2d(0.27, -0.32),
-  /* Back Right Offset: */   new Translation2d(-0.27, -0.32)
+  /* Front Left Posesan: */  new Translation2d(0.27, 0.32),
+  /* Front Right Posesan: */  new Translation2d(-0.27, 0.32),
+  /* Back Left Posesan: */  new Translation2d(0.27, -0.32),
+  /* Back Right Posasen: */   new Translation2d(-0.27, -0.32)
   };
 
   public static final SwerveModuleConfig[] swerveModules(double[] offsets) {

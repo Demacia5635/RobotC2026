@@ -51,7 +51,7 @@ public class RobotContainer implements Sendable {
   // public static StateManger stateManger = new StateManger();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandController driverController = new CommandController(0, ControllerType.kPS5);
+  CommandController driverController = new CommandController(0, ControllerType.kXbox);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
