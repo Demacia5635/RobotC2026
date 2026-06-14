@@ -25,7 +25,7 @@ public class IntakeConstants {
     // constants for intake deploy motor
     public static final int INTAKE_DEPLOY_ID = 50;
     public static final String INTAKE_DEPLOY_NAME = "Intake Deploy Motor";
-    public static final boolean INTAKE_DEPLOY_INVERTED = true; 
+    public static final boolean INTAKE_DEPLOY_INVERTED = false; 
     public static final double INTAKE_DEPLOY_CURRENT_LIMIT = 40.0;
     public static final boolean INTAKE_DEPLOY_BRAKE = true;
     public static final double INTAKE_DEPLOY_GEAR_RATIO = 1/64;
@@ -51,7 +51,6 @@ public class IntakeConstants {
     public static final LimitSwitchConfig LIMET_SWITCH = new LimitSwitchConfig(8,"hi");
     
     public static enum IntakeState {
-        IDLE(0, 0),
         TESTING(0, 0),
         INTAKING(1, 0),
         EJECTING(-1, 0),
