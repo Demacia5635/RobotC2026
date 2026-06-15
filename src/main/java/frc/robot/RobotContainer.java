@@ -17,6 +17,7 @@ import frc.demacia.utils.log.LogManager;
 import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.commands.ControllerCommand;
 import frc.robot.intake.commands.IntakeCommand;
+import frc.robot.intake.commands.TestCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
 
@@ -53,7 +54,7 @@ public class RobotContainer implements Sendable {
      intakeSubsystem = IntakeSubsystem.getInstance();
      controllerCommand = new CommandController(0, ControllerType.kPS5);
      intakeCommand = new IntakeCommand();
-     intakeSubsystem.setDefaultCommand(intakeCommand);
+     intakeSubsystem.setDefaultCommand(new TestCommand(intakeSubsystem));
         // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
         // shinuaCommand = new ShinuaCommand();
     // Configure the trigger bindings

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
-import frc.robot.intake.commands.CalibrationCommandIntake;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
@@ -30,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
       instance = new IntakeSubsystem();
     return instance;
   }
-  
+
   private IntakeSubsystem() {
     super();
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
@@ -38,11 +37,14 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.CLOSED;
     addNT();
-    SmartDashboard.putData("reset encoder intake deploy", new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
-    SmartDashboard.putData("set brake deploy" , new InstantCommand(() -> {
-      setNeutralModeIntakeDeploy(true);}).ignoringDisable(true));
-      SmartDashboard.putData("set coast deploy" , new InstantCommand(() -> {
-        setNeutralModeIntakeDeploy(false);}).ignoringDisable(true));
+    SmartDashboard.putData("reset encoder intake deploy",
+        new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+    SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
+      setNeutralModeIntakeDeploy(true);
+    }).ignoringDisable(true));
+    SmartDashboard.putData("set coast deploy", new InstantCommand(() -> {
+      setNeutralModeIntakeDeploy(false);
+    }).ignoringDisable(true));
     SmartDashboard.putData(this);
   }
 
@@ -58,9 +60,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      super.initSendable(builder);
-      builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
-      builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
+    super.initSendable(builder);
+    builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
+    builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
+    builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
+
   }
 
   public void checkElectronics() {
@@ -68,9 +72,14 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor.checkElectronics();
   }
 
+  public double getCurrentCurrentDeploy() {
+    return intakeDeployMotor.getCurrentCurrent();
+  }
+
   public void setNeutralModeRoller(boolean isBrake) {
     rollerMotor.setNeutralMode(isBrake);
   }
+
   public void setNeutralModeIntakeDeploy(boolean isBrake) {
     intakeDeployMotor.setNeutralMode(isBrake);
   }
@@ -84,6 +93,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setAngleIntakeDeploy(double angle) {
+    double currentAngle = intakeDeployMotor.getCurrentAngle();
+    int slot = currentAngle > 0 ? 0 : 1;
+    intakeDeployMotor.changeSlot(slot);
     angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
     intakeDeployMotor.setMotion(angle);
   }
@@ -91,6 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setEncoderIntakeDeploy(double angle) {
     intakeDeployMotor.setEncoderPosition(angle);
   }
+
   public void resetEncoderIntakeDeploy() {
     intakeDeployMotor.setEncoderPosition(0);
   }
@@ -106,7 +119,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getRollerCurrent() {
     return rollerMotor.getCurrentCurrent();
   }
-  
+
   public double getRollerVelocity() {
     return rollerMotor.getCurrentVelocity();
   }
@@ -116,7 +129,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getIntakeDeployAngle() {
-    return intakeDeployMotor.getCurrentPosition();
+    return Math.toDegrees(intakeDeployMotor.getCurrentPosition());
   }
 
   public IntakeState getState() {
