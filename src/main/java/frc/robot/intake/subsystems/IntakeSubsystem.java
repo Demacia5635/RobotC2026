@@ -94,10 +94,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setAngleIntakeDeploy(double angle) {
     double currentAngle = intakeDeployMotor.getCurrentAngle();
-    int slot = currentAngle > 0 ? 0 : 1;
-    intakeDeployMotor.changeSlot(slot);
+    // int slot = currentAngle > 0 ? 0 : 1;
+    // intakeDeployMotor.changeSlot(slot);
+    double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
     angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
-    intakeDeployMotor.setMotion(angle);
+    intakeDeployMotor.setMotion(angle, gravitySineFF);
   }
 
   public void setEncoderIntakeDeploy(double angle) {
