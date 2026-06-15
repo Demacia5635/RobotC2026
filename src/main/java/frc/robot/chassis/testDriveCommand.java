@@ -5,59 +5,38 @@
 package frc.robot.chassis;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.SwerveModuleConfig;
 import frc.demacia.utils.motors.TalonFXMotor;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class testDriveCommand extends Command {
   /** Creates a new testDriveCommand. */
-  MK5nChassisConstansRobotC chassisConstans;
-  SwerveModuleConfig[] modules = MK5nChassisConstansRobotC.modules;
-  public testDriveCommand(MK5nChassisConstansRobotC chassisConstans) {
-    this.chassisConstans = chassisConstans;
+  Chassis chassis;
+  public testDriveCommand(Chassis chassis) {
+    this.chassis = chassis;
+    addRequirements(chassis);
     // Use addRequirements() here to declare subsystem dependencies.
-
-  TalonFXMotor[] motors; 
-
-  for(int i =0; i< 4; i++){
-    String name = "error";
-    switch (i) {
-      case 0:
-        name="front left motor";
-        break;
-      case 1:
-        name = "front right motor";
-        break;
-      case 2:
-        name = "back left";
-        break;
-      case 3:
-        name = "back right";
-        break;
-      default:
-        name = "";
-        break;
-    }
-    // motors[i] = new TalonFXMotor(MK5nChassisConstansRobotC.modules[i].driveConfig);
-  }
   }
 
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    chassis.setSteerPositions(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    chassis.setDriveVelocities(0.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    chassis.stop();
+  }
 
   // Returns true when the command should end.
   @Override

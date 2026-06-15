@@ -49,6 +49,7 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     direction = RobotCommon.isRed() ? 1 : -1;
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
@@ -67,7 +68,7 @@ public class DriveCommand extends Command {
 
     speeds = new ChassisSpeeds(velX, velY, -velRot);
 
-    chassis.setVelocities(speeds);
+    chassis.setVelocitiesWithWpilibLinematics(speeds);
   }
 
   // Called once the command ends or is interrupted.

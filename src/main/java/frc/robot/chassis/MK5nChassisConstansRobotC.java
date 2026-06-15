@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.chassis.ChassisConfig;
 import frc.demacia.utils.chassis.SwerveModuleConfig;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 import frc.demacia.utils.sensors.CancoderConfig;
 import frc.demacia.utils.sensors.PigeonConfig;
@@ -48,10 +49,10 @@ public class MK5nChassisConstansRobotC {
   
 
   public static final Translation2d[] MODULE_LOCATIONS = {
-  /* Front Left Posesan: */  new Translation2d(0.27, 0.32),
-  /* Front Right Posesan: */  new Translation2d(-0.27, 0.32),
-  /* Back Left Posesan: */  new Translation2d(0.27, -0.32),
-  /* Back Right Posasen: */   new Translation2d(-0.27, -0.32)
+  /* Front Left Posesan: */  new Translation2d(0.32, 0.27),
+  /* Front Right Posesan: */  new Translation2d(0.32, -0.27),
+  /* Back Left Posesan: */  new Translation2d(-0.32, 0.27),
+  /* Back Right Posasen: */   new Translation2d(-0.32, -0.27)
   };
 
   public static final SwerveModuleConfig[] swerveModules(double[] offsets) {
@@ -90,8 +91,12 @@ public class MK5nChassisConstansRobotC {
               .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
               .withBrake(true)
               .withMeterMotor(DRIVE_GEAR_RATIO, WHEEL_DIAMETER),
-          new CancoderConfig(i * 3 + 3, CAN_BUS, name + " Cancoder")).withPosion(MODULE_LOCATIONS[i])
+          new CancoderConfig(i * 3 + 3, CAN_BUS, name + " Cancoder"))
+          .withPosion(MODULE_LOCATIONS[i])
           .withSteerOffset(offsets[i]);
+    }
+    for(var a : ans) {
+      LogManager.log(" module " + a.name + " " + a.position + " " + a.driveConfig.id);
     }
     return ans;
   }
