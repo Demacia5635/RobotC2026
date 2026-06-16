@@ -10,9 +10,10 @@ import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CalibrationCommandIntake extends Command {
+  private IntakeSubsystem intakeSubsystem;
   /** Creates a new CalibrationCommandIntake. */
-  private final IntakeSubsystem intakeSubsystem = IntakeSubsystem.getInstance();
-  public CalibrationCommandIntake() {
+  public CalibrationCommandIntake(IntakeSubsystem intakeSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -26,7 +27,7 @@ public class CalibrationCommandIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setIntakeDeployDuty(-0.07);
+    intakeSubsystem.setIntakeDeployDuty(-0.1);
   }
 
   // Called once the command ends or is interrupted.

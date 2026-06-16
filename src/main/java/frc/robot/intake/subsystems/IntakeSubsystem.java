@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.IntakeConstants.IntakeState;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -32,11 +34,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private IntakeSubsystem() {
     super();
+    instance = this;
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     intakeDeployLimitSwitch = new DigitalInput(9);
-    state = IntakeState.CLOSED;
-    addNT();
+    state = IntakeState.IDLE;
     SmartDashboard.putData("reset encoder intake deploy",
         new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
     SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
@@ -45,7 +47,9 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putData("set coast deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(false);
     }).ignoringDisable(true));
+    SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
     SmartDashboard.putData(this);
+     addNT();
   }
 
   public void addNT() {
@@ -54,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData(" Intake State Chooser", stateChooser);
+    SmartDashboard.putData("Intake State Chooser!!!!!!!!!", stateChooser);
 
   }
 
@@ -62,7 +66,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
-    builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
     builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
 
   }
@@ -94,11 +97,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setAngleIntakeDeploy(double angle) {
     double currentAngle = intakeDeployMotor.getCurrentAngle();
-    // int slot = currentAngle > 0 ? 0 : 1;
-    // intakeDeployMotor.changeSlot(slot);
-    double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
-    angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
-    intakeDeployMotor.setMotion(angle, gravitySineFF);
+    if (Math.abs(currentAngle - angle) < IntakeConstants.ALLOWED_ERROR) {
+      stopIntakeDeploy();
+    } else {
+      double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
+      angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
+      intakeDeployMotor.setMotion(angle, gravitySineFF);
+    }
   }
 
   public void setEncoderIntakeDeploy(double angle) {
@@ -156,6 +161,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    LogManager.log("current state: " + state.toString());
   }
 
 }

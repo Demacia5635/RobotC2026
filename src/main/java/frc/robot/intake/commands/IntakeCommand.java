@@ -12,13 +12,13 @@ import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */
+  /** Creates a new IntakeCommand. */ 
   private double wantedAngle = 0;
   private double wantedDuty = 0;
   private final IntakeSubsystem intakeSubsystem;
 
-  public IntakeCommand() {
-    intakeSubsystem = IntakeSubsystem.getInstance();
+  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
     SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -43,11 +43,6 @@ public class IntakeCommand extends Command {
       case INTAKING, EJECTING, DEPLOYED, CLOSED:
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
-        if (intakeSubsystem.getIntakeDeployAngle() < IntakeConstants.ANGLE_IS_COAST) {
-          intakeSubsystem.setNeutralModeRoller(true);
-        } else {
-          intakeSubsystem.setNeutralModeRoller(false);
-        }
         break;
 
       case TESTING:
@@ -55,7 +50,7 @@ public class IntakeCommand extends Command {
         intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
         break;
 
-      default:
+      case IDLE:
         intakeSubsystem.stopRoller();
         intakeSubsystem.stopIntakeDeploy();
         break;
