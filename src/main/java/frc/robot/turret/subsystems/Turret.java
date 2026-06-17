@@ -11,13 +11,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
+  private static Turret turret;
   private TalonFXMotor turretMotor;
   private LimitSwitch maxLimitSwitch;
   private LimitSwitch minLimitSwitch;
   private TurretStates turretStates;
   private boolean isCalibrated;
   /** Creates a new Turret. */
-  public Turret() {
+  private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
     maxLimitSwitch = new LimitSwitch(TurretConstants.MAX_LIMIT_SWITCH_CONFIG);
     minLimitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
@@ -26,6 +27,11 @@ public class Turret extends SubsystemBase {
 
   public void setNatrelMode(boolean isBrake){
     turretMotor.setNeutralMode(isBrake);
+  public static Turret getInstance(){
+    if (turret == null){
+      turret = new Turret();
+    }
+    return turret;
   }
 
   public void setTurretPower(double Power){

@@ -16,8 +16,8 @@ public class TurretCommand extends Command {
   private double testAngle;
   private double targetAngle;
 
-  public TurretCommand(Turret turret) {
-    this.turret = turret;
+  public TurretCommand() {
+    this.turret = Turret.getInstance();
     addRequirements(turret);
   }
   @Override

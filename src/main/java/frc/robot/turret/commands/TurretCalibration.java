@@ -7,8 +7,8 @@ import frc.robot.turret.subsystems.Turret;
 public class TurretCalibration extends Command {
   private Turret turret;
 
-  public TurretCalibration(Turret turret) {
-    this.turret = turret;
+  public TurretCalibration() {
+    this.turret = Turret.getInstance();
     addRequirements(turret);
   }
   // Called every time the scheduler runs while the command is scheduled.

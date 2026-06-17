@@ -22,48 +22,58 @@ public class ShooterConstants {
     public final static class FlywheelConstants {
         //TODO: Set the motor config
         public static final Canbus FLYWEEL_CANBUS = Canbus.Rio;
-        public static final String FLYWEEL_NAME = "fly weel motor";
-        public static final int FLYWEEL_ID = 0;
+        public static final String FLYWEEL_NAME = "fly wheel motor";
+        public static final int FLYWEEL_ID = 30;
 
-        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME);
+        public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME)
+        .withInvert(true)
+        .withBrake(false)
+        .withMeterMotor(1,2*0.0254)
+        .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
+        public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2
     }
+    
 
     public final static class HoodConstants {
         //TODO: Set the motor config
         public static final Canbus HOOD_CANBUS = Canbus.Rio;
         public static final String HOOD_NAME = "hood motor";
-        public static final int HOOD_ID = 0;
+        public static final int HOOD_ID = 50;
 
-        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME);
+        public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME)
+        .withInvert(true)
+        .withRadiansMotor(72)
+        .withPID(60, 6, 0, 0.0561,1.0495 , 0.0501, 0)
+        .withMotionParam(6, 30, 240);
         public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
-        public static final double MAX_POSITION = 0;
+        public static final double MAX_POSITION = Math.toRadians(60);
         public static final double MAX_HOOD_CURRENT = 0;
         public static final double MIN_HOOD_VELOCITY = 0;
     }
 
-    public final static class IndexerConstants {
-        //TODO: Set the motor config
-        public static final Canbus INDEXER_CANBUS = Canbus.Rio;
-        public static final String INDEXER_NAME = "indexer motor";
-        public static final int INDEXER_ID = 0;
+    // public final static class IndexerConstants {
+    //     //TODO: Set the motor config
+    //     public static final Canbus INDEXER_CANBUS = Canbus.Rio;
+    //     public static final String INDEXER_NAME = "indexer motor";
+    //     public static final int INDEXER_ID = 0;
 
-        public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
-        public static final double MAX_INDEXER_POWER = 1;
+    //     public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
+    //     public static final double MAX_INDEXER_POWER = 1;
 
-        public static final double MAX_INDEXER_CURRENT = 0;
-        public static final double MIN_INDEXER_VELOCITY = 0;
-    }
+    //     public static final double MAX_INDEXER_CURRENT = 0;
+    //     public static final double MIN_INDEXER_VELOCITY = 0;
+    // }
 
     public final static class FeederConstants {
         //TODO: Set the motor config
         public static final Canbus FEEDER_CANBUS = Canbus.Rio;
         public static final String FEEDER_NAME = "feeder motor";
-        public static final int  FEEDER_ID = 0;
+        public static final int  FEEDER_ID = 3;
         
-        public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME);
+        public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME).withInvert(true);
         public static final double MAX_FEEDER_POWER = 1;
         public static final double MAX_FEEDER_CURRENT = 0;
         public static final double MIN_FEEDER_VELOCITY = 0;
