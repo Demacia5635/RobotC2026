@@ -4,51 +4,69 @@
 
 package frc.robot.intake.subsystems;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.IntakeConstants.IntakeState;
-import frc.robot.shinua.ShinuaConstants;
-import frc.robot.shinua.subsystems.ShinuaSubsystem;
-//add calibration, TODO when have requiremant
+
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
   private static IntakeSubsystem instance;
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
+  private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
-  private Timer timerForStuckBalls;
-  private boolean startedHandlingBalls = false;
-  private final ShinuaSubsystem shinuaSubsystem = ShinuaSubsystem.getInstance();
+  private boolean isCalibrated;
 
-  //TODO do private couse its singalton
   public static IntakeSubsystem getInstance() {
     if (instance == null)
       instance = new IntakeSubsystem();
     return instance;
   }
 
-  public IntakeSubsystem() {//TODO call super, 
+  private IntakeSubsystem() {
+    super();
+    instance = this;
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    timerForStuckBalls = new Timer();
+    intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.IDLE;
-    addNT();
-    //TODO if add initsendable add smartdashboard.putData(this)
+    SmartDashboard.putData("reset encoder intake deploy",
+        new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+    SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
+      setNeutralModeIntakeDeploy(true);
+    }).ignoringDisable(true));
+    SmartDashboard.putData("set coast deploy", new InstantCommand(() -> {
+      setNeutralModeIntakeDeploy(false);
+    }).ignoringDisable(true));
+    SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
+    SmartDashboard.putData(this);
+     addNT();
   }
 
   public void addNT() {
     SendableChooser<IntakeState> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("INTAKING", IntakeState.INTAKING); //TODO ADD as for
-    stateChooser.addOption("EJECTING", IntakeState.EJECTING);
-    stateChooser.addOption("DEPLOYED", IntakeState.DEPLOYED);
-    stateChooser.addOption("IDLE", IntakeState.IDLE);
-    stateChooser.addOption("TESTING", IntakeState.TESTING);
+    for (IntakeState intakeState : IntakeState.values()) {
+      stateChooser.addOption(intakeState.name(), intakeState);
+    }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData(getName() + "Intake State Chooser", stateChooser);//TODO use name from constant
+    SmartDashboard.putData("Intake State Chooser!!!!!!!!!", stateChooser);
+
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
+    builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
 
   }
 
@@ -57,16 +75,43 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor.checkElectronics();
   }
 
+  public double getCurrentCurrentDeploy() {
+    return intakeDeployMotor.getCurrentCurrent();
+  }
+
   public void setNeutralModeRoller(boolean isBrake) {
     rollerMotor.setNeutralMode(isBrake);
+  }
+
+  public void setNeutralModeIntakeDeploy(boolean isBrake) {
+    intakeDeployMotor.setNeutralMode(isBrake);
   }
 
   public void setRollerDuty(double duty) {
     rollerMotor.setDuty(duty);
   }
 
-  public void setAngleIntakeDeploy(double angle) { //TODO set if in range
-    intakeDeployMotor.setMotion(angle);
+  public void setIntakeDeployDuty(double duty) {
+    intakeDeployMotor.setDuty(duty);
+  }
+
+  public void setAngleIntakeDeploy(double angle) {
+    double currentAngle = intakeDeployMotor.getCurrentAngle();
+    if (Math.abs(currentAngle - angle) < IntakeConstants.ALLOWED_ERROR) {
+      stopIntakeDeploy();
+    } else {
+      double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
+      angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
+      intakeDeployMotor.setMotion(angle, gravitySineFF);
+    }
+  }
+
+  public void setEncoderIntakeDeploy(double angle) {
+    intakeDeployMotor.setEncoderPosition(angle);
+  }
+
+  public void resetEncoderIntakeDeploy() {
+    intakeDeployMotor.setEncoderPosition(0);
   }
 
   public void stopRoller() {
@@ -88,35 +133,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getIntakeDeployCurrent() {
     return intakeDeployMotor.getCurrentCurrent();
   }
-//TODO check in shinoa, do not nead to check here
-  public boolean isBallsStuck() {
-    return (shinuaSubsystem.getMecanumCurrent() > ShinuaConstants.MECANUM_BALLS_STUCK_CURRENT
-        && Math.abs(shinuaSubsystem.getMecanumVelocity()) < ShinuaConstants.MECANUM_BALLS_STUCK_VELOCITY)
-        || (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.ROLLERS_BALLS_STUCK_CURRENT
-            && Math.abs(shinuaSubsystem.getRollersVelocity()) < ShinuaConstants.ROLLERS_BALLS_STUCK_VELOCITY)
-        || (getRollerCurrent() > IntakeConstants.ROLLER_BALLS_STUCK_CURRENT
-            && getRollerVelocity() < IntakeConstants.ROLLER_BALLS_STUCK_VELOCITY);
-  }
 
-  public void handleBallsStuck() {//TODO not give power to other subsystem
-    shinuaSubsystem.setRollersDuty(-1);
-    shinuaSubsystem.setMecanumDuty(-1);
-    setRollerDuty(-1);
-  }
-  public boolean BallsArentStuckAnymore() {
-    return timerForStuckBalls.isRunning() && !isBallsStuck();
-  }
-
-  private boolean shouldStartStuckBallsTimer() {
-    return isBallsStuck() && !timerForStuckBalls.isRunning();
-  }
-
-  private boolean shouldHandleBallsStuck() {
-    return timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_DURATION) && !startedHandlingBalls && isBallsStuck();
-  }
-
-  private boolean shouldStopHandlingBallsStuck() {
-    return startedHandlingBalls && timerForStuckBalls.hasElapsed(IntakeConstants.BALLS_STUCK_HANDLING_TIME);
+  public double getIntakeDeployAngle() {
+    return Math.toDegrees(intakeDeployMotor.getCurrentPosition());
   }
 
   public IntakeState getState() {
@@ -127,28 +146,22 @@ public class IntakeSubsystem extends SubsystemBase {
     state = newState;
   }
 
+  public boolean isIntakeDeployClosed() {
+    return !intakeDeployLimitSwitch.get();
+  }
+
+  public boolean isCalibrated() {
+    return isCalibrated;
+  }
+
+  public void setCalibrated() {
+    isCalibrated = true;
+  }
+
   @Override
   public void periodic() {
-    if (shouldStartStuckBallsTimer()) {
-      timerForStuckBalls.restart();
-    }
-
-    if (BallsArentStuckAnymore()) {
-      timerForStuckBalls.stop();
-      timerForStuckBalls.reset();
-      startedHandlingBalls = false;
-    }
-
-    if (shouldHandleBallsStuck()) {
-      startedHandlingBalls = true;
-      handleBallsStuck();
-    }
-
-    if (shouldStopHandlingBallsStuck()) {
-      timerForStuckBalls.stop();
-      timerForStuckBalls.reset();
-      startedHandlingBalls = false;
-    }
     // This method will be called once per scheduler run
+    LogManager.log("current state: " + state.toString());
   }
+
 }

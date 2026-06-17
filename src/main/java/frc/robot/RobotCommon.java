@@ -14,6 +14,7 @@ public class RobotCommon {
     private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
     private static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     private static Rotation2d robotAngle = Rotation2d.kZero;
+    private static boolean isStuck = false;
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
 
@@ -90,5 +91,12 @@ public class RobotCommon {
     public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
         robotRelativeSpeeds = newRobotRelativeSpeeds;
     }
+    public static boolean IsStuck() {
+        return isStuck;
+    }   
+    public static void setStuck(boolean isStuck) {
+        RobotCommon.isStuck = isStuck;
+    }
+
 
 }

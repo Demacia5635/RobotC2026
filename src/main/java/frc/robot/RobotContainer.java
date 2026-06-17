@@ -10,23 +10,18 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.demacia.utils.chassis.Chassis;
-import frc.demacia.utils.chassis.DriveCommand;
+import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
-import frc.robot.chassis.RobotBChassisConstants;
+import frc.demacia.utils.log.LogManager;
+import frc.robot.intake.commands.CalibrationCommandIntake;
+import frc.robot.intake.commands.ControllerCommand;
 import frc.robot.intake.commands.IntakeCommand;
+import frc.robot.intake.commands.TestCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
-import frc.robot.shinua.subsystems.ShinuaSubsystem;
-import frc.robot.shooter.commands.ShooterCommand;
-import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.stateManger.StateManger;
-import frc.robot.turret.commands.TurretCommand;
-import frc.robot.turret.subsystems.Turret;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,22 +34,32 @@ import frc.robot.turret.subsystems.Turret;
  */
 public class RobotContainer implements Sendable {
 
-  // The robot's subsystems and commands are defined here...
-  public static IntakeSubsystem intake = new IntakeSubsystem();
-  public static ShinuaSubsystem shinua = new ShinuaSubsystem();
-  public static Turret turret = new Turret();
-  public static Shooter shooter = new Shooter();
-  public static StateManger stateManger = new StateManger();
+  public static boolean isComp = false;
+  private static boolean hasRemovedFromLog = false;
+  public static boolean isRed = false;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandController driverController = new CommandController(0, ControllerType.kPS5);
+  // The robot's subsystems and commands are defined here...
+  // public static Chassis chassis;
+  public static IntakeSubsystem intakeSubsystem;
+  public static IntakeCommand intakeCommand;
+  public static CommandController controllerCommand;
+  // public static ShinuaCommand shinuaCommand;
+  // public static frc.robot.shinua.subsystems.ShinuaSubsystem shinuaSubsystem;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
-    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-     Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+    new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+     intakeSubsystem = IntakeSubsystem.getInstance();
+     controllerCommand = new CommandController(0, ControllerType.kPS5);
+     intakeCommand = new IntakeCommand(intakeSubsystem);
+     intakeSubsystem.setDefaultCommand(intakeCommand);
+        // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
+        // shinuaCommand = new ShinuaCommand();
+    // Configure the trigger bindings
     configureBindings();
     setUserButton();
     setDefaultCommands();
@@ -75,23 +80,6 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.rightBumper().onFalse(new RunCommand(()-> stateManger.isWork = true, stateManger){
-      
-      @Override
-      public void end(boolean interrupted) {
-        stateManger.isWork = false;
-      }
-
-      @Override
-      public boolean isFinished() {
-        return !driverController.rightBumper().getAsBoolean();
-      }
-
-      @Override
-      public boolean runsWhenDisabled() {
-        return false;
-      }
-    });
   }
 
   private void setDefaultCommands() {
@@ -102,9 +90,20 @@ public class RobotContainer implements Sendable {
     turret.setDefaultCommand(new TurretCommand(turret));
   }
 
-  private void setUserButton() {
-    // new Trigger(() -> !DriverStation.isEnabled() && RobotController.getUserButton())
-    //     .onTrue(new SetRobotNeutralMode(chassis, intake, shinua, turret, shooter).ignoringDisable(true));
+  public static void setIsRed(boolean isRed) {
+    RobotContainer.isRed = isRed;
+  }
+
+  public static boolean getIsComp() {
+    return isComp;
+  }
+
+  public static void setIsComp(boolean isComp) {
+    RobotContainer.isComp = isComp;
+    if (!hasRemovedFromLog && isComp) {
+      hasRemovedFromLog = true;
+      LogManager.removeInComp();
+    }
   }
 
   @Override

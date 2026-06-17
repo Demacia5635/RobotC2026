@@ -7,28 +7,31 @@ package frc.robot.intake.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */ 
-  private double wantedAngle = 0;
-  private double wantedDuty = 0;
-  private final IntakeSubsystem intakeSubsystem;
+public class TestCommand extends Command {
+  /** Creates a new testIntakeAtouCommand. */
+  IntakeSubsystem subsystem;
+  double wantedAngle;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
-    this.intakeSubsystem = intakeSubsystem;
-    addRequirements(intakeSubsystem);
-    SmartDashboard.putData("Intake Testing", this);
+  public TestCommand(IntakeSubsystem subsystem) {
+    this.subsystem = subsystem;
+    addRequirements(subsystem);
+    SmartDashboard.putData(this);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("Wanted angle", () -> wantedAngle, (x) -> wantedAngle = x);
-    builder.addDoubleProperty("Wanted duty intake", () -> wantedDuty, (x) -> wantedDuty = x);
+    // builder.addDoubleProperty("wantedAngle 2", () -> Math.toDegrees(wantedAngle),
+    //     (x) -> wantedAngle = Math.toRadians(x));
+        SmartDashboard.putData("open intake", new InstantCommand(() -> subsystem.setAngleIntakeDeploy(IntakeConstants.DEPLOY_OPEN_ANGLE)));
+        SmartDashboard.putData("close intake", new InstantCommand(() -> subsystem.setAngleIntakeDeploy(IntakeConstants.DEPLOY_CLOSED_ANGLE)));
+
   }
 
   // Called when the command is initially scheduled.
@@ -39,34 +42,18 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (intakeSubsystem.getState()) {
-      case INTAKING, EJECTING, DEPLOYED, CLOSED:
-        intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
-        intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
-        break;
 
-      case TESTING:
-        intakeSubsystem.setRollerDuty(wantedDuty);
-        intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
-        break;
-
-      case IDLE:
-        intakeSubsystem.stopRoller();
-        intakeSubsystem.stopIntakeDeploy();
-        break;
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.stopRoller();
-    intakeSubsystem.stopIntakeDeploy();
+    subsystem.stopIntakeDeploy();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return subsystem.getCurrentCurrentDeploy() > 17;
   }
 }
