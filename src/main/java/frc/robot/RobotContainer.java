@@ -12,18 +12,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
-import frc.robot.intake.commands.CalibrationCommandIntake;
-import frc.robot.intake.commands.ControllerCommand;
 import frc.robot.intake.commands.IntakeCommand;
-import frc.robot.intake.commands.TestCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
+import frc.robot.shinua.subsystems.ShinuaSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,29 +38,25 @@ public class RobotContainer implements Sendable {
   public static boolean isRed = false;
 
   // The robot's subsystems and commands are defined here...
-  // public static Chassis chassis;
+  public static ShinuaSubsystem shinuaSubsystem;
   public static IntakeSubsystem intakeSubsystem;
+  public static CommandController controllerCommand = new CommandController(0, ControllerType.kPS5);  
   public static IntakeCommand intakeCommand;
-  public static CommandController controllerCommand;
-  // public static ShinuaCommand shinuaCommand;
-  // public static frc.robot.shinua.subsystems.ShinuaSubsystem shinuaSubsystem;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-     intakeSubsystem = IntakeSubsystem.getInstance();
-     controllerCommand = new CommandController(0, ControllerType.kPS5);
-     intakeCommand = new IntakeCommand(intakeSubsystem);
-     intakeSubsystem.setDefaultCommand(intakeCommand);
-        // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
-        // shinuaCommand = new ShinuaCommand();
+    intakeSubsystem = IntakeSubsystem.getInstance();
+    shinuaSubsystem = ShinuaSubsystem.getInstance();
+    intakeCommand = new IntakeCommand(intakeSubsystem);
+    intakeSubsystem.setDefaultCommand(intakeCommand);
+
     // Configure the trigger bindings
     configureBindings();
-    // setUserButton();
+    setUserButton();
     setDefaultCommands();
   }
 
@@ -84,11 +77,15 @@ public class RobotContainer implements Sendable {
   private void configureBindings() {
   }
 
+  private void setUserButton(){
+    
+  }
+
   private void setDefaultCommands() {
     // chassis.setDefaultCommand(new testDriveCommand(chassis));
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controllerCommand));
-    // intake.setDefaultCommand(new IntakeCommand());
-    // shinua.setDefaultCommand(new ShinuaCommand());
+    intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem));
+    shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
     // shooter.setDefaultCommand(new ShooterCommand(shooter));
     // turret.setDefaultCommand(new TurretCommand(turret));
   }
