@@ -26,8 +26,6 @@ import frc.demacia.vision.subsystem.Quest;
 import frc.demacia.vision.utils.Vision;
 import frc.demacia.vision.utils.VisionConstants;
 
-import frc.robot.Field;
-import frc.robot.RobotCommon;
 import frc.robot.RobotContainer;
 
 public class RobotPose {
@@ -59,16 +57,8 @@ public class RobotPose {
         this.hasUpdatedQuestIntialPose = false;
         this.hasQuestDisconnected = false;
         this.poseEstimator = new DemaciaPoseEstimator(modulePositions, stateSTD, visionSTD);
-        this.accelerometer = new BuiltInAccelerometer();
-        SmartDashboard.putData("Reset Pose Based Red Hub", new InstantCommand(() -> {
-            Chassis.getInstance().setYaw(Rotation2d.kZero);
-            setQuestPose(hubRedResetPose);
-            resetPose(hubRedResetPose);
-        }).ignoringDisable(true));
+        this.accelerometer = new BuiltInAccelerometer(); 
     }
-
-    private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
-            Rotation2d.kZero);
 
     public Quest getQuest() {
         return quest;
@@ -100,7 +90,7 @@ public class RobotPose {
     }
 
     public void addOdometryCalculation(OdometryObservation odometryObservation) {
-        poseEstimator.addOdometryCalculation(odometryObservation, Chassis.getInstance().getVelocityAsVector());
+        poseEstimator.addOdometryCalculation(odometryObservation);
     }
 
     public void addOdometryCalculation(Pose2d odometryPose, Rotation2d gyroAngle,
@@ -150,7 +140,7 @@ public class RobotPose {
     }
 
     public void setAngle3DLimelight() {
-        Rotation2d newAngle = vision.getPoseEstimation().getRotation();
+        Rotation2d newAngle = vision.getRobotAngle();
         if (newAngle != null)
             Chassis.getInstance().setYaw(newAngle);
 
@@ -161,7 +151,7 @@ public class RobotPose {
         vision.updateValues();
         if (!quest.isConnected())
             // RobotContainer.getMainLeds().isQuestDisconnected = true;
-            // LogManager.log("quest dont conencted");
+            LogManager.log("quest is not connected"); //TODO: cange to led signal
 
         if (Math.abs(accelerometer.getX()) < 0.3 && Math.abs(accelerometer.getZ()) < 0.3)
             addOdometryCalculation(odometryObservation);

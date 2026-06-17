@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.DemaciaUtils;
+import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
@@ -52,7 +54,7 @@ public class RobotContainer implements Sendable {
   public RobotContainer() {
     // chassis = new Chassis(null);
     SmartDashboard.putData("RC", this);
-    new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+    // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
      intakeSubsystem = IntakeSubsystem.getInstance();
      controllerCommand = new CommandController(0, ControllerType.kPS5);
      intakeCommand = new IntakeCommand(intakeSubsystem);
@@ -61,7 +63,7 @@ public class RobotContainer implements Sendable {
         // shinuaCommand = new ShinuaCommand();
     // Configure the trigger bindings
     configureBindings();
-    setUserButton();
+    // setUserButton();
     setDefaultCommands();
   }
 
@@ -84,7 +86,7 @@ public class RobotContainer implements Sendable {
 
   private void setDefaultCommands() {
     // chassis.setDefaultCommand(new testDriveCommand(chassis));
-    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
+    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controllerCommand));
     // intake.setDefaultCommand(new IntakeCommand());
     // shinua.setDefaultCommand(new ShinuaCommand());
     // shooter.setDefaultCommand(new ShooterCommand(shooter));

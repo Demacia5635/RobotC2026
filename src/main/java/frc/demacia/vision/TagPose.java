@@ -4,6 +4,8 @@
 
 package frc.demacia.vision;
 
+import static frc.demacia.vision.utils.VisionConstants.TAG_HEIGHT;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,21 +15,20 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
-import frc.robot.RobotCommon;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.vision.utils.VisionConstants;
 
-import static frc.demacia.vision.utils.VisionConstants.*;
-
-/** Add your docs here. */
 public class TagPose {
   // NetworkTables communication for each camera
   private NetworkTable Table;
 
   private NetworkTableEntry cropEntry;
   private NetworkTableEntry pipeEntry;
-
-  private double wantedPip = 0;
 
   private Field2d field;
 
@@ -57,25 +58,59 @@ public class TagPose {
 
   private double latency;
 
+  private boolean isUpsidedown = false;
+
   @SuppressWarnings("unchecked")
   public TagPose(Camera camera) {
-    wantedPip = 0;
     confidence = 0;
     this.camera = camera;
     Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
     latency = 0;
     field = new Field2d();
-    LogManager.addEntry("dist", this::getDistFromCamera).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP).build();
-    SmartDashboard.putData("field-tag" + camera.getName(), field);
+    pipeEntry = Table.getEntry("pipeline");
+    // LogManager.addEntry(camera.getName()+"dist", this::getDistFromCamera).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP).build();
+    // LogManager.addEntry(camera.getName()+"dist ty", this::getDistanceFromTy).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP).build();
 
+    SmartDashboard.putData("field-tag " + camera.getName(), field);
+    SmartDashboard.putData("setTo3d " + camera.getName(),
+        new InstantCommand(() -> setDimension(true)).ignoringDisable(true));
+    SmartDashboard.putData("setTo2d " + camera.getName(),
+        new InstantCommand(() -> setDimension(false)).ignoringDisable(true));
+    SmartDashboard.putData("chassis/reset gyro by camera " + camera.getName(),
+        Commands.sequence(
+            new InstantCommand(() -> changePipeline(5)).ignoringDisable(true),
+            new InstantCommand(() -> Chassis.getInstance().setYaw(getRobotAngle())).ignoringDisable(true),
+            new InstantCommand(() -> changePipeline(0)).ignoringDisable(true)).ignoringDisable(true));
+
+  }
+
+  public TagPose(Camera camera, boolean isUpsidedown) {
+    this(camera);
+    this.isUpsidedown = isUpsidedown;
+  }
+
+  public void setDimension(boolean is3D) {
+
+    Table.getEntry("pipeline").setNumber(is3D ? 1 : 0);
+  }
+
+  public Rotation2d get3dAngle() {
+    double[] botpose_orb_wpired = Table.getEntry("botpose").getDoubleArray(new double[12]);
+    return new Rotation2d(Math.toRadians(botpose_orb_wpired[5]));
+  }
+
+  private void changePipeline(int id) {
+    pipeEntry.setDouble(id);
   }
 
   public void updateValues() {
     cropEntry = Table.getEntry("crop");
     pipeEntry = Table.getEntry("pipeline");
-    camToTagPitch = Table.getEntry("ty").getDouble(0.0);
-    camToTagYaw = (-Table.getEntry("tx").getDouble(0.0));
+    camToTagPitch = (isUpsidedown ? -1 : 1) * Table.getEntry("ty").getDouble(0.0);
+    camToTagYaw = (isUpsidedown ? 1 : -1) * Table.getEntry("tx").getDouble(0.0);
     id = (int) Table.getEntry("tid").getDouble(0.0);
+    // if (camera.getIsOnTurret()) {
+    // }
 
   }
 
@@ -85,20 +120,18 @@ public class TagPose {
         crop();
       }
 
-      if (id > 0 && id < TAG_HEIGHT.length) {
-        pose = new Pose2d(getOriginToRobot(), RobotCommon.getRobotAngle());
+      if (id > 0 && id < VisionConstants.TAG_HEIGHT.length) {
+        pose = new Pose2d(getOriginToRobot(), Chassis.getInstance().getGyroAngle());
         field.setRobotPose(pose);
         confidence = getConfidence();
-        wantedPip = getDistFromCamera() > 1 ? 0 : 0;
       }
     } else {
       cropStop();
-      wantedPip = 0;
-      pose = new Pose2d();
+      pose = null;
     }
-    if (wantedPip != Table.getEntry("getpipe").getDouble(0.0)) {
-      pipeEntry.setDouble(wantedPip);
-    }
+    // if (wantedPip != Table.getEntry("getpipe").getDouble(0.0)) {
+    // pipeEntry.setDouble(wantedPip);
+    // }
     return pose;
   }
 
@@ -109,9 +142,9 @@ public class TagPose {
    */
   public Translation2d getOriginToRobot() {
 
-    origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
+    origintoTag = VisionConstants.O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
 
-    height = TAG_HEIGHT[(int) this.id];
+    height = VisionConstants.TAG_HEIGHT[(int) this.id];
     if (origintoTag != null) {
 
       originToRobot = origintoTag.minus(getRobotToTagFieldRel());
@@ -131,22 +164,39 @@ public class TagPose {
     // Convert camera measurements to vector
     cameraToTag = new Translation2d(getDistFromCamera(),
         Rotation2d.fromDegrees(camToTagYaw + camera.getYaw()));
-    // LogManager.log("cameraToTag :" +cameraToTag);
-    // LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
     // Add camera offset to get robot center to tag vector
     robotToTag = (camera.getRobotToCamPosition().toTranslation2d()
-        .plus(cameraToTag)).rotateBy(RobotCommon.getRobotAngle());
-    // LogManager.log("Robot to Tag :" + robotToTag);
+        .plus(cameraToTag)).rotateBy(Chassis.getInstance().getGyroAngle());
     return robotToTag;
   }
 
+  // public double getDistFromCamera() {
+
+  //   alpha = Math.abs(camToTagPitch + camera.getPitch()) * Math.abs(Math.cos(Math.toRadians(camToTagYaw + camera.getYaw())));
+  //   dist = (Math.abs(height - camera.getHeight())) / (Math.tan(Math.toRadians(alpha)));
+  //   return dist;
+  // }
+  public double getDistanceFromTy(){
+    if(id < 0){
+      return 0.0;
+    }
+    double deltaHeight = TAG_HEIGHT[(int)id] - camera.getHeight();
+    double alpha = Math.toRadians(camera.getPitch() + camToTagPitch);
+    double distance = Math.abs(deltaHeight / Math.tan(alpha));
+
+    return distance;
+  }
   public double getDistFromCamera() {
+    if(id < 0){
+      return 0.0;
+    }
 
-    alpha = Math.abs(camToTagPitch + camera.getPitch()) * Math.cos(Math.toRadians(camToTagYaw));
-    dist = (Math.abs(height - camera.getHeight())) / (Math.tan(Math.toRadians(alpha)));
-    // dist = dist / Math.abs(Math.cos(Math.abs(Math.toRadians(camToTagYaw))))
+    double deltaHeight = TAG_HEIGHT[(int)id] - camera.getHeight();
+    double alpha = Math.toRadians(camera.getPitch() + camToTagPitch);
+    double distance = Math.abs(deltaHeight / Math.tan(alpha)) / Math.cos((Math.toRadians(camToTagYaw)));
 
-    return dist;
+
+    return distance;    
   }
 
   private void crop() {
@@ -158,19 +208,19 @@ public class TagPose {
   }
 
   private double getCropOfset() {
-    double crop = getDistFromCamera() * CROP_CONSTAT;
-    return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
+    double crop = getDistFromCamera() * VisionConstants.CROP_CONSTAT;
+    return MathUtil.clamp(crop, VisionConstants.MIN_CROP, VisionConstants.MAX_CROP);
   }
 
   private double getYawCrop() {
     double TagYaw = ((-camToTagYaw) + camera.getYaw()) / 31.25;
-    return TagYaw + RobotCommon.getFieldRelativeSpeeds().vyMetersPerSecond * PREDICT_Y
-        + RobotCommon.getFieldRelativeSpeeds().omegaRadiansPerSecond * PREDICT_OMEGA;
+    return TagYaw + Chassis.getInstance().getChassisSpeedsFieldRel().vyMetersPerSecond * VisionConstants.PREDICT_Y
+        + Chassis.getInstance().getChassisSpeedsFieldRel().omegaRadiansPerSecond * VisionConstants.PREDICT_OMEGA;
   }
 
   private double getPitchCrop() {
     double TagPitch = camToTagPitch / 24.45;
-    return TagPitch + RobotCommon.getFieldRelativeSpeeds().vxMetersPerSecond * PREDICT_X;
+    return TagPitch + Chassis.getInstance().getChassisSpeedsFieldRel().vxMetersPerSecond * VisionConstants.PREDICT_X;
   }
 
   private void cropStop() {
@@ -183,13 +233,13 @@ public class TagPose {
     double currentDist = getDistFromCamera();
 
     // If we're within reliable range, give high confidence
-    if (currentDist <= BEST_RELIABLE_DISTANCE) {
+    if (currentDist <= VisionConstants.BEST_RELIABLE_DISTANCE) {
       return 1.0;
     }
 
     // Calculate how far we are into the falloff range (0 to 1)
-    double normalizedDist = (currentDist - BEST_RELIABLE_DISTANCE)
-        / ((WORST_RELIABLE_DISTANCE) - BEST_RELIABLE_DISTANCE);
+    double normalizedDist = (currentDist - VisionConstants.BEST_RELIABLE_DISTANCE)
+        / ((VisionConstants.WORST_RELIABLE_DISTANCE) - VisionConstants.BEST_RELIABLE_DISTANCE);
 
     // Apply cubic falloff function
     return Math.pow(1 - normalizedDist, 3);
@@ -215,10 +265,10 @@ public class TagPose {
     return (int) Table.getEntry("tid").getDouble(0.0);
   }
 
-  // public double getAngle() {
-  // return Table.getEntry("botpose").getDoubleArray(new double[] { 0, 0, 0, 0, 0,
-  // 0 })[5];
-  // }
+  public double getAngle() {
+    return Table.getEntry("botpose").getDoubleArray(new double[] { 0, 0, 0, 0, 0,
+        0 })[5];
+  }
 
   public Rotation2d getRobotAngle() {
     return null;

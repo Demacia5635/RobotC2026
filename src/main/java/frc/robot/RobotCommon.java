@@ -38,7 +38,6 @@ public class RobotCommon {
         else return Field.HubRed.CENTER; 
     }
 
-<<<<<<< HEAD
     public static boolean getIsComp(){
         return isComp;
     }
@@ -46,9 +45,6 @@ public class RobotCommon {
     public static void setIsComp(boolean newIsComp){
         isComp = newIsComp;
     }
-=======
-
->>>>>>> 636e7fea421c8c2457e267d23ae52d658feccfd3
 
     public static Pose2d getDelveryPose(){
         if(isRed()){

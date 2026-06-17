@@ -27,6 +27,7 @@ public class Turret extends SubsystemBase {
 
   public void setNatrelMode(boolean isBrake){
     turretMotor.setNeutralMode(isBrake);
+  }
   public static Turret getInstance(){
     if (turret == null){
       turret = new Turret();

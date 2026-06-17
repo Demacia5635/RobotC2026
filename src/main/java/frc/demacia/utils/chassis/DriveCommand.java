@@ -57,18 +57,9 @@ public class DriveCommand extends Command {
     // Calculate r]otation from trigger axes
     double rot = controller.getLeftTrigger() - controller.getRightTrigger();
 
-    double velX = Math.pow(joyX, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyX);
-    double velY = Math.pow(joyY, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyY);
-    double velRot = Math.pow(rot, 2) * chassis.getConfig().maxRotationalVelocity * Math.signum(rot);
-    if (precisionMode) {
-      velX /= 4;
-      velY /= 4;
-      velRot /= 4;
-    }
-
-    speeds = new ChassisSpeeds(velX, velY, -velRot);
-
-    chassis.setVelocitiesWithWpilibLinematics(speeds);
+    if(precisionMode) chassis.setVelocities(speeds);
+    else {
+        chassis.setRobotRelSpeedsWithAccel(speeds);}
   }
 
   // Called once the command ends or is interrupted.
