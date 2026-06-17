@@ -161,7 +161,7 @@ public class RobotPose {
         vision.updateValues();
         if (!quest.isConnected())
             // RobotContainer.getMainLeds().isQuestDisconnected = true;
-            LogManager.log("quest dont conencted");
+            // LogManager.log("quest dont conencted");
 
         if (Math.abs(accelerometer.getX()) < 0.3 && Math.abs(accelerometer.getZ()) < 0.3)
             addOdometryCalculation(odometryObservation);

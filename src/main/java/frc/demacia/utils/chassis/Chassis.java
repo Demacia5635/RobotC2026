@@ -12,8 +12,9 @@ import org.ejml.simple.SimpleMatrix;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.fasterxml.jackson.core.util.VersionUtil;
 
-import choreo.trajectory.SwerveSample;
+// import choreo.trajectory.SwerveSample;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -30,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -112,6 +114,8 @@ public class Chassis extends SubsystemBase {
     private StatusSignal<Angle> gyroYawStatus;
     private StatusSignal<AngularVelocity> gyroAngularVelocityStatus;
 
+    private double mudolePose;
+
     private Rotation2d lastGyroYaw;
     private double lastGyroAngularVelocity;
 
@@ -132,12 +136,14 @@ public class Chassis extends SubsystemBase {
     OdometryObservation observation;
 
     private Chassis(ChassisConfig chassisConfig) {
+        super();
         setName(getName());
 
         this.chassisConfig = chassisConfig;
 
         modules = new SwerveModule[4];
         Translation2d[] modulePositions = new Translation2d[4];
+
         for (int i = 0; i < 4; i++) {
             modules[i] = new SwerveModule(chassisConfig.swerveModuleConfig[i]);
             modulePositions[i] = chassisConfig.swerveModuleConfig[i].position;
@@ -148,6 +154,11 @@ public class Chassis extends SubsystemBase {
         addStatus();
         demaciaKinematics = new DemaciaKinematics(modulePositions);
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
+        for(int i = 0; i < 4; i++) {
+            LogManager.log(" Module " + i + " " + modules[i].name + " pos=" + 
+            modulePositions[i]);
+
+        }
       
         field = new Field2d();
         SmartDashboard.putData("chassis/reset gyro",
@@ -172,30 +183,41 @@ public class Chassis extends SubsystemBase {
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
-        LogManager.log(chassisConfig.name + " initalize");
+        
+        
     }
 
-    public void followTrajectory(SwerveSample sample) {
+
+    // @Override
+    // public void initSendable(SendableBuilder builder) {
+    //     super.initSendable(builder);
+    //     builder.addDoubleProperty("front left steer angle", ()-> getSteerAngle(2), null);
+    //     builder.addDoubleProperty("front right steer angle", ()-> getSteerAngle(5), null);
+    //     builder.addDoubleProperty("back right steer angle", ()-> getSteerAngle(11), null); 
+    //     builder.addDoubleProperty("back left steer angle", ()-> getSteerAngle(8), null);
+    // }
+    // public void followTrajectory(SwerveSample sample) {
 
 
-        Pose2d pose = getPose();
+    //     Pose2d pose = getPose();
 
-        ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx + xController.calculate(pose.getX(), sample.x),
-                sample.vy + yController.calculate(pose.getY(), sample.y),
-                -sample.omega + headingController.calculate(pose.getRotation().getRadians(), -sample.heading));
+    //     ChassisSpeeds speeds = new ChassisSpeeds(
+    //             sample.vx + xController.calculate(pose.getX(), sample.x),
+    //             sample.vy + yController.calculate(pose.getY(), sample.y),
+    //             -sample.omega + headingController.calculate(pose.getRotation().getRadians(), -sample.heading));
 
         
-        SmartDashboard.putNumber("traj/current heading", pose.getRotation().getDegrees());
-        SmartDashboard.putNumber("traj/heading error", sample.heading - pose.getRotation().getRadians());
-        SmartDashboard.putNumber("traj/speeds omega", speeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("traj/sample time", sample.getTimestamp());
+    //     SmartDashboard.putNumber("traj/current heading", pose.getRotation().getDegrees());
+    //     SmartDashboard.putNumber("traj/heading error", sample.heading - pose.getRotation().getRadians());
+    //     SmartDashboard.putNumber("traj/speeds omega", speeds.omegaRadiansPerSecond);
+    //     SmartDashboard.putNumber("traj/sample time", sample.getTimestamp());
 
-        field.getObject("trajectory point #" + index).setPose(sample.getPose());
-        index++;
+    //     field.getObject("trajectory point #" + index).setPose(sample.getPose());
+    //     index++;
 
-        setVelocities(speeds);
-    }
+    //     setVelocities(speeds);
+    // }
+
 
     public void resetTrajectory() {
         for (int i = index; i >= 0; i--) {
@@ -283,6 +305,11 @@ public class Chassis extends SubsystemBase {
         setModuleStates(states);
     }
 
+    public void setVelocitiesWithWpilibLinematics(ChassisSpeeds speeds){
+        SwerveModuleState[] state = wpilibKinematics.toSwerveModuleStates(speeds);
+        setModuleStates(state);
+    }
+
     public Translation2d getVelocityAsVector() {
         return new Translation2d(getChassisSpeedsFieldRel().vxMetersPerSecond,
                 getChassisSpeedsFieldRel().vyMetersPerSecond);
@@ -317,6 +344,10 @@ public class Chassis extends SubsystemBase {
 
     public double getSteerVelocity(int id) {
         return modules[id].getSteerVel();
+    }
+
+    public double getSteerAngle(int id){
+        return modules[id].getSteerRotation().getDegrees();
     }
 
     public double getSteerAcceleration(int id) {

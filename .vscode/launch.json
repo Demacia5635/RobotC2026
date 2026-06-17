@@ -9,6 +9,7 @@
       "name": "SysidApp",
       "request": "launch",
       "mainClass": "frc.demacia.sysID.SysidApp",
+<<<<<<< HEAD
       "projectName": "RobotC2026-2"
     },
     {
@@ -17,6 +18,9 @@
       "request": "launch",
       "mainClass": "frc.demacia.sysID.SysidApp",
       "projectName": "RobotC2026-1"
+=======
+      "projectName": "RobotC2026"
+>>>>>>> 2bc737be6f6fedcfa26a45d513fb662724e48e2c
     },
     {
       "type": "wpilib",

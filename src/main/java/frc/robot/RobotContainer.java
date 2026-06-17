@@ -83,11 +83,12 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), driverController));
-    intake.setDefaultCommand(new IntakeCommand());
-    shinua.setDefaultCommand(new ShinuaCommand());
-    shooter.setDefaultCommand(new ShooterCommand(shooter));
-    turret.setDefaultCommand(new TurretCommand(turret));
+    // chassis.setDefaultCommand(new testDriveCommand(chassis));
+    chassis.setDefaultCommand(new DriveCommand(chassis, driverController));
+    // intake.setDefaultCommand(new IntakeCommand());
+    // shinua.setDefaultCommand(new ShinuaCommand());
+    // shooter.setDefaultCommand(new ShooterCommand(shooter));
+    // turret.setDefaultCommand(new TurretCommand(turret));
   }
 
   public static void setIsRed(boolean isRed) {

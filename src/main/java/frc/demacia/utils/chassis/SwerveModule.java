@@ -1,6 +1,8 @@
 
 package frc.demacia.utils.chassis;
 
+import java.util.logging.LogManager;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -128,6 +130,8 @@ public class SwerveModule {
      */
     public void setState(SwerveModuleState state) {
         double wantedAngle = state.angle.getRadians();
+        if(state.speedMetersPerSecond != 0) 
+            frc.demacia.utils.log.LogManager.log(name + " wanted - " + Math.toDegrees(wantedAngle) + " " + state.speedMetersPerSecond);
         double diff = wantedAngle - steerMotor.getCurrentPosition();
         double vel = state.speedMetersPerSecond;
         diff = MathUtil.angleModulus(diff);
