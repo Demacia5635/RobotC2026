@@ -138,7 +138,7 @@ public class Chassis extends SubsystemBase {
         Translation2d[] modulePositions = new Translation2d[4];
         for (int i = 0; i < 4; i++) {
             modules[i] = new SwerveModule(chassisConfig.swerveModuleConfig[i]);
-            // modulePositions[i] = chassisConfig.swerveModuleConfig[i].position;
+            modulePositions[i] = chassisConfig.swerveModuleConfig[i].position;
         }
 
         gyro = new Pigeon(chassisConfig.pigeonConfig);

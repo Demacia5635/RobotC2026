@@ -10,7 +10,7 @@ public class IntakeConstants {
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
     public static final int ROLLER_ID = 51;
     public static final String ROLLER_NAME = "Intake Roller Motor";
-    public static final boolean ROLLER_INVERTED = false;
+    public static final boolean ROLLER_INVERTED = true;
     public static final double ROLLER_CURRENT_LIMIT = 40.0;
     public static final boolean ROLLER_BRAKE = false;
     public static final double ROLLER_BALLS_STUCK_CURRENT = 0;
@@ -55,7 +55,7 @@ public class IntakeConstants {
 
     public static enum IntakeState {
         TESTING(0, 0),
-        INTAKING(1, DEPLOY_OPEN_ANGLE),
+        INTAKING(0.5, DEPLOY_OPEN_ANGLE),//TODO when cage is install change to 1
         EJECTING(-1, DEPLOY_OPEN_ANGLE),
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, INTAKE_DEPLOY_OFFSET),

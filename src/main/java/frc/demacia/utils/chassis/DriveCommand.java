@@ -6,6 +6,7 @@ package frc.demacia.utils.chassis;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
 import frc.robot.RobotCommon;
 
@@ -50,16 +51,26 @@ public class DriveCommand extends Command {
   @Override
   public void execute() {
     
-    direction = RobotCommon.isRed() ? 1 : -1;
+    direction = DemaciaUtils.getIsRed() ? 1 : -1;
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
-
+    
     // Calculate r]otation from trigger axes
     double rot = controller.getLeftTrigger() - controller.getRightTrigger();
+    
+    double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
+    double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
+    double velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
 
-    if(precisionMode) chassis.setVelocities(speeds);
-    else {
-        chassis.setRobotRelSpeedsWithAccel(speeds);}
+    if(precisionMode){
+        velX /= 4;
+        velY /= 4;
+        velRot /= 4;
+    }
+
+    speeds = new ChassisSpeeds(velX, velY, velRot);
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, chassis.getGyroAngle());
+    chassis.setVelocities(speeds);
   }
 
   // Called once the command ends or is interrupted.

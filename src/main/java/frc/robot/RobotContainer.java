@@ -17,6 +17,7 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
+import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
@@ -49,10 +50,10 @@ public class RobotContainer implements Sendable {
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+    Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     intakeSubsystem = IntakeSubsystem.getInstance();
     shinuaSubsystem = ShinuaSubsystem.getInstance();
     intakeCommand = new IntakeCommand(intakeSubsystem);
-    intakeSubsystem.setDefaultCommand(intakeCommand);
 
     // Configure the trigger bindings
     configureBindings();
@@ -75,6 +76,7 @@ public class RobotContainer implements Sendable {
    * joysticks}.
    */
   private void configureBindings() {
+    
   }
 
   private void setUserButton(){

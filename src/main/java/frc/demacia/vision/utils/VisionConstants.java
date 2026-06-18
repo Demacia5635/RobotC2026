@@ -233,8 +233,8 @@ public class VisionConstants {
                                 //prev x offset 0.283 
                                 // new TagPose(new Camera("hub", new Translation3d(0.27,-0.20,0.345), 19d, 2d, false, false)),
                                 // new TagPose(new Camera("back", new Translation3d(-0.276, -0.195, 0.195), 31d, 195d, false, false), true)
-                                new TagPose(new Camera("pdh", new Translation3d(0.2, 0.27, 0.345), 20, -2, false, false)),
-                                new TagPose(new Camera("roboio", new Translation3d(0.34, 0.28, 0.325), 20, 0, false, false))
+                                new TagPose(new Camera("pdh", new Translation3d(0.145, 0.275, 0.33), 20, -2, false, false)),
+                                new TagPose(new Camera("roboio", new Translation3d(0.325, 0.295, 0.53), 20, 0, false, false))
                         };
 
         }
