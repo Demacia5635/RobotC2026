@@ -18,6 +18,8 @@ import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.commands.hoodTesting;
 import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.turret.commands.TurretCommand;
+import frc.robot.turret.subsystems.Turret;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,7 +35,7 @@ public class RobotContainer implements Sendable {
   CommandController driverController = new CommandController(0, ControllerType.kPS5);
   private Shooter shooter = Shooter.getInstance();
   // The robot's subsystems and commands are defined here...
-
+  private Turret turret = Turret.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -44,6 +46,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("RC", this);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     shooter.setDefaultCommand(new ShooterCommand());
+    turret.setDefaultCommand(new TurretCommand());
     // shooter.setDefaultCommand(new hoodTesting(shooter, driverController));
     configureBindings();
     setUserButton();

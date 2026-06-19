@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.demacia.utils.LookUpTable;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
+import frc.demacia.utils.sensors.LimitSwitch;
+import frc.demacia.utils.sensors.LimitSwitchConfig;
 
 public class ShooterConstants {
 
@@ -47,27 +49,22 @@ public class ShooterConstants {
         .withRadiansMotor(72)
         .withPID(60, 6, 0, 0.0561,1.0495 , 0.0501, 0)
         .withMotionParam(6, 30, 240);
+
         public static final double HOOD_POSITION_OFFSET = 0.4;
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = Math.toRadians(60);
         public static final double MAX_HOOD_CURRENT = 0;
         public static final double MIN_HOOD_VELOCITY = 0;
+
+        public static final String LIMET_SWITCH_NAME = "hood limit switch";
+        public static final int LIMET_SWITCH_CHANEL = 8;
+
+        public static final LimitSwitchConfig LIMIT_SWITCH_CONFIG_HOOD= new LimitSwitchConfig(LIMET_SWITCH_CHANEL, LIMET_SWITCH_NAME);
+
+        public static final double HOOD_LIMET_SWITCH_POSE = 0;
     }
 
-    // public final static class IndexerConstants {
-    //     //TODO: Set the motor config
-    //     public static final Canbus INDEXER_CANBUS = Canbus.Rio;
-    //     public static final String INDEXER_NAME = "indexer motor";
-    //     public static final int INDEXER_ID = 0;
-
-    //     public static final TalonFXConfig INDEXER_CONFIG = new TalonFXConfig(INDEXER_ID, INDEXER_CANBUS, INDEXER_NAME);
-    //     public static final double MAX_INDEXER_POWER = 1;
-
-    //     public static final double MAX_INDEXER_CURRENT = 0;
-    //     public static final double MIN_INDEXER_VELOCITY = 0;
-    // }
-
-    public final static class FeederConstants {
+        public final static class FeederConstants {
         //TODO: Set the motor config
         public static final Canbus FEEDER_CANBUS = Canbus.Rio;
         public static final String FEEDER_NAME = "feeder motor";
