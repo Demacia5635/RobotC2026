@@ -70,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
     super.initSendable(builder);
     builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
     builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
-    builder.addBooleanProperty("is intake calibrated", this::getIsCalibrated, null);
+
   }
 
   public void checkElectronics() {
@@ -99,9 +99,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setAngleIntakeDeploy(double angle) {
-    if (!getIsCalibrated()){
-      return;
-    }
     double currentAngle = intakeDeployMotor.getCurrentAngle();
     if (Math.abs(currentAngle - angle) < IntakeConstants.ALLOWED_ERROR) {
       stopIntakeDeploy();
@@ -156,7 +153,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return !intakeDeployLimitSwitch.get();
   }
 
-  public boolean getIsCalibrated() {
+  public boolean isCalibrated() {
     return isCalibrated;
   }
 

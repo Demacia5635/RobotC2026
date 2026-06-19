@@ -4,7 +4,7 @@ package frc.robot.intake;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
-public class IntakeConstants {}
+public class IntakeConstants {
 
     // constants for roller motor
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
