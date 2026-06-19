@@ -10,7 +10,7 @@ public class IntakeConstants {
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
     public static final int ROLLER_ID = 51;
     public static final String ROLLER_NAME = "Intake Roller Motor";
-    public static final boolean ROLLER_INVERTED = false;
+    public static final boolean ROLLER_INVERTED = true;
     public static final double ROLLER_CURRENT_LIMIT = 40.0;
     public static final boolean ROLLER_BRAKE = false;
     public static final double ROLLER_BALLS_STUCK_CURRENT = 0;
@@ -33,8 +33,8 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 1;// 3
     public static final double MAX_ACCELERATION = 5;// 15
     public static final double MAX_JERK = 35;// 150
-    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-31.05);
-    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(110);
+    public static final double DEPLOY_CLOSED_ANGLE = -0.09;
+    public static final double DEPLOY_OPEN_ANGLE = 1.8;
     public static final double DEPLOY_MIDDLE = Math.toRadians(40);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
     public static final double kp = 0.5;
@@ -56,11 +56,11 @@ public class IntakeConstants {
 
     public static enum IntakeState {
         TESTING(0, 0),
-        INTAKING(-1, DEPLOY_OPEN_ANGLE),
-        EJECTING(1, DEPLOY_OPEN_ANGLE),
+        INTAKING(1, DEPLOY_OPEN_ANGLE),
+        EJECTING(-1, DEPLOY_OPEN_ANGLE),
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
-        CLOSED(0, INTAKE_DEPLOY_OFFSET),
-        MIDDLE(-1, DEPLOY_MIDDLE),
+        CLOSED(0, DEPLOY_CLOSED_ANGLE),
+        MIDDLE(1, DEPLOY_MIDDLE),
         IDLE(0, 0);
 
         public double duty;
