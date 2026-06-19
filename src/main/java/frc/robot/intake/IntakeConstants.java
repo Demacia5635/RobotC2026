@@ -34,7 +34,7 @@ public class IntakeConstants {
     public static final double MAX_ACCELERATION = 5;// 15
     public static final double MAX_JERK = 35;// 150
     public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-33);
-    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(67);
+    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(110);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
     public static final double kp = 0.5;
     public static final double ki = 0.0;
@@ -55,7 +55,7 @@ public class IntakeConstants {
 
     public static enum IntakeState {
         TESTING(0, 0),
-        INTAKING(1, DEPLOY_OPEN_ANGLE),
+        INTAKING(-1, DEPLOY_OPEN_ANGLE),
         EJECTING(-1, DEPLOY_OPEN_ANGLE),
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, INTAKE_DEPLOY_OFFSET),

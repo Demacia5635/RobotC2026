@@ -55,7 +55,7 @@ public class RobotContainer implements Sendable {
      intakeSubsystem = IntakeSubsystem.getInstance();
      controllerCommand = new CommandController(0, ControllerType.kPS5);
      intakeCommand = new IntakeCommand(intakeSubsystem);
-     intakeSubsystem.setDefaultCommand(new TestCommand(intakeSubsystem));
+     intakeSubsystem.setDefaultCommand(new ControllerCommand(controllerCommand));
     // shinuaSubsystem = frc.robot.shinua.subsystems.ShinuaSubsystem.getInstance();
     // shinuaCommand = new ShinuaCommand();
     // Configure the trigger bindings
