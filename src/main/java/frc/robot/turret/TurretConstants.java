@@ -11,6 +11,7 @@ public class TurretConstants {
     public static final Canbus TURRET_CANBUS = Canbus.Rio;
     public static final String TURRET_NAME = "fly weel motor";
     public static final int TURRET_ID = 20;
+    public static final double TURRET_GEAR_RASIO = 64;
 
     public static final TalonFXConfig TURRET_CONFIG= new TalonFXConfig(TURRET_ID, TURRET_CANBUS, TURRET_NAME)
     .withRadiansMotor(TURRET_GEAR_RASIO);

@@ -4,7 +4,7 @@ package frc.robot.intake;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 
-public class IntakeConstants {
+public class IntakeConstants {}
 
     // constants for roller motor
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
@@ -33,8 +33,8 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 1;// 3
     public static final double MAX_ACCELERATION = 5;// 15
     public static final double MAX_JERK = 35;// 150
-    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-21.05);
-    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(110);
+    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(21.05);
+    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(-110);
     public static final double DEPLOY_MIDDLE = Math.toRadians(40);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
     public static final double kp = 0.5;

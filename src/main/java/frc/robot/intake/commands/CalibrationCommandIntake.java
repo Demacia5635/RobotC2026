@@ -27,7 +27,7 @@ public class CalibrationCommandIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setIntakeDeployDuty(-0.1);
+    intakeSubsystem.setIntakeDeployDuty(0.1);
   }
 
   // Called once the command ends or is interrupted.

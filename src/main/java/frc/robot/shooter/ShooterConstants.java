@@ -80,6 +80,7 @@ public class ShooterConstants {
         IDLE,
         TEST,
         DELIVERY,
-        TRANCH
+        TRANCH,
+        onePoint
     }
 }

@@ -22,6 +22,8 @@ import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
+import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,8 +43,9 @@ public class RobotContainer implements Sendable {
   // The robot's subsystems and commands are defined here...
   public static ShinuaSubsystem shinuaSubsystem;
   public static IntakeSubsystem intakeSubsystem;
-  public static CommandController controllerCommand = new CommandController(0, ControllerType.kPS5);  
   public static IntakeCommand intakeCommand;
+  public static CommandController controllerCommand = new CommandController(0, ControllerType.kPS5); 
+  public static Shooter shooter;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -53,6 +56,7 @@ public class RobotContainer implements Sendable {
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     intakeSubsystem = IntakeSubsystem.getInstance();
     shinuaSubsystem = ShinuaSubsystem.getInstance();
+    shooter = Shooter.getInstance();
     intakeCommand = new IntakeCommand(intakeSubsystem);
 
     // Configure the trigger bindings
@@ -90,7 +94,7 @@ public class RobotContainer implements Sendable {
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controllerCommand));
     intakeSubsystem.setDefaultCommand(new IntakeCommand(intakeSubsystem));
     shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
-    // shooter.setDefaultCommand(new ShooterCommand(shooter));
+    shooter.setDefaultCommand(new ShooterCommand());
     // turret.setDefaultCommand(new TurretCommand(turret));
   }
 
