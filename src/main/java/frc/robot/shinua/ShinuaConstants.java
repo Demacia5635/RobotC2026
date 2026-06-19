@@ -52,7 +52,8 @@ public class ShinuaConstants {
     public static enum ShinuaState {
         SHINUA_ON(-12.5, 1),
         SHINUA_OFF(0, 0),
-        EJECTING(-12.5, 10),
+        EJECTING(-12.5, 1),
+        NO_INDEXER(-12.5 , 0),
         TESTING(0, 0);
 
         public double velocityRollers;
