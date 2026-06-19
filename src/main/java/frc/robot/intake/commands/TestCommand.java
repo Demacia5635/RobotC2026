@@ -16,6 +16,8 @@ public class TestCommand extends Command {
   /** Creates a new testIntakeAtouCommand. */
   IntakeSubsystem subsystem;
   double wantedAngle;
+  double wantedPower;
+  boolean isMoveInatke;
 
   public TestCommand(IntakeSubsystem subsystem) {
     this.subsystem = subsystem;
@@ -27,8 +29,10 @@ public class TestCommand extends Command {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    // builder.addDoubleProperty("wantedAngle 2", () -> Math.toDegrees(wantedAngle),
-    //     (x) -> wantedAngle = Math.toRadians(x));
+    builder.addDoubleProperty("wantedAngle 2", () -> Math.toDegrees(wantedAngle),(x) -> wantedAngle = Math.toRadians(x));
+    builder.addDoubleProperty("wanted pwer", ()-> wantedPower, (x)-> wantedPower = x);
+    builder.addBooleanProperty("is move intake", ()-> isMoveInatke, (x)-> isMoveInatke = x);
+
         SmartDashboard.putData("open intake", new InstantCommand(() -> subsystem.setAngleIntakeDeploy(IntakeConstants.DEPLOY_OPEN_ANGLE)));
         SmartDashboard.putData("close intake", new InstantCommand(() -> subsystem.setAngleIntakeDeploy(IntakeConstants.DEPLOY_CLOSED_ANGLE)));
 
@@ -42,7 +46,8 @@ public class TestCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    subsystem.setRollerDuty(wantedPower);
+    if(isMoveInatke)subsystem.setAngleIntakeDeploy(wantedAngle);
   }
 
   // Called once the command ends or is interrupted.

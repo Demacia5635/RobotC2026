@@ -7,7 +7,6 @@ package frc.robot.intake.commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -40,7 +39,7 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
     switch (intakeSubsystem.getState()) {
-      case INTAKING, EJECTING, DEPLOYED, CLOSED:
+      case INTAKING, EJECTING, DEPLOYED, CLOSED, MIDDLE:
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         break;

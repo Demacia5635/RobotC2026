@@ -41,12 +41,15 @@ public class IntakeSubsystem extends SubsystemBase {
     state = IntakeState.IDLE;
     SmartDashboard.putData("reset encoder intake deploy",
         new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+        
     SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(true);
     }).ignoringDisable(true));
+    
     SmartDashboard.putData("set coast deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(false);
     }).ignoringDisable(true));
+
     SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
     SmartDashboard.putData(this);
      addNT();
