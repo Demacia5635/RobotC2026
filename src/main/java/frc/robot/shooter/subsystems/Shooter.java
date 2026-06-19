@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
+import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
@@ -22,8 +23,10 @@ public class Shooter extends SubsystemBase {
   private static Shooter shooter;
   private TalonFXMotor flywheel;
   private TalonFXMotor hood;
-  // private TalonFXMotor indexer;
   private TalonFXMotor feeder;
+
+  private LimitSwitch hood_limet_switch;
+
   private ShooterStates shooterState;
   private double lastWantedFlywheelVelocity = 0;
 
@@ -33,7 +36,7 @@ public class Shooter extends SubsystemBase {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
-    // indexer = new TalonFXMotor(ShooterConstants.IndexerConstants.INDEXER_CONFIG);
+    hood_limet_switch = new LimitSwitch(ShooterConstants.HoodConstants.LIMIT_SWITCH_CONFIG_HOOD);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
     shooterState = ShooterStates.TEST;
@@ -57,7 +60,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("Hood Voltage", () -> hood.getMotorVoltage().getValueAsDouble(), null);
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
-      // builder.addDoubleProperty("shooter max accel", () -> FlywheelConstants.MAX_FLYWHEEL_ACCEL, (maxAccel) -> FlywheelConstants.MAX_FLYWHEEL_ACCEL = maxAccel);
+      builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
   }
 
   public static Shooter getInstance(){
@@ -91,12 +94,6 @@ public class Shooter extends SubsystemBase {
     hood.setDuty(power);
    }
    
-  // public void setIndexerPower (double power){ 
-  //   indexer.setDuty(power);
-  // }
-
-
-
   public void setFeederPower (double power){
     feeder.setDuty(power);
   }
@@ -117,10 +114,6 @@ public class Shooter extends SubsystemBase {
     return hood.getCurrentCurrent();
   }
 
-  // public double getIndexerCurrent(){
-  //   return indexer.getCurrentCurrent();
-  // }
-
   public double getFeederCurrent(){
     return feeder.getCurrentCurrent();
   }
@@ -128,10 +121,6 @@ public class Shooter extends SubsystemBase {
   public double getHoodVelocity(){
     return hood.getCurrentVelocity();
   }
-
-  // public double getIndexerVelocity(){
-  //   return indexer.getCurrentVelocity();
-  // }
 
   public double getFeederVelocity(){
     return feeder.getCurrentVelocity();
@@ -157,7 +146,6 @@ public class Shooter extends SubsystemBase {
   public void stopAll(){
     flywheel.stop();
     hood.stop();
-    // indexer.stop();
     feeder.stop();
   }
 
@@ -179,25 +167,26 @@ public class Shooter extends SubsystemBase {
     hood.stop();
   }
 
-  // public void stopIndexer() {
-  //   indexer.stop();
-  // }
+  public boolean isHoodLimetSwithSee(){
+    return hood_limet_switch.get();
+  }
+
+  public void setHoodPose(double pose){
+    hood.setEncoderPosition(pose);
+  }
 
   @Override
   public void periodic() { //TODO to make you change it in elastic,  may not work because not neer the other code
-      if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
-        stopFeeder();
-      }
-      if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
-        hood.stop();
-      }
-      double v = flywheel.getVelocity().getValueAsDouble();
-      if(Math.abs(v) > 0.1) {
-        LogManager.log("v = " + v);
-      }
-      // LogManager.log("voltage " + flywheel.getMotorVoltage().getValueAsDouble());
-      // if (indexer.getCurrentCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(indexer.getCurrentVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
-      //   indexer.stop();
+      // if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
+      //   stopFeeder();
       // }
+      // if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
+      //   hood.stop();
+      // }
+      // double v = flywheel.getVelocity().getValueAsDouble();
+      // if(Math.abs(v) > 0.1) {
+      //   LogManager.log("v = " + v);
+      // }
+      // LogManager.log("is see limet switch" + isHoodLimetSwithSee());
   }
 }

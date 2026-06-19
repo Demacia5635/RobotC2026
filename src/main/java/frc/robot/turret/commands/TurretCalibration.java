@@ -22,7 +22,7 @@ public class TurretCalibration extends Command {
   public void end(boolean interrupted) {
     turret.stopMotor();
     if(!interrupted){
-      turret.setCalibration();
+      // turret.setCaliberation();
       turret.setPositionByLimit();
     }
   }
@@ -30,6 +30,6 @@ public class TurretCalibration extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return turret.getMaxLimitSwich() || turret.getMinLimitSwich();
+    return turret.getMaxLimitSwich();
   }
 }

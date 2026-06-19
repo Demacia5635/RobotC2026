@@ -8,21 +8,28 @@ import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
   private static Turret turret;
   private TalonFXMotor turretMotor;
   private LimitSwitch maxLimitSwitch;
-  private LimitSwitch minLimitSwitch;
+  // private LimitSwitch minLimitSwitch;
   private TurretStates turretStates;
   private boolean isCalibrated;
   /** Creates a new Turret. */
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
     maxLimitSwitch = new LimitSwitch(TurretConstants.MAX_LIMIT_SWITCH_CONFIG);
-    minLimitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
     isCalibrated = false;
+    SmartDashboard.putData("turret",this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addBooleanProperty("is limet turret", ()-> getMaxLimitSwich(), null);
   }
 
   public void setNatrelMode(boolean isBrake){
@@ -48,11 +55,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void setPositionByLimit(){
-    if(getMaxLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGLE);
-    } else if(getMinLimitSwich()){
-      turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGLE);
-    }
+    if(getMaxLimitSwich()) turretMotor.setEncoderPosition(TurretConstants.MAX_TURRET_ANGLE);
   }
   public void stopMotor(){
     turretMotor.stop();
@@ -64,10 +67,6 @@ public class Turret extends SubsystemBase {
 
   public boolean getMaxLimitSwich(){
     return maxLimitSwitch.get();
-  }
-
-  public boolean getMinLimitSwich(){
-    return minLimitSwitch.get();
   }
 
   public void setState(TurretStates state){
