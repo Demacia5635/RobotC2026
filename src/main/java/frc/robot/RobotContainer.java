@@ -52,6 +52,7 @@ public class RobotContainer implements Sendable {
    */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     intakeSubsystem = IntakeSubsystem.getInstance();
