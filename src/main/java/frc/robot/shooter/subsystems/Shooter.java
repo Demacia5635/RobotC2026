@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
 
   private DigitalInput hood_limet_switch;
 
-  private ShooterStates shooterState;
+  private ShooterStates shooterState = ShooterStates.IDLE;
   private double lastWantedFlywheelVelocity = 0;
 
   /** Creates a new Shooter. */

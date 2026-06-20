@@ -4,8 +4,6 @@
 
 package frc.demacia.utils.chassis;
 
-import java.security.PublicKey;
-
 import org.ejml.simple.SimpleMatrix;
 
 import com.ctre.phoenix6.StatusCode;
@@ -279,8 +277,12 @@ public class Chassis extends SubsystemBase {
 
     public void setVelocities(ChassisSpeeds speeds) {
 
-        SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStates(speeds);
-
+        SwerveModuleState[] states = demaciaKinematics
+                .toSwerveModuleStates(speeds);
+        // SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStatesWithLimit(
+        // speeds,
+        // getChassisSpeedsFieldRel(),
+        // getGyroAngle());
         setModuleStates(states);
     }
 

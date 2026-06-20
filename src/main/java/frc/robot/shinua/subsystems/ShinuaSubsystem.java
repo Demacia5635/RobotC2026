@@ -15,7 +15,7 @@ import frc.robot.shinua.ShinuaConstants.ShinuaState;
 public class ShinuaSubsystem extends SubsystemBase {
   private TalonFXMotor mecanumMotor;
   private TalonFXMotor rollersMotor;
-  private ShinuaState state;
+  private ShinuaState state = ShinuaState.SHINUA_OFF;
   private static ShinuaSubsystem instance;
 
   public static ShinuaSubsystem getInstance() {

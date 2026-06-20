@@ -31,6 +31,7 @@ import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.TurretConstants;
+import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.commands.commandContorller;
 import frc.robot.turret.subsystems.Turret;
@@ -93,10 +94,11 @@ public class RobotContainer implements Sendable {
 
 
   private void configureBindings() {
-    controller.rightButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);})); 
-    controller.upButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.onePoint);})); 
-    controller.downButton().onTrue(new InstantCommand(()-> {intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint);}));
-    controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.IDLE); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.rightButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);})); 
+    controller.upButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);})); 
+    // controller.downButton().onTrue(new InstantCommand(()-> {intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);}));
+    controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.IDLE); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);}));
+    controller.downButton().onTrue(new InstantCommand(()-> {turretSubsystem.setState(TurretStates.SHOOTING);}));
   }
 
   private void setUserButton(){
@@ -105,12 +107,12 @@ public class RobotContainer implements Sendable {
 
   private void setDefaultCommands() {
     // chassis.setDefaultCommand(new testDriveCommand(chassis));
-    // Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
-    turretSubsystem.setDefaultCommand(new commandContorller(controller));
+    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
+    // turretSubsystem.setDefaultCommand(new commandContorller(controller));
     intakeSubsystem.setDefaultCommand(new IntakeCommand());
     shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    // turretSubsystem.setDefaultCommand(new TurretCommand());
+    turretSubsystem.setDefaultCommand(new TurretCommand());
   }
 
   public static void setIsRed(boolean isRed) {

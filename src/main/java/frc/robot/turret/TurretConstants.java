@@ -12,17 +12,18 @@ public class TurretConstants {
     public static final Canbus TURRET_CANBUS = Canbus.Rio;
     public static final String TURRET_NAME = "turret motor";
     public static final int TURRET_ID = 20;
-    public static final double kp = 35;
+    public static final double kp = 40;
     public static final double ki = 0;
     public static final double kd = 0;
-    public static final double ks = 0.07;
+    public static final double ks = 0.1;
     public static final double kv = 2.7;
-    public static final double ka = 0.13;
+    public static final double ka = 0.15;
     public static final double kg = 0;
-    public static final double TURRET_GEAR_RASIO = 36.0*112.0/27.0;
+    public static final double TURRET_GEAR_RASIO = 48.0*112.0/27.0;
 
     public static final TalonFXConfig TURRET_CONFIG= new TalonFXConfig(TURRET_ID, TURRET_CANBUS, TURRET_NAME)
     .withPID(kp, ki, kd, ks, kv, ka, 0)
+    .withMotionParam(4, 16, 30)
     .withRadiansMotor(TURRET_GEAR_RASIO)
     .withBrake(false);
 

@@ -23,7 +23,7 @@ public class Turret extends SubsystemBase {
   private TalonFXMotor turretMotor;
   private DigitalInput maxLimitSwitch;
   // private LimitSwitch minLimitSwitch;
-  private TurretStates turretStates;
+  private TurretStates turretStates = TurretStates.IDLE;
   private boolean isCalibrated;
   /** Creates a new Turret. */
   private Turret() {
@@ -62,7 +62,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getAngle(){
-    return Math.toDegrees(turretMotor.getCurrentAngle());
+    return Math.toDegrees(turretMotor.getCurrentAngle()+Math.PI);
   }
 
   public void setNatrelMode(boolean isBrake){
@@ -82,7 +82,7 @@ public class Turret extends SubsystemBase {
   public void setTurretMotion(double position){
     if(getIsCaliberation()){ //if not stop
       position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
-      turretMotor.setPositionVoltage(Math.toRadians(position));
+      turretMotor.setMotion(Math.toRadians(position));
     }
   }
 

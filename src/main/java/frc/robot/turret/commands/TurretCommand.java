@@ -4,10 +4,15 @@
 
 package frc.robot.turret.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.log.LogManager;
+import frc.robot.RobotCommon;
 import frc.robot.ShootingWhileDriving;
+import frc.robot.Field.HubRed;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.subsystems.Turret;
@@ -39,7 +44,11 @@ public class TurretCommand extends Command {
         turret.setTurretMotion(targetAngle);
         break;
       case SHOOTING:
-        targetAngle = ShootingWhileDriving.getTurretAngle();
+        LogManager.log("111111111111()" + RobotCommon.getHubPose());  
+        LogManager.log("22222222222222222()" + Chassis.getInstance().getPose().getTranslation());
+        targetAngle = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.17, 0))).getAngle().getDegrees()+313-Chassis.getInstance().getGyroAngle().getDegrees();
+        
+      SmartDashboard.putNumber("Turret angle shoting state", targetAngle);
         turret.setTurretMotion(targetAngle);
         break;
       case DELIVERY:

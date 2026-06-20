@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonFXMotor rollerMotor;
   private TalonFXMotor intakeDeployMotor;
   private DigitalInput intakeDeployLimitSwitch;
-  private IntakeState state;
+  private IntakeState state = IntakeState.IDLE;
   private boolean isCalibrated;
 
   public static IntakeSubsystem getInstance() {
