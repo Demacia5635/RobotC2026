@@ -46,7 +46,7 @@ public class IntakeCommand extends Command {
 
       case TESTING:
         intakeSubsystem.setRollerDuty(wantedDuty);
-        intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
+        // intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
         break;
 
       case IDLE:

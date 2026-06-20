@@ -26,7 +26,7 @@ public class IntakeConstants {
     public static final double INTAKE_DEPLOY_OFFSET = Math.toRadians(-31.05);
     public static final int INTAKE_DEPLOY_ID = 50;
     public static final String INTAKE_DEPLOY_NAME = "Intake Deploy Motor";
-    public static final boolean INTAKE_DEPLOY_INVERTED = false;
+    public static final boolean INTAKE_DEPLOY_INVERTED = true;
     public static final double INTAKE_DEPLOY_CURRENT_LIMIT = 15.0;
     public static final boolean INTAKE_DEPLOY_BRAKE = false;  
      public static final double INTAKE_DEPLOY_GEAR_RATIO = 64;
