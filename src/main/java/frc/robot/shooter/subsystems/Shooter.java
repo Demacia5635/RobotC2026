@@ -6,12 +6,15 @@ package frc.robot.shooter.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
+import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
@@ -25,7 +28,7 @@ public class Shooter extends SubsystemBase {
   private TalonFXMotor hood;
   private TalonFXMotor feeder;
 
-  private LimitSwitch hood_limet_switch;
+  private DigitalInput hood_limet_switch;
 
   private ShooterStates shooterState;
   private double lastWantedFlywheelVelocity = 0;
@@ -36,11 +39,11 @@ public class Shooter extends SubsystemBase {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
-    hood_limet_switch = new LimitSwitch(ShooterConstants.HoodConstants.LIMIT_SWITCH_CONFIG_HOOD);
+    hood_limet_switch = new DigitalInput(5);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
     shooterState = ShooterStates.TEST;
-
+    addNT();
     SmartDashboard.putData("resetHood",new InstantCommand(() -> restHoodMotor()).ignoringDisable(true));
 
     SmartDashboard.putData("set hood brake", new InstantCommand(() -> setBrakeHood()).ignoringDisable(true));
@@ -69,6 +72,17 @@ public class Shooter extends SubsystemBase {
     }
     return shooter;
   }
+
+  private void addNT() {
+    SendableChooser<ShooterStates> stateChooser = new SendableChooser<>();
+    for (ShooterStates intakeState : ShooterStates.values()) {
+      stateChooser.addOption(intakeState.name(), intakeState);
+    }
+    stateChooser.onChange(newState -> this.shooterState = newState);
+    SmartDashboard.putData("shooter State Chooser!!!!!!!!!", stateChooser);
+
+  }
+
 
   public void setCostHood(){
     hood.setNeutralMode(false);
@@ -103,6 +117,7 @@ public class Shooter extends SubsystemBase {
       velocity = lastWantedFlywheelVelocity + Math.signum(velocity - lastWantedFlywheelVelocity) * FlywheelConstants.MAX_FLYWHEEL_ACCEL * 0.02;
     }
     lastWantedFlywheelVelocity = velocity;
+    LogManager.log("wanted vel");
     flywheel.setVelocity(velocity);
   }
 
@@ -188,5 +203,6 @@ public class Shooter extends SubsystemBase {
       //   LogManager.log("v = " + v);
       // }
       // LogManager.log("is see limet switch" + isHoodLimetSwithSee());
+      
   }
 }

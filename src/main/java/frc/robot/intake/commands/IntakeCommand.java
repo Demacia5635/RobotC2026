@@ -16,8 +16,8 @@ public class IntakeCommand extends Command {
   private double wantedDuty = 0;
   private final IntakeSubsystem intakeSubsystem;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
-    this.intakeSubsystem = intakeSubsystem;
+  public IntakeCommand() {
+    this.intakeSubsystem = IntakeSubsystem.getInstance();
     addRequirements(intakeSubsystem);
     SmartDashboard.putData("Intake Testing", this);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -46,7 +46,7 @@ public class IntakeCommand extends Command {
 
       case TESTING:
         intakeSubsystem.setRollerDuty(wantedDuty);
-        // intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
+        intakeSubsystem.setAngleIntakeDeploy(Math.toRadians(wantedAngle));
         break;
 
       case IDLE:

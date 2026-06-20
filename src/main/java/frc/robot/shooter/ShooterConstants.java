@@ -42,7 +42,7 @@ public class ShooterConstants {
         //TODO: Set the motor config
         public static final Canbus HOOD_CANBUS = Canbus.Rio;
         public static final String HOOD_NAME = "hood motor";
-        public static final int HOOD_ID = 50;
+        public static final int HOOD_ID = 34;
 
         public static final TalonFXConfig HOOD_CONFIG = new TalonFXConfig(HOOD_ID, HOOD_CANBUS, HOOD_NAME)
         .withInvert(true)
@@ -68,7 +68,7 @@ public class ShooterConstants {
         //TODO: Set the motor config
         public static final Canbus FEEDER_CANBUS = Canbus.Rio;
         public static final String FEEDER_NAME = "feeder motor";
-        public static final int  FEEDER_ID = 3;
+        public static final int  FEEDER_ID = 33;
         
         public static final TalonFXConfig FEEDER_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME).withInvert(true);
         public static final double MAX_FEEDER_POWER = 1;

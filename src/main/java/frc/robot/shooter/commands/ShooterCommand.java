@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon;
 import frc.robot.ShootingWhileDriving;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
@@ -36,14 +37,18 @@ public class ShooterCommand extends Command {
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("FlywheelVelocity", () -> flywheelVelocity, (vel) -> flywheelVelocity = vel);
       builder.addDoubleProperty("HoodPosition", () -> Math.toDegrees(hoodPosition), (position) -> hoodPosition = Math.toRadians(position));
-      // builder.addDoubleProperty("IndexerPower", () -> indexerPower, (power) -> indexerPower = power);
-      builder.addDoubleProperty("FeederPower", () -> feederPower, (power) -> feederPower = power);
+      builder.addDoubleProperty("feedrPower", () -> feederPower, (power) -> feederPower = power);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (shooter.getShooterState()) {
+      case onePoint:
+          shooter.setHoodMotion(34);
+          shooter.setFlywheelVelocity(10.8);
+          shooter.setFeederPower(1);
+        break;
       case SHOOTER:
         //TODO: Change the position of the calculate
         ShootingWhileDriving.calculate(RobotCommon.getHubPose());
@@ -56,12 +61,15 @@ public class ShooterCommand extends Command {
         }
         break;
       case IDLE:
-        flywheelVelocity = 0;
-        hoodPosition = 0;
+        shooter.setFlywheelVelocity(0);
+        shooter.setHoodMotion(0);
         // indexerPower = 0;
-        feederPower = 0;
+        shooter.setFeederPower(0);
         break;
       case TEST:
+        shooter.setHoodMotion(hoodPosition);
+        shooter.setFlywheelVelocity(flywheelVelocity);
+        shooter.setFeederPower(feederPower);
         break;
       case DELIVERY:
         feederPower = FeederConstants.MAX_FEEDER_POWER;
@@ -78,10 +86,10 @@ public class ShooterCommand extends Command {
         feederPower = 0;
         break;
     }
-    shooter.setFlywheelVelocity(flywheelVelocity);
-    shooter.setHoodMotion(hoodPosition);
+    // shooter.setFlywheelVelocity(flywheelVelocity);
+    // shooter.setHoodMotion(hoodPosition);
     // shooter.setIndexerPower(indexerPower);
-    shooter.setFeederPower(feederPower);
+    // shooter.setFeederPower(feederPower);
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
       shooter.stopFeeder();
     }

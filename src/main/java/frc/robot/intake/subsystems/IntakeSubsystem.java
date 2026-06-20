@@ -39,6 +39,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.IDLE;
+    // isCalibrated = true;
+    setEncoderIntakeDeploy(IntakeState.DEPLOYED.angle);
     SmartDashboard.putData("reset encoder intake deploy",
         new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
         
@@ -105,7 +107,7 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
       angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
-      intakeDeployMotor.setMotion(angle, gravitySineFF);
+      // intakeDeployMotor.setMotion(angle, gravitySineFF);
     }
   }
 
@@ -164,7 +166,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    LogManager.log("current state: " + state.toString());
+    // LogManager.log("current state: " + state.toString());
   }
 
 }

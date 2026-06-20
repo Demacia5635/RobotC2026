@@ -5,6 +5,7 @@
 package frc.robot.turret.commands;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ShootingWhileDriving;
 import frc.robot.shooter.ShooterConstants;
@@ -19,6 +20,8 @@ public class TurretCommand extends Command {
   public TurretCommand() {
     this.turret = Turret.getInstance();
     addRequirements(turret);
+    
+    SmartDashboard.putData("Turret Testing", this);
   }
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -29,23 +32,26 @@ public class TurretCommand extends Command {
   public void execute() {
     switch (turret.getTurretState()) {
       case IDLE:
-      turret.stopMotor();
-        break;
+        turret.stopMotor();
+      break;
       case TEST:
         targetAngle = testAngle;
+        turret.setTurretMotion(targetAngle);
         break;
       case SHOOTING:
         targetAngle = ShootingWhileDriving.getTurretAngle();
+        turret.setTurretMotion(targetAngle);
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
           targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT).getAngle().getRadians();
+          turret.setTurretMotion(targetAngle);
         } else{
           targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
+          turret.setTurretMotion(targetAngle);
         }
         break;
     }
-    turret.setTurretMotion(targetAngle); //TODO also pid and motion magic
   }
 
   // Called once the command ends or is interrupted.

@@ -7,14 +7,14 @@ import frc.robot.turret.subsystems.Turret;
 public class TurretCalibration extends Command {
   private Turret turret;
 
-  public TurretCalibration() {
-    this.turret = Turret.getInstance();
+  public TurretCalibration(Turret turret) {
+    this.turret = turret;
     addRequirements(turret);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.setTurretPower(0.1);
+    turret.setTurretPower(-0.15);
   }
 
   // Called once the command ends or is interrupted.
@@ -22,7 +22,7 @@ public class TurretCalibration extends Command {
   public void end(boolean interrupted) {
     turret.stopMotor();
     if(!interrupted){
-      // turret.setCaliberation();
+      turret.setCaliberation(true);
       turret.setPositionByLimit();
     }
   }
