@@ -40,50 +40,6 @@ import frc.demacia.utils.sensors.Pigeon;
 import frc.demacia.vision.utils.VisionConstants;
 import frc.robot.RobotCommon;
 
-/**
- * Main swerve drive chassis controller.
- * 
- * <p>
- * Manages four swerve modules, odometry, and provides high-level drive control
- * with acceleration limiting and smooth motion profiling.
- * </p>
- * <p>
- * Manages four swerve modules, odometry, and provides high-level drive control
- * with acceleration limiting and smooth motion profiling.
- * </p>
- * 
- * <p>
- * <b>Features:</b>
- * </p>
- * <ul>
- * <li>Field-relative and robot-relative control</li>
- * <li>Pose estimation with vision integration</li>
- * <li>Smooth acceleration limiting</li>
- * <li>Path following capabilities</li>
- * <li>Auto-rotate to target angle</li>
- * </ul>
- * 
- * <p>
- * <b>Example Usage:</b>
- * </p>
- * 
- * <p>
- * <b>Example Usage:</b>
- * </p>
- * 
- * <pre>
- * ChassisConfig config = new ChassisConfig(
- *         "MainChassis",
- *         swerveModueles[] swerveModulesConfig,
- *         pigeonConfig,
- * );
- * 
- * Chassis chassis = new Chassis(config);
- * 
- * // Field-relative drive with acceleration limiting
- * chassis.setVelocitiesWithAccel(new ChassisSpeeds(vx, vy, omega));
- * </pre>
- */
 public class Chassis extends SubsystemBase {
 
     private static Chassis instance;
@@ -100,7 +56,7 @@ public class Chassis extends SubsystemBase {
     private final ChassisConfig chassisConfig;
 
     public SwerveModule[] modules;
-    private Pigeon gyro;
+    public Pigeon gyro;
     private DemaciaKinematics demaciaKinematics;
     private SwerveDriveKinematics wpilibKinematics;
 
@@ -114,7 +70,6 @@ public class Chassis extends SubsystemBase {
     private double lastGyroAngularVelocity;
 
     private final PIDController xController = new PIDController(0.2, 0.0, 0.0);
-
     private final PIDController yController = new PIDController(0.2, 0.0, 0.0);
     private final PIDController headingController = new PIDController(0.03, 0.0, 0) {
         {
@@ -126,8 +81,13 @@ public class Chassis extends SubsystemBase {
     private boolean isRotateToHub = false;
 
     Rotation2d gyroAngle;
-
     OdometryObservation observation;
+
+    private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
+    private double lastAccelTime = Timer.getFPGATimestamp();
+
+    private double lastOmega = 0;
+    private double lastOmegaTime = Timer.getFPGATimestamp();
 
     private Chassis(ChassisConfig chassisConfig) {
         setName(getName());
@@ -146,7 +106,7 @@ public class Chassis extends SubsystemBase {
         addStatus();
         demaciaKinematics = new DemaciaKinematics(modulePositions);
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
-      
+
         field = new Field2d();
         fieldTesting = new Field2d();
         SmartDashboard.putData("chassis/reset gyro",
@@ -155,8 +115,6 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("chassis/field", field);
         SmartDashboard.putData("chassis/fieldTesting", fieldTesting);
-        // SmartDashboard.putData("chassis/quest field", questField);
-        // SmartDashboard.putData("chassis/tags field", tagsField);
         SmartDashboard.putData("chassis/set coast",
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
@@ -175,18 +133,55 @@ public class Chassis extends SubsystemBase {
         LogManager.log(chassisConfig.name + " initalize");
     }
 
+    /**
+     * Returns linear acceleration [ax, ay] in m/s² (field-relative)
+     * and angular acceleration [alpha] in rad/s², derived from velocity delta.
+     *
+     * @return double[] { ax, ay, alpha }
+     */
+    public double[] getAcceleration() {
+        double now = Timer.getFPGATimestamp();
+        double dt = now - lastAccelTime;
+
+        ChassisSpeeds current = getChassisSpeedsFieldRel();
+
+        double ax = (current.vxMetersPerSecond - lastSpeeds.vxMetersPerSecond) / dt;
+        double ay = (current.vyMetersPerSecond - lastSpeeds.vyMetersPerSecond) / dt;
+        double aOmga = (current.omegaRadiansPerSecond - lastSpeeds.omegaRadiansPerSecond) / dt;
+
+        lastSpeeds = current;
+        lastAccelTime = now;
+
+        return new double[] {ax, ay, aOmga };
+    }
+
+    /**
+     * Returns angular acceleration (alpha) in rad/s²,
+     * derived from the gyro angular velocity — cleaner signal than kinematics.
+     *
+     * @return angular acceleration in rad/s²
+     */
+    public double getAngularAcceleration() {
+        double now = Timer.getFPGATimestamp();
+        double dt = now - lastOmegaTime;
+
+        double currentOmega = getGyroAngularVelocity();
+        double alpha = (currentOmega - lastOmega) / dt;
+
+        lastOmega = currentOmega;
+        lastOmegaTime = now;
+
+        return alpha;
+    }
+
+
     public void followTrajectory(SwerveSample sample) {
-
-
         Pose2d pose = getPose();
 
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + xController.calculate(pose.getX(), sample.x),
                 sample.vy + yController.calculate(pose.getY(), sample.y),
                 -sample.omega + headingController.calculate(pose.getRotation().getRadians(), -sample.heading));
-
-
-        
 
         SmartDashboard.putNumber("traj/current heading", pose.getRotation().getDegrees());
         SmartDashboard.putNumber("traj/heading error", sample.heading - pose.getRotation().getRadians());
@@ -215,28 +210,20 @@ public class Chassis extends SubsystemBase {
             setDrivePower(pow, i);
     }
 
-    public double getMaxDriveVelocity(){
+    public double getMaxDriveVelocity() {
         return chassisConfig.maxDriveVelocity;
     }
 
-    public double getMaxRotationalVelocity(){
+    public double getMaxRotationalVelocity() {
         return chassisConfig.maxRotationalVelocity;
     }
 
-    /**
-     * Checks all module electronics for faults and logs them.
-     */
     public void checkElectronics() {
         for (SwerveModule module : modules) {
             module.checkElectronics();
         }
     }
 
-    /**
-     * Sets neutral mode (brake/coast) for all modules.
-     * 
-     * @param isBrake true for brake mode, false for coast
-     */
     public void setNeutralMode(boolean isBrake) {
         for (SwerveModule module : modules) {
             module.setNeutralMode(isBrake);
@@ -247,11 +234,6 @@ public class Chassis extends SubsystemBase {
         RobotPose.getInstance().resetPose(pose);
     }
 
-    /**
-     * Gets the current estimated robot pose on the field.
-     * 
-     * @return Current pose (position and rotation) using odometry fusion
-     */
     public Pose2d getPose() {
         return RobotPose.getInstance().getPose();
     }
@@ -268,25 +250,8 @@ public class Chassis extends SubsystemBase {
         this.isRotateToHub = !isRotateToHub;
     }
 
-    /**
-     * Sets chassis velocities without acceleration limiting.
-     * 
-     * <p>
-     * Applies discrete kinematics for accurate odometry.
-     * Use this for precise path following where acceleration is pre-profiled.
-     * </p>
-     * 
-     * @param speeds Desired chassis speeds (field-relative)
-     */
-
     public void setVelocities(ChassisSpeeds speeds) {
-
-        SwerveModuleState[] states = demaciaKinematics
-                .toSwerveModuleStates(speeds);
-        // SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStatesWithLimit(
-        // speeds,
-        // getChassisSpeedsFieldRel(),
-        // getGyroAngle());
+        SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -295,18 +260,6 @@ public class Chassis extends SubsystemBase {
                 getChassisSpeedsFieldRel().vyMetersPerSecond);
     }
 
-    /**
-     * Sets robot-relative velocities with acceleration limiting.
-     * 
-     * <p>
-     * Useful for manual control where joystick inputs are in robot frame.
-     * </p>
-     * <p>
-     * Useful for manual control where joystick inputs are in robot frame.
-     * </p>
-     * 
-     * @param speeds Desired chassis speeds (robot-relative)
-     */
     public void setRobotRelSpeedsWithAccel(ChassisSpeeds speeds) {
         ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(speeds, getGyroAngle());
         setVelocities(fieldSpeeds);
@@ -381,8 +334,6 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // updateCommon();
-        //TODO: RETORN IT 
         observation = new OdometryObservation(
                 Timer.getFPGATimestamp(),
                 getGyroAngle(),
@@ -390,21 +341,14 @@ public class Chassis extends SubsystemBase {
 
         RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
-        fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(),new Rotation2d(0)));
-        // field.getObject("Turret").setPose(new Pose2d(RobotCommon.getCurrentRobotPose().getTranslation()
-        //         .plus(TurretConstants.TURRET_POSITION_ON_ROBOT.rotateBy(RobotCommon.getRobotAngle())),
-        //         Rotation2d.fromRadians(RobotCommon.getRobotAngle().getRadians()
-        //                 + MathUtil.angleModulus(Turret.getInstance().getTurretAngle()))));
-        // field.getObject("estimation").setPose(ShooterUtils.computeFuturePosition(getChassisSpeedsFieldRel(), getPose(), 0.1));
-    }
+        fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
 
-    // public void updateCommon() {
-    //     RobotCommon.setRobotAngle(getGyroAngle());
-    //     RobotCommon.setCurrentRobotPose(getPose());
-    //     RobotCommon.setFieldRelativeSpeeds(getChassisSpeedsFieldRel());
-    //     RobotCommon.setFutureRobotPose(getFuturePose(0.2));
-    // } 
-    //TODO: reotrn it
+        double[] accel = getAcceleration();
+        SmartDashboard.putNumber("accel/ax", accel[0]);
+        SmartDashboard.putNumber("accel/ay", accel[1]);
+        SmartDashboard.putNumber("accel/alpha (from kinematics)", accel[2]);
+        SmartDashboard.putNumber("accel/alpha (from gyro)", getAngularAcceleration());
+    }
 
     public Pose2d getFuturePose(double dtSeconds) {
         return getPose().exp(new Twist2d(
@@ -413,22 +357,12 @@ public class Chassis extends SubsystemBase {
                 getChassisSpeedsFieldRel().omegaRadiansPerSecond * dtSeconds));
     }
 
-    /**
-     * Gets the current chassis speeds in robot-relative frame.
-     * 
-     * @return Current velocities in robot frame
-     */
     public ChassisSpeeds getChassisSpeedsRobotRel() {
         return demaciaKinematics.toChassisSpeeds(
                 getModuleStates(),
                 Math.toRadians(gyroYawStatus.getValueAsDouble()));
     }
 
-    /**
-     * Gets the current chassis speeds in field-relative frame.
-     * 
-     * @return Current velocities transformed to field frame
-     */
     public ChassisSpeeds getChassisSpeedsFieldRel() {
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 demaciaKinematics.toChassisSpeeds(getModuleStates(),
@@ -441,12 +375,6 @@ public class Chassis extends SubsystemBase {
         return new Translation2d(s.vxMetersPerSecond, s.vyMetersPerSecond);
     }
 
-    /**
-     * Returns the state of every module
-     * 
-     * 
-     * @return Velocity in m/s, angle in Rotation2d
-     */
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] res = new SwerveModuleState[modules.length];
         for (int i = 0; i < modules.length; i++) {
@@ -455,15 +383,6 @@ public class Chassis extends SubsystemBase {
         return res;
     }
 
-    /**
-     * Sets the gyro yaw angle (for field-relative reset).
-     * 
-     * <p>
-     * Call this at the start of autonomous to set known field orientation.
-     * </p>
-     * 
-     * @param angle New yaw angle (null to skip)
-     */
     public void setYaw(Rotation2d angle) {
         if (angle != null) {
             gyro.setYaw(angle.getDegrees());
@@ -478,9 +397,6 @@ public class Chassis extends SubsystemBase {
         return chassisConfig;
     }
 
-    /**
-     * Stops all swerve modules immediately.
-     */
     public void stop() {
         for (SwerveModule i : modules) {
             i.stop();

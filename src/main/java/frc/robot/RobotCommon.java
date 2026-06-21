@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.demacia.utils.chassis.Chassis;
 public class RobotCommon {
     public static Pose2d currentRobotPose = Pose2d.kZero;
     private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
@@ -74,6 +75,11 @@ public class RobotCommon {
 
     public static void setRobotFuturePose(Pose2d newRobotFucerPose){
         futureRobotPose = newRobotFucerPose;
+    }
+
+
+    public static ChassisSpeeds getRobotFucerSpeed(double dt){
+        return new ChassisSpeeds(getFieldRelativeSpeeds().vxMetersPerSecond + Chassis.getInstance().getAcceleration()[0] * dt ,getFieldRelativeSpeeds().vyMetersPerSecond + Chassis.getInstance().getAcceleration()[1] * dt,getFieldRelativeSpeeds().omegaRadiansPerSecond + Chassis.getInstance().getAcceleration()[2] * dt);
     }
 
     public static ChassisSpeeds getFieldRelativeSpeeds(){

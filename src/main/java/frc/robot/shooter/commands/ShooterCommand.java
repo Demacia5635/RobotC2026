@@ -71,7 +71,7 @@ public class ShooterCommand extends Command {
       case DELIVERY:
         testingFeederPower = FeederConstants.MAX_FEEDER_POWER;
         shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
-        shooterToTarget = shooterToTarget.minus(new Translation2d(RobotCommon.getFieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
+        shooterToTarget = shooterToTarget.minus(new Translation2d(RobotCommon.getRobotFucerSpeed(0.02).vxMetersPerSecond * 1.2, RobotCommon.getFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
         hoodPosition = 45;
         flywheelVelocity = FlywheelConstants.MAX_FLYWHEEL_POWER;
         feederPower = 1;
