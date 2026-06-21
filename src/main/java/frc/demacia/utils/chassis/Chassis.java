@@ -38,6 +38,7 @@ import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
 import frc.demacia.vision.utils.VisionConstants;
+import frc.robot.RobotCommon;
 
 /**
  * Main swerve drive chassis controller.
@@ -104,6 +105,7 @@ public class Chassis extends SubsystemBase {
     private SwerveDriveKinematics wpilibKinematics;
 
     private Field2d field;
+    private Field2d fieldTesting;
 
     private StatusSignal<Angle> gyroYawStatus;
     private StatusSignal<AngularVelocity> gyroAngularVelocityStatus;
@@ -146,11 +148,13 @@ public class Chassis extends SubsystemBase {
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
       
         field = new Field2d();
+        fieldTesting = new Field2d();
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
                 new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("chassis/field", field);
+        SmartDashboard.putData("chassis/fieldTesting", fieldTesting);
         // SmartDashboard.putData("chassis/quest field", questField);
         // SmartDashboard.putData("chassis/tags field", tagsField);
         SmartDashboard.putData("chassis/set coast",
@@ -386,6 +390,7 @@ public class Chassis extends SubsystemBase {
 
         RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
+        fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(),new Rotation2d(0)));
         // field.getObject("Turret").setPose(new Pose2d(RobotCommon.getCurrentRobotPose().getTranslation()
         //         .plus(TurretConstants.TURRET_POSITION_ON_ROBOT.rotateBy(RobotCommon.getRobotAngle())),
         //         Rotation2d.fromRadians(RobotCommon.getRobotAngle().getRadians()

@@ -4,6 +4,7 @@
 
 package frc.robot.turret.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,12 +45,13 @@ public class TurretCommand extends Command {
         turret.setTurretMotion(targetAngle);
         break;
       case SHOOTING:
-        LogManager.log("111111111111()" + RobotCommon.getHubPose());  
-        LogManager.log("22222222222222222()" + Chassis.getInstance().getPose().getTranslation());
-        targetAngle = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.17, 0))).getAngle().getDegrees()+313-Chassis.getInstance().getGyroAngle().getDegrees();
-        
-      SmartDashboard.putNumber("Turret angle shoting state", targetAngle);
-        turret.setTurretMotion(targetAngle);
+        double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.17, 0).rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-180;
+        SmartDashboard.putNumber("Turret angle shoting state3333", shooterToHub);
+        SmartDashboard.putNumber("Turret angle shoting state2222", MathUtil.inputModulus(shooterToHub, 0, 360));
+        targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees()+313;
+        SmartDashboard.putNumber("Turret angle shoting state4444", targetAngle);
+        SmartDashboard.putNumber("Turret angle shoting state", (targetAngle < 0 && targetAngle > -5)? targetAngle : MathUtil.clamp(MathUtil.inputModulus(targetAngle, 0, 360), 0, 340));
+        turret.setTurretMotion((targetAngle < 0 && targetAngle > -5)? targetAngle : MathUtil.clamp(MathUtil.inputModulus(targetAngle, 0, 360), 0, 340));
         break;
       case DELIVERY:
         if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {

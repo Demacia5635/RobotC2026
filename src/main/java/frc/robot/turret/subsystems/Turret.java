@@ -50,7 +50,7 @@ public class Turret extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
       builder.addBooleanProperty("is limet turret", ()-> getMaxLimitSwich(), null);
       builder.addBooleanProperty("is turret cal", ()-> getIsCaliberation(), null);
-      builder.addDoubleProperty("turret ang", ()-> getAngle(), null);
+      builder.addDoubleProperty("turret ang", ()-> getAngleDeg(), null);
   }
 
   public void setCaliberation(boolean isCalibrated){
@@ -61,8 +61,8 @@ public class Turret extends SubsystemBase {
     return isCalibrated;
   }
 
-  public double getAngle(){
-    return Math.toDegrees(turretMotor.getCurrentAngle()+Math.PI);
+  public double getAngleDeg(){
+    return Math.toDegrees(turretMotor.getCurrentAngle()>=0? turretMotor.getCurrentAngle(): turretMotor.getCurrentAngle()+2*Math.PI);
   }
 
   public void setNatrelMode(boolean isBrake){
@@ -93,7 +93,7 @@ public class Turret extends SubsystemBase {
     turretMotor.stop();
   }
 
-  public double getTurretAngle(){
+  public double getTurretAngleRad(){
     return turretMotor.getCurrentAngle();
   }
 
