@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.intake.subsystems;
+package frc.robot.intake.subsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
-import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.IntakeConstants.IntakeState;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -50,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
       setNeutralModeIntakeDeploy(false);
     }).ignoringDisable(true));
 
-    SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
+    // SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
     SmartDashboard.putData(this);
      addNT();
   }
