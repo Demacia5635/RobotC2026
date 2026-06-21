@@ -22,8 +22,10 @@ public class ShooterCommand extends Command {
   private Shooter shooter;
   private double flywheelVelocity = 0;
   private double hoodPosition = 0;
-  // private double indexerPower = 0;
   private double feederPower = 0;
+  private double testingFlywheelVelocity = 0;
+  private double testingHoodPosition = 0;
+  private double testingFeederPower = 0;
   private Translation2d shooterToTarget;//TODO be in robot common
 
   /** Creates a new ShooterCommand. */
@@ -35,9 +37,9 @@ public class ShooterCommand extends Command {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      builder.addDoubleProperty("FlywheelVelocity", () -> flywheelVelocity, (vel) -> flywheelVelocity = vel);
-      builder.addDoubleProperty("HoodPosition", () -> Math.toDegrees(hoodPosition), (position) -> hoodPosition = Math.toRadians(position));
-      builder.addDoubleProperty("feedrPower", () -> feederPower, (power) -> feederPower = power);
+      builder.addDoubleProperty("FlywheelVelocity", () -> testingFlywheelVelocity, (vel) -> testingFlywheelVelocity = vel);
+      builder.addDoubleProperty("HoodPosition", () -> Math.toDegrees(testingHoodPosition), (position) -> testingHoodPosition = Math.toRadians(position));
+      builder.addDoubleProperty("feedrPower", () -> testingFeederPower, (power) -> testingFeederPower = power);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,60 +47,49 @@ public class ShooterCommand extends Command {
   public void execute() {
     switch (shooter.getShooterState()) {
       case onePoint:
-          shooter.setHoodMotion(34);
-          shooter.setFlywheelVelocity(10.8);
-          shooter.setFeederPower(1);
+          flywheelVelocity = 10.8;
+          hoodPosition = 34;
+          feederPower = 1;
         break;
       case SHOOTER:
         //TODO: Change the position of the calculate
         ShootingWhileDriving.calculate(RobotCommon.getHubPose());
         flywheelVelocity = ShootingWhileDriving.getFlywheelVel();
         hoodPosition = ShootingWhileDriving.getHoodAngle();
-        // indexerPower = 0;
         feederPower = FeederConstants.MAX_FEEDER_POWER;
-        if(shooter.isReady()){
-          // indexerPower = IndexerConstants.MAX_INDEXER_POWER;
-        }
         break;
       case IDLE:
-        shooter.setFlywheelVelocity(0);
-        shooter.setHoodMotion(0);
-        // indexerPower = 0;
-        shooter.setFeederPower(0);
+        flywheelVelocity = 0;
+        hoodPosition = 0;
+        feederPower = 0;
         break;
       case TEST:
-        shooter.setHoodMotion(hoodPosition);
-        shooter.setFlywheelVelocity(flywheelVelocity);
-        shooter.setFeederPower(feederPower);
+        flywheelVelocity = testingHoodPosition;
+        hoodPosition = testingHoodPosition;
+        feederPower = testingFeederPower;
         break;
       case DELIVERY:
-        feederPower = FeederConstants.MAX_FEEDER_POWER;
+        testingFeederPower = FeederConstants.MAX_FEEDER_POWER;
         shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
         shooterToTarget = shooterToTarget.minus(new Translation2d(RobotCommon.getFieldRelativeSpeeds().vxMetersPerSecond * 1.2, RobotCommon.getFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
         hoodPosition = 45;
         flywheelVelocity = FlywheelConstants.MAX_FLYWHEEL_POWER;
-        if (shooter.isReady()){
-          // indexerPower = IndexerConstants.MAX_INDEXER_POWER;
-        }
+        feederPower = 1;
         break;
       case TRANCH:
         hoodPosition = HoodConstants.MIN_POSITION;
         feederPower = 0;
         break;
     }
-    // shooter.setFlywheelVelocity(flywheelVelocity);
-    // shooter.setHoodMotion(hoodPosition);
-    // shooter.setIndexerPower(indexerPower);
-    // shooter.setFeederPower(feederPower);
+    shooter.setFlywheelVelocity(flywheelVelocity);
+    shooter.setHoodMotion(hoodPosition);
+    shooter.setFeederPower(feederPower);
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
       shooter.stopFeeder();
     }
     if (shooter.getHoodCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(shooter.getHoodVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
       shooter.stopHood();
     }
-    // if (shooter.getIndexerCurrent() > IndexerConstants.MAX_INDEXER_CURRENT && Math.abs(shooter.getIndexerVelocity()) < IndexerConstants.MIN_INDEXER_VELOCITY){
-    //   shooter.stopIndexer();
-    // }
   }
 
   // Called once the command ends or is interrupted.

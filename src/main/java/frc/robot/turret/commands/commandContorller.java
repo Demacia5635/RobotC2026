@@ -6,6 +6,7 @@ package frc.robot.turret.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.controller.CommandController;
+import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -15,7 +16,7 @@ public class commandContorller extends Command {
   public commandContorller(CommandController controller) {
     this.controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Turret.getInstance());
+    addRequirements(Shooter.getInstance());
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +27,7 @@ public class commandContorller extends Command {
   @Override
   public void execute() {
     double power = controller.getLeftY();
-    Turret.getInstance().setTurretPower(power);
+    Shooter.getInstance().setFlywheelPower(power);
   }
 
   // Called once the command ends or is interrupted.

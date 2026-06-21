@@ -117,7 +117,6 @@ public class Shooter extends SubsystemBase {
       velocity = lastWantedFlywheelVelocity + Math.signum(velocity - lastWantedFlywheelVelocity) * FlywheelConstants.MAX_FLYWHEEL_ACCEL * 0.02;
     }
     lastWantedFlywheelVelocity = velocity;
-    LogManager.log("wanted vel");
     flywheel.setVelocity(velocity);
   }
 
@@ -165,13 +164,14 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET - flywheel.getCurrentClosedLoopError() > 0 &&
-    hood.getCurrentClosedLoopError() < HoodConstants.HOOD_POSITION_OFFSET;
+    LogManager.log(flywheel.getCurrentClosedLoopError());
+    return Math.abs(flywheel.getCurrentClosedLoopError()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
+    Math.abs(hood.getCurrentClosedLoopError()) < HoodConstants.HOOD_POSITION_OFFSET;
   }
 
   public boolean isReady(double flywheelVelocity){
-    return (Math.abs(flywheel.getCurrentVelocity() - flywheelVelocity) > FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
-    (hood.getCurrentClosedLoopError() < HoodConstants.HOOD_POSITION_OFFSET);
+    return (Math.abs(flywheel.getCurrentVelocity() - flywheelVelocity) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
+    (Math.abs(hood.getCurrentClosedLoopError()) < HoodConstants.HOOD_POSITION_OFFSET);
   }
 
   public void stopFeeder() {

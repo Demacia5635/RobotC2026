@@ -96,9 +96,9 @@ public class RobotContainer implements Sendable {
   private void configureBindings() {
     controller.rightButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);})); 
     controller.upButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);})); 
-    // controller.downButton().onTrue(new InstantCommand(()-> {intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);}));
+    controller.downButton().onTrue(new InstantCommand(()-> {intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);}));
     controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.IDLE); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);}));
-    controller.downButton().onTrue(new InstantCommand(()-> {turretSubsystem.setState(TurretStates.SHOOTING);}));
+    // controller.downButton().onTrue(new InstantCommand(()-> {turretSubsystem.setState(TurretStates.SHOOTING);}));
   }
 
   private void setUserButton(){
@@ -108,7 +108,7 @@ public class RobotContainer implements Sendable {
   private void setDefaultCommands() {
     // chassis.setDefaultCommand(new testDriveCommand(chassis));
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
-    // turretSubsystem.setDefaultCommand(new commandContorller(controller));
+    // shooter.setDefaultCommand(new commandContorller(controller));
     intakeSubsystem.setDefaultCommand(new IntakeCommand());
     shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
     shooter.setDefaultCommand(new ShooterCommand());

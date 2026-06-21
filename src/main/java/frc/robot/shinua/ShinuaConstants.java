@@ -53,7 +53,7 @@ public class ShinuaConstants {
         SHINUA_ON(-12.5, 1),
         SHINUA_OFF(0, 0),
         EJECTING(12.5, 1),
-        NO_INDEXER(-11 , 0.3),
+        NO_INDEXER(-13 , 0.18),
         TESTING(0, 0);
 
         public double velocityRollers;

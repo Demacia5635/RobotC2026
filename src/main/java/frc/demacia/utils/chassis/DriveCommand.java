@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -22,7 +23,7 @@ public class DriveCommand extends Command {
   public DriveCommand(Chassis chassis, CommandController controller) {
     this.chassis = chassis;
     this.controller = controller;
-    precisionMode = true;
+    precisionMode = false;
     addRequirements(Chassis.getInstance());
   }
 
@@ -63,9 +64,9 @@ public class DriveCommand extends Command {
     double velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
 
     if(precisionMode){
-        velX /= 1;
-        velY /= 1;
-        velRot /= 1;
+        velX /= 4;
+        velY /= 4;
+        velRot /= 4;
     }
 
     speeds = new ChassisSpeeds(velX, velY, velRot);
