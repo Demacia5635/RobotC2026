@@ -16,6 +16,7 @@ import frc.demacia.path.segments.SegmantBase;
 import frc.demacia.path.segments.SegmantFollow;
 import frc.demacia.path.utils.PathUtils;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.ChassisConfig;
 import frc.demacia.utils.log.LogManager;
 
 public class DemaciaTrajectoryGood {
@@ -32,7 +33,21 @@ public class DemaciaTrajectoryGood {
     private SegmantBase currentSegment;
     public boolean isFinishedTrajectory;
 
-    public DemaciaTrajectoryGood(List<Translation2d> demaciaPoints) {
+
+    private static DemaciaTrajectoryGood instance;
+
+    public static void initialize(List<Translation2d> demaciaPoints) {
+        if (instance == null)
+            instance = new DemaciaTrajectoryGood(demaciaPoints);
+    }
+
+    public static DemaciaTrajectoryGood getInstance() {
+        return instance;
+    }
+
+
+
+    private DemaciaTrajectoryGood(List<Translation2d> demaciaPoints) {
         this.demaciaPathPoints = demaciaPoints;
         this.pathPoints = new ArrayList<Translation2d>();
         this.lineSegments = new ArrayList<LineSegment>();
