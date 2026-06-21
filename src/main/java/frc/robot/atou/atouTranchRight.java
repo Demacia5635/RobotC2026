@@ -35,7 +35,7 @@ public class atouTranchRight extends SequentialCommandGroup {
     pathOne();
     pathTow();
     pathFhoor();
-    
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     IntakeSubsystem.getInstance().setState(IntakeState.INTAKING);
@@ -44,18 +44,18 @@ public class atouTranchRight extends SequentialCommandGroup {
   }
 
   public void pathOne(){
-    pathOne.add(new Translation2d(8, 4));
-    pathOne.add(new Translation2d(8, 0.6));
+    pathOne.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 4));
+    pathOne.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 0.6));
   }
 
   public void pathTow(){
-    pathTow.add(new Translation2d(8, 0.6));
-    pathTow.add(new Translation2d(8, 7));
+    pathTow.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 0.6));
+    pathTow.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 7));
   }
 
   public void pathFhoor(){
-    pathOne.add(new Translation2d(8, 4));
-    pathOne.add(new Translation2d(8, 0.6));
-    pathTow.add(new Translation2d(8, 7));
+    pathOne.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 4));
+    pathOne.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 0.6));
+    pathTow.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 7));
   }
 }

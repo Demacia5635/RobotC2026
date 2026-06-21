@@ -40,13 +40,13 @@ public class atouHub extends ParallelRaceGroup {
   }
 
   public void pathOne(){
-    pathPoint.add(new Translation2d(0.3, 7));
-    pathPoint.add(new Translation2d(3.5, 4));
+    pathPoint.add(new Translation2d(atouUtils.addWithRedOrBlue(0.3), 7));
+    pathPoint.add(new Translation2d(atouUtils.addWithRedOrBlue(3.5), 4));
   }
 
   public void pathTow(){
-    pathPont2.add(new Translation2d(3.5, 4));
-    pathPont2.add(new Translation2d(0.2, 6));
+    pathPont2.add(new Translation2d(atouUtils.addWithRedOrBlue(3.5), 4));
+    pathPont2.add(new Translation2d(atouUtils.addWithRedOrBlue(0.2), 6));
   }
 
 }

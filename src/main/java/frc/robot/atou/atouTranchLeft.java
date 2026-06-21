@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.demacia.path.DemaciaTrajectoryGood;
 import frc.demacia.path.pathCommand.pathCommand;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.commands.IntakeCommand;
@@ -43,19 +41,21 @@ public class atouTranchLeft extends SequentialCommandGroup {
     addCommands(new ParallelRaceGroup(new ShooterCommand(), new WaitCommand(2)),new pathCommand(point),new ParallelRaceGroup(new pathCommand(pointTrajectory2), new IntakeCommand()),new ParallelRaceGroup(new ShooterCommand(), new WaitCommand(2)), new pathCommand(pointTrajectory3));
   }
 
+  
+
   public void addPointTrajectoryOne(){
-    point.add(new Translation2d(4, 7));
-    point.add(new Translation2d(8, 7));
+    point.add(new Translation2d(atouUtils.addWithRedOrBlue(4), 7));
+    point.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 7));//8
   }
 
   public void addPointTrajectoryTow(){
-    pointTrajectory2.add(new Translation2d(8, 7));
-    pointTrajectory2.add(new Translation2d(8, 1));
+    pointTrajectory2.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 7));
+    pointTrajectory2.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 1));
   }
 
   public void addPointTrajectoryTrhee(){
-    pointTrajectory3.add(new Translation2d(8, 1));
-    pointTrajectory3.add(new Translation2d(8, 7));
-    pointTrajectory3.add(new Translation2d(4, 7));
+    pointTrajectory3.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 1));
+    pointTrajectory3.add(new Translation2d(atouUtils.addWithRedOrBlue(8), 7));
+    pointTrajectory3.add(new Translation2d(atouUtils.addWithRedOrBlue(4), 7));
   }
 }
