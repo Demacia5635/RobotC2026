@@ -156,9 +156,9 @@ public final class RobotBChassisConstants {
     private static final SwerveModuleConfig[] MODULES = getSwerveModuleConfigs(
             new double[] {
                     /* Front Left Offset: */ 1.5217120831752096896735813514194,
-                    /* Front Right Offset: */ 1.8837303710189759237145855990482,
-                    /* Back Left Offset: */ -1.7674223277977745984402216157124,
-                    /* Back Right Offset: */ 1.012428498101768307786402232556
+                    /* Front Right Offset: */ 1.8837303,
+                    /* Back Left Offset: */ 0.298828,
+                    /* Back Right Offset: */ 0.241455
             });
 
 
