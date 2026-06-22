@@ -47,10 +47,23 @@ public class ShooterCommand extends Command {
   public void execute() {
     switch (shooter.getShooterState()) {
       case onePoint:
-          flywheelVelocity = 10.8;
-          hoodPosition = 34;
+          flywheelVelocity = 9;
+          hoodPosition = 13;
           feederPower = 1;
+          //93
         break;
+      case towPoint:
+        flywheelVelocity = 9.1;
+        hoodPosition = 30;
+        feederPower = 1;
+        //213
+        break;
+      case thrrePoint:
+        flywheelVelocity = 9.9;
+        hoodPosition = 40;
+        feederPower = 1;
+        //216
+      break;
       case SHOOTER:
         //TODO: Change the position of the calculate
         ShootingWhileDriving.calculate(RobotCommon.getHubPose());
@@ -64,7 +77,7 @@ public class ShooterCommand extends Command {
         feederPower = 0;
         break;
       case TEST:
-        flywheelVelocity = testingHoodPosition;
+        flywheelVelocity = testingFlywheelVelocity;
         hoodPosition = testingHoodPosition;
         feederPower = testingFeederPower;
         break;

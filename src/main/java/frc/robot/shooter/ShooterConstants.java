@@ -81,6 +81,8 @@ public class ShooterConstants {
         TEST,
         DELIVERY,
         TRANCH,
-        onePoint
+        onePoint,
+        towPoint,
+        thrrePoint
     }
 }

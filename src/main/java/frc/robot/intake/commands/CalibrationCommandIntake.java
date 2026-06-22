@@ -9,7 +9,7 @@ import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CalibrationCommandIntake extends Command {
+public class CalibrationCדיםםאררommandIntake extends Command {
   private IntakeSubsystem intakeSubsystem;
   /** Creates a new CalibrationCommandIntake. */
   public CalibrationCommandIntake(IntakeSubsystem intakeSubsystem) {
@@ -27,8 +27,7 @@ public class CalibrationCommandIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!intakeSubsystem.isCalibrated())
-     intakeSubsystem.setIntakeDeployDuty(-0.1);
+    intakeSubsystem.setIntakeDeployDuty(-0.1);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,6 +44,6 @@ public class CalibrationCommandIntake extends Command {
   @Override
   public boolean isFinished() {
     // return intakeSubsystem.isIntakeDeployClosed();
-    return intakeSubsystem.isIntakeDeployClosed() || intakeSubsystem.isCalibrated();
+    return intakeSubsystem.isIntakeDeployClosed();
   }
 }

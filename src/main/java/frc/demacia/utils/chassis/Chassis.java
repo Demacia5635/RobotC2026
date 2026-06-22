@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaPoseEstimator.OdometryObservation;
+import frc.demacia.odometry.DemaciaOdometry;
 import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
@@ -62,6 +63,7 @@ public class Chassis extends SubsystemBase {
 
     private Field2d field;
     private Field2d fieldTesting;
+    private Field2d fieldOdmetry;
 
     private StatusSignal<Angle> gyroYawStatus;
     private StatusSignal<AngularVelocity> gyroAngularVelocityStatus;
@@ -88,27 +90,29 @@ public class Chassis extends SubsystemBase {
 
     private double lastOmega = 0;
     private double lastOmegaTime = Timer.getFPGATimestamp();
-
+    private Translation2d[] modulePositions;
     private Chassis(ChassisConfig chassisConfig) {
         setName(getName());
 
         this.chassisConfig = chassisConfig;
-
+        fieldOdmetry = new Field2d();
         modules = new SwerveModule[4];
         Translation2d[] modulePositions = new Translation2d[4];
         for (int i = 0; i < 4; i++) {
             modules[i] = new SwerveModule(chassisConfig.swerveModuleConfig[i]);
             modulePositions[i] = chassisConfig.swerveModuleConfig[i].position;
         }
-
+        this.modulePositions = modulePositions;
         gyro = new Pigeon(chassisConfig.pigeonConfig);
+
 
         addStatus();
         demaciaKinematics = new DemaciaKinematics(modulePositions);
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
-
+        //fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
         field = new Field2d();
         fieldTesting = new Field2d();
+        SmartDashboard.putData("field odometry" ,  fieldOdmetry);
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
@@ -342,6 +346,7 @@ public class Chassis extends SubsystemBase {
         RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
+        fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
         double[] accel = getAcceleration();
         SmartDashboard.putNumber("accel/ax", accel[0]);

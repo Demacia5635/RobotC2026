@@ -107,7 +107,7 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
       angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
-      // intakeDeployMotor.setMotion(angle, gravitySineFF);
+      intakeDeployMotor.setMotion(angle, gravitySineFF);
     }
   }
 

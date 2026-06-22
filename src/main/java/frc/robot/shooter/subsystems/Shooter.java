@@ -189,7 +189,7 @@ public class Shooter extends SubsystemBase {
   public void setHoodPose(double pose){
     hood.setEncoderPosition(pose);
   }
-
+  //fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
   @Override
   public void periodic() { //TODO to make you change it in elastic,  may not work because not neer the other code
       // if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
