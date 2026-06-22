@@ -24,7 +24,7 @@ public class MK5nChassisConstansRobotC {
   public static final double DRIVE_GEAR_RATIO = 6.03;
   public static final double WHEEL_DIAMETER = 4 * 0.0254;
 
-  public static final double STEER_KP = 14;
+  public static final double STEER_KP = 12;
   public static final double STEER_KI = 0;
   public static final double STEER_KD = 0;
   public static final double STEER_KS = 0.08921;
