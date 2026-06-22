@@ -22,6 +22,7 @@ import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.intake.commands.ControllerCommand;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
@@ -29,11 +30,11 @@ import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.commands.commandContorller;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCommand;
-import frc.robot.turret.commands.commandContorller;
 import frc.robot.turret.subsystems.Turret;
 
 /**
@@ -57,6 +58,8 @@ public class RobotContainer implements Sendable {
   public static Turret turretSubsystem;
   public static CommandController controller = new CommandController(0, ControllerType.kPS5); 
   public static Shooter shooter;
+
+  public static boolean isInteaking = false;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -102,13 +105,29 @@ public class RobotContainer implements Sendable {
   }
 
   private void setUserButton(){
-    
+    // controller.downButton().onTrue(new InstantCommand(()->{
+    //   if (RobotContainer.isInteaking){
+    //     if((RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_RED_X < Chassis.getInstance().getPose().getX()) || (!RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_BLUE_X > Chassis.getInstance().getPose().getX())) {
+    //       intakeSubsystem.setState(IntakeState.CLOSED); shooter.setShooterState(ShooterStates.SHOOTER); turretSubsystem.setState(TurretStates.SHOOTING);
+    //     } else{
+    //       intakeSubsystem.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.DELIVERY); turretSubsystem.setState(TurretStates.DELIVERY);
+    //     }
+    //     shinuaSubsystem.setState(ShinuaState.SHINUA_ON);
+    //   } else{
+    //    intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);
+    //   }
+    //    RobotContainer.isInteaking = !RobotContainer.isInteaking;}));
+    //    controller.downButton().onTrue(new InstantCommand(()->{
+    //     intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);
+    //     RobotContainer.isInteaking = true;}));
+    // controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);}));
   }
 
   private void setDefaultCommands() {
     // chassis.setDefaultCommand(new testDriveCommand(chassis));
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
     // shooter.setDefaultCommand(new commandContorller(controller));
+    // intakeSubsystem.setDefaultCommand(new ControllerCommand(controller));
     intakeSubsystem.setDefaultCommand(new IntakeCommand());
     shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
     shooter.setDefaultCommand(new ShooterCommand());
