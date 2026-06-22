@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.demacia.utils.chassis.Chassis;
+import frc.robot.shooter.ShooterConstants;
 public class RobotCommon {
     public static Pose2d currentRobotPose = Pose2d.kZero;
     private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
@@ -37,6 +38,15 @@ public class RobotCommon {
     public static Translation2d getHubPose(){
         if(isRed()) return Field.HubRed.CENTER;
         else return Field.HubRed.CENTER; 
+    }
+    
+    public static Translation2d getDeliveryPose(){
+        return 
+            (Chassis.getInstance().getPose().getY() < Field.FieldDimensions.Y_CENTER)?
+                isRed()? ShooterConstants.DELIVERY_RED_LEFT:
+                    ShooterConstants.DELIVERY_BLUE_LEFT:
+                isRed()? ShooterConstants.DELIVERY_RED_RIGHT:
+                    ShooterConstants.DELIVERY_BLUE_RIGHT;        
     }
 
     public static boolean getIsComp(){

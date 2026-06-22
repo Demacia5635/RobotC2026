@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
 
   private DigitalInput hood_limet_switch;
 
-  private ShooterStates shooterState = ShooterStates.IDLE;
+  private ShooterStates shooterState ;
   private double lastWantedFlywheelVelocity = 0;
 
   /** Creates a new Shooter. */
@@ -42,7 +42,6 @@ public class Shooter extends SubsystemBase {
     hood_limet_switch = new DigitalInput(5);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
-    shooterState = ShooterStates.TEST;
     addNT();
     SmartDashboard.putData("resetHood",new InstantCommand(() -> restHoodMotor()).ignoringDisable(true));
 

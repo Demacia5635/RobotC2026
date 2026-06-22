@@ -7,6 +7,7 @@ import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 import frc.demacia.utils.sensors.LimitSwitch;
 import frc.demacia.utils.sensors.LimitSwitchConfig;
+import frc.robot.Field;
 
 public class ShooterConstants {
 
@@ -85,4 +86,9 @@ public class ShooterConstants {
         towPoint,
         thrrePoint
     }
+
+    public static final Translation2d DELIVERY_RED_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);
+    public static final Translation2d DELIVERY_RED_RIGHT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER*3/2);
+    public static final Translation2d DELIVERY_BLUE_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_BLUE_X - Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);
+    public static final Translation2d DELIVERY_BLUE_RIGHT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_BLUE_X - Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER*3/2);
 }
