@@ -5,15 +5,18 @@
 package frc.robot.shooter.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
+import frc.robot.RobotCommon;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
@@ -64,6 +67,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
       builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
       builder.addDoubleProperty("current hood pose", ()-> Math.toDegrees(hood.getPosition().getValueAsDouble()), null);
+      builder.addDoubleProperty("distence", ()-> getDis(), null);
   }
 
   public static Shooter getInstance(){
@@ -188,6 +192,11 @@ public class Shooter extends SubsystemBase {
   public void setHoodPose(double pose){
     hood.setEncoderPosition(pose);
   }
+
+  public double getDis(){
+    return (RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())))).getNorm();
+  }
+
   //fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
   @Override
   public void periodic() { 

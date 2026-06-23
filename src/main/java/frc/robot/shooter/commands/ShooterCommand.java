@@ -53,7 +53,6 @@ public class ShooterCommand extends Command {
     this.shooter =  Shooter.getInstance();
     addRequirements(shooter);
     SmartDashboard.putData("shooter command", this);
-    SmartDashboard.putNumber("dis", getDis());
   }
 
   @Override
@@ -174,10 +173,6 @@ public class ShooterCommand extends Command {
     if (shooter.getHoodCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(shooter.getHoodVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
       shooter.stopHood();
     }
-  }
-
-  public double getDis(){
-    return (RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())))).getNorm();
   }
 
   // Called once the command ends or is interrupted.
