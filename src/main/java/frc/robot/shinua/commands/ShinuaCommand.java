@@ -12,6 +12,7 @@ import frc.demacia.utils.log.LogManager;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShinuaCommand extends Command {
@@ -53,7 +54,7 @@ public class ShinuaCommand extends Command {
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
-          if (Shooter.getInstance().isReady()){
+          if (Shooter.getInstance().isReady() && Turret.getInstance().isReady()){
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
             shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
           }
@@ -65,7 +66,7 @@ public class ShinuaCommand extends Command {
       case TESTING:
         shinuaSubsystem.setMecanumDuty(wantedDutyMecanum);
         shinuaSubsystem.setVelocityRollers(wantedvelDutyRollers);
-        LogManager.log("at tasting"+ "rollers" + wantedvelDutyRollers);
+        // LogManager.log("at tasting"+ "rollers" + wantedvelDutyRollers);
         break;
       default:
         shinuaSubsystem.stopMecanum();

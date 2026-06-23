@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.vision.TagPose;
+import frc.robot.RobotCommon;
 // import frc.robot.RobotCommon.*;
 
 /** Add your docs here. */
@@ -103,7 +103,7 @@ public class Vision {
             y += pose2d.getY() * confidence;
 
         }
-        return new Pose2d(x, y, Chassis.getInstance().getGyroAngle());
+        return new Pose2d(x, y, RobotCommon.getRobotAngle());
     }
 
     public void updateValues() {

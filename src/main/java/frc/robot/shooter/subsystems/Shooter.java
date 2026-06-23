@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
-    hood_limet_switch = new DigitalInput(5);
+    hood_limet_switch = new DigitalInput(ShooterConstants.HoodConstants.LIMET_SWITCH_CHANEL);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
     addNT();
@@ -164,7 +164,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    LogManager.log(flywheel.getCurrentClosedLoopError());
     return Math.abs(flywheel.getCurrentClosedLoopError()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
     Math.abs(hood.getCurrentClosedLoopError()) < HoodConstants.HOOD_POSITION_OFFSET;
   }

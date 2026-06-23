@@ -4,17 +4,10 @@
 
 package frc.demacia.utils.chassis;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
-import frc.demacia.utils.log.LogManager;
-import frc.robot.RobotCommon;
-import frc.robot.shooter.ShooterConstants.ShooterStates;
-import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.turret.TurretConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveCommand extends Command {
@@ -58,7 +51,6 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
     direction = DemaciaUtils.getIsRed() ? 1 : -1;
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
@@ -68,11 +60,7 @@ public class DriveCommand extends Command {
     
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
-    if(Shooter.getInstance().getShooterState() == ShooterStates.SHOOTER){
-      velRot= (MathUtil.angleModulus(chassis.getGyroAngle().rotateBy(Rotation2d.k180deg).getRadians()) - frc.robot.Field.HubRed.CENTER.minus(TurretConstants.TURRET_POSE).getAngle().getRadians()) * -2; //TODO: fucer pose need to cange to turret pose
-    }else{
       velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
-    }
     if(precisionMode){
         velX /= 4;
         velY /= 4;

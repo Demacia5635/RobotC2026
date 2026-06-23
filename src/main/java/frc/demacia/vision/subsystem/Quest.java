@@ -64,7 +64,7 @@ SmartDashboard.putBoolean(
 );
     SmartDashboard.putNumber("Quest/Latency", questNav.getLatency());
     SmartDashboard.putData("Quest/Reset Quest Pose", new InstantCommand(()->RobotPose.getInstance().setQuestPose()).ignoringDisable(true));
-    // SmartDashboard.putData("Quest/Field", field);
+    SmartDashboard.putBoolean("Quest/isConnected", isConnected());
     SmartDashboard.putData("Quest/robotField", robotField);
     
 

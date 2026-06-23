@@ -11,9 +11,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.demacia.utils.log.LogManager;
 
 /** Add your docs here. */
-public class DemaciaOdometry {
+public class DemaciaOdometry{
     private Pose2d pose;
     private final Translation2d[] modulePositions;
     private SwerveModulePosition[] lastPositions;
@@ -55,8 +58,8 @@ public class DemaciaOdometry {
 
         lastPositions = currentPositions;
         lastAngle = gyroAngle;
-        return new Pose2d(pose.getTranslation(), gyroAngle);
 
+        return new Pose2d(pose.getTranslation(), gyroAngle);
     }
 
     private Translation2d calculateModuleDisplacement(SwerveModulePosition lastPosition,
@@ -70,7 +73,7 @@ public class DemaciaOdometry {
             double radius = arcLength / centralAngle.getRadians();
             double chordLength = 2 * radius * Math.sin(centralAngle.getRadians() / 2);
             Rotation2d chordAngle = lastPosition.angle.plus(centralAngle.times(0.5));
-
+            
             return new Translation2d(chordLength, chordAngle);
         }
     }

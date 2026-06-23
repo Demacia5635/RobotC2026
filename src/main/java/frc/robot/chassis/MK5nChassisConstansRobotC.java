@@ -96,7 +96,7 @@ public class MK5nChassisConstansRobotC {
           .withSteerOffset(offsets[i]);
     }
     for(var a : ans) {
-      LogManager.log(" module " + a.name + " " + a.position + " " + a.driveConfig.id);
+      // LogManager.log(" module " + a.name + " " + a.position + " " + a.driveConfig.id);
     }
     return ans;
   }

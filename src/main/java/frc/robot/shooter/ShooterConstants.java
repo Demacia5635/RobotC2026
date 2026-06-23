@@ -61,7 +61,7 @@ public class ShooterConstants {
         public static final double MIN_HOOD_VELOCITY = 0;
 
         public static final String LIMET_SWshITCH_NAME = "hood limit switch";
-        public static final int LIMET_SWITCH_CHANEL = 8;
+        public static final int LIMET_SWITCH_CHANEL = 5;
 
         public static final LimitSwitchConfig LIMIT_SWITCH_CONFIG_HOOD= new LimitSwitchConfig(LIMET_SWITCH_CHANEL, LIMET_SWshITCH_NAME);
 

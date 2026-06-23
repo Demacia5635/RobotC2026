@@ -33,13 +33,13 @@ public class TurretConstants {
     public static final double MIN_TURRET_ANGLE = 0;
 
     //TODO: Set the limit switch config
-    public static final int MAX_LIMIT_SWITCH_ID = 7;
+    public static final int MAX_LIMIT_SWITCH_ID = 6;
     // public static final int MIN_LIMIT_SWITCH_ID = 0;
     public final static String MAX_LIMIT_SWITCH_NAME = "max limit swich";
     // public final static String MIN_LIMIT_SWITCH_NAME = "min limit swich";
 
     // public static final LimitSwitchConfig MIN_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MAX_LIMIT_SWITCH_ID, MAX_LIMIT_SWITCH_NAME);
-    public static final DigitalInput MAX_LIMIT_SWITCH_CONFIG= new DigitalInput(MAX_LIMIT_SWITCH_ID);
+    // public static final DigitalInput MAX_LIMIT_SWITCH_CONFIG= new DigitalInput(MAX_LIMIT_SWITCH_ID);
 
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_CURRENT = 12;
@@ -54,5 +54,6 @@ public class TurretConstants {
         TEST,
         DELIVERY,
         SHOOTING,
+        ONEPOINT;
     }
 }

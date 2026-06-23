@@ -124,6 +124,8 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("chassis/set brake",
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
 
+        LogManager.log("odmetry pose" + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
+
         RobotPose.initialize(modulePositions, new Matrix<>(
                 new SimpleMatrix(
                         new double[] { 0.03, 0.03, 0 })),
@@ -134,7 +136,7 @@ public class Chassis extends SubsystemBase {
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
-        LogManager.log(chassisConfig.name + " initalize");
+        // LogManager.log(chassisConfig.name + " initalize");
     }
 
     /**
@@ -347,6 +349,7 @@ public class Chassis extends SubsystemBase {
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
+        LogManager.log("odmetry pose: " + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
         double[] accel = getAcceleration();
         SmartDashboard.putNumber("accel/ax", accel[0]);

@@ -5,6 +5,8 @@
 package frc.robot.turret.subsystems;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
+import frc.robot.shooter.ShooterConstants.FlywheelConstants;
+import frc.robot.shooter.ShooterConstants.HoodConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
@@ -27,7 +29,7 @@ public class Turret extends SubsystemBase {
   /** Creates a new Turret. */
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
-    maxLimitSwitch = new DigitalInput(6);
+    maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
     isCalibrated = false;
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
     SmartDashboard.putData("turret manual reset - 0", new InstantCommand(()->{setCaliberation(true); setPositionByLimit();}).ignoringDisable(true));
@@ -41,7 +43,8 @@ public class Turret extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.turretStates = newState);
-    SmartDashboard.putData("turret State Chooser!!!!!!!!!", stateChooser);
+    SmartDashboard.putData("turret State Chooser!", stateChooser);
+    stateChooser.setDefaultOption("idle", TurretStates.IDLE);
 
   }
 
@@ -106,6 +109,10 @@ public class Turret extends SubsystemBase {
 
   public TurretStates getTurretState(){
     return turretStates;
+  }
+
+  public boolean isReady(){
+    return Math.abs(turretMotor.getCurrentClosedLoopError()) < 4;
   }
 
   public void setCalibration(){
