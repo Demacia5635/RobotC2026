@@ -116,16 +116,14 @@ public class RobotPose {
     public void addVisionMeasurement(Rotation2d gyroAngle) {
         poseEstimator.setVisionMeasurementStdDevs(visionSTD);
         poseEstimator.addVisionMeasurement(
-                new Pose2d(vision.getPoseEstimation().getX(), vision.getPoseEstimation().getY(), gyroAngle),
-                Timer.getFPGATimestamp() - 0.05);
+            new Pose2d(vision.getPoseEstimation().getX(), vision.getPoseEstimation().getY(), gyroAngle),
+            Timer.getFPGATimestamp()); 
     }
-
+    
     public void addQuestMeasurement(Rotation2d gyroAngle) {
-        // poseEstimator.setVisionMeasurementStdDevs(RobotCommon.getState() == RobotStates.Hub ? questSTDWhileShooting : questSTD);
         poseEstimator.addVisionMeasurement(
                 new Pose2d(quest.getRobotPose2d().getX(), quest.getRobotPose2d().getY(), gyroAngle),
-                Timer.getFPGATimestamp() - 0.05);
-
+                Timer.getFPGATimestamp());  
     }
 
     public void update(Pose2d odometryPose, Rotation2d gyroAngle,

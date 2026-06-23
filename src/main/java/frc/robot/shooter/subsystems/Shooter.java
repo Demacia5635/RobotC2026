@@ -63,6 +63,7 @@ public class Shooter extends SubsystemBase {
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
       builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
+      builder.addDoubleProperty("current hood pose", ()-> Math.toDegrees(hood.getPosition().getValueAsDouble()), null);
   }
 
   public static Shooter getInstance(){
@@ -190,18 +191,7 @@ public class Shooter extends SubsystemBase {
   }
   //fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
   @Override
-  public void periodic() { //TODO to make you change it in elastic,  may not work because not neer the other code
-      // if (feeder.getCurrentCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(feeder.getCurrentVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
-      //   stopFeeder();
-      // }
-      // if (hood.getCurrentCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(hood.getCurrentVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
-      //   hood.stop();
-      // }
-      // double v = flywheel.getVelocity().getValueAsDouble();
-      // if(Math.abs(v) > 0.1) {
-      //   LogManager.log("v = " + v);
-      // }
-      // LogManager.log("is see limet switch" + isHoodLimetSwithSee());
+  public void periodic() { 
       
   }
 }

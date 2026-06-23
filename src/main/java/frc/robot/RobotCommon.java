@@ -21,7 +21,7 @@ public class RobotCommon {
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
 
     private static boolean isRed;
-
+    private static double futureAngleFromTargetRobotRelative;
     public static boolean isComp = false; 
 
     public static boolean isRed(){
@@ -51,6 +51,14 @@ public class RobotCommon {
 
     public static boolean getIsComp(){
         return isComp;
+    }
+
+    public static void setFutureAngleFromTargetRobotRelative(double futureAngleFromTargetRobotRelative) {
+        RobotCommon.futureAngleFromTargetRobotRelative = futureAngleFromTargetRobotRelative;
+    }
+
+    public static double getFutureAngleFromTargetRobotRelative(){
+        return futureAngleFromTargetRobotRelative;
     }
 
     public static void setIsComp(boolean newIsComp){

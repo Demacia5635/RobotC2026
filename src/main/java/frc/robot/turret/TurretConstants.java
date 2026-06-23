@@ -1,10 +1,12 @@
 package frc.robot.turret;
 
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
+import frc.robot.RobotCommon;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.demacia.utils.motors.TalonFXConfig;
-import frc.demacia.utils.sensors.LimitSwitchConfig;
 
 public class TurretConstants {
     //TODO: Set the motor config and delivery points
@@ -42,8 +44,10 @@ public class TurretConstants {
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_CURRENT = 12;
 
+    public static final Pose2d TURRET_POSE_ON_ROBOT = new Pose2d(0.24, 0, new Rotation2d(90));
+
     //TODO: Set the turret pose to the actaual
-    public static final Pose2d TURRET_POSE = new Pose2d();
+    public static final Translation2d TURRET_POSE = RobotCommon.currentRobotPose.getTranslation().minus(TURRET_POSE_ON_ROBOT.getTranslation());
 
     public enum TurretStates{
         IDLE,

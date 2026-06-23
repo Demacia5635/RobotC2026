@@ -9,7 +9,7 @@ import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CalibrationCדיםםאררommandIntake extends Command {
+public class CalibrationCommandIntake extends Command {
   private IntakeSubsystem intakeSubsystem;
   /** Creates a new CalibrationCommandIntake. */
   public CalibrationCommandIntake(IntakeSubsystem intakeSubsystem) {

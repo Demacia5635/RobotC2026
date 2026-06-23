@@ -15,10 +15,13 @@ public class ShooterConstants {
     public final static double HEIGHT = 4;
     public final static Translation2d DELIVERY_RIGHT_POINT = Translation2d.kZero;
     public final static Translation2d DELIVERY_LEFT_POINT = Translation2d.kZero;
-    public final static LookUpTable LOOK_UP_TABLE = new LookUpTable(3); //distance: velocity, angel
+    public final static LookUpTable LOOK_UP_TABLE = new LookUpTable(2); //distance: velocity, angel
     public static final Translation2d HUB = Translation2d.kZero;
     static{
-        LOOK_UP_TABLE.add(0, 0, 0, 0);
+        LOOK_UP_TABLE.add(0.93, 9, Math.toRadians(20));
+        LOOK_UP_TABLE.add(2.16, 9.5,Math.toRadians(30));
+        LOOK_UP_TABLE.add(2.43,9,5,Math.toRadians(40));
+        LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));
     }
 
 
@@ -57,10 +60,10 @@ public class ShooterConstants {
         public static final double MAX_HOOD_CURRENT = 0;
         public static final double MIN_HOOD_VELOCITY = 0;
 
-        public static final String LIMET_SWITCH_NAME = "hood limit switch";
+        public static final String LIMET_SWshITCH_NAME = "hood limit switch";
         public static final int LIMET_SWITCH_CHANEL = 8;
 
-        public static final LimitSwitchConfig LIMIT_SWITCH_CONFIG_HOOD= new LimitSwitchConfig(LIMET_SWITCH_CHANEL, LIMET_SWITCH_NAME);
+        public static final LimitSwitchConfig LIMIT_SWITCH_CONFIG_HOOD= new LimitSwitchConfig(LIMET_SWITCH_CHANEL, LIMET_SWshITCH_NAME);
 
         public static final double HOOD_LIMET_SWITCH_POSE = 0;
     }
@@ -84,7 +87,8 @@ public class ShooterConstants {
         TRANCH,
         onePoint,
         towPoint,
-        thrrePoint
+        thrrePoint,
+        pointFore
     }
 
     public static final Translation2d DELIVERY_RED_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);
