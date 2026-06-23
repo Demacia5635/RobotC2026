@@ -25,6 +25,7 @@ import edu.wpi.first.util.datalog.StringLogEntry;
 import frc.demacia.utils.Data;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
+import frc.robot.RobotCommon;
 
 /**
  * Represents a single log entry of a specific type (T).
@@ -82,7 +83,7 @@ public class LogEntry<T> {
         createLogEntry(LogManager.log, name, metaData);
 
         // Check if we should publish to NetworkTables based on LogLevel and Competition state
-        if (logLevel == LogLevel.LOG_AND_NT || (logLevel == LogLevel.LOG_AND_NT_NOT_IN_COMP && !DemaciaUtils.getIsComp())) {
+        if (logLevel == LogLevel.LOG_AND_NT || (logLevel == LogLevel.LOG_AND_NT_NOT_IN_COMP && !RobotCommon.getIsComp())) {
             createPublisher(LogManager.table, name);
         } else {
             ntPublisher = null;

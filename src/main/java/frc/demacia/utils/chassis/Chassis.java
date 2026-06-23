@@ -38,6 +38,8 @@ import frc.demacia.odometry.DemaciaOdometry;
 import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
+import frc.demacia.vision.Camera;
+import frc.demacia.vision.utils.Vision;
 import frc.demacia.vision.utils.VisionConstants;
 import frc.robot.RobotCommon;
 
@@ -104,7 +106,7 @@ public class Chassis extends SubsystemBase {
         }
         this.modulePositions = modulePositions;
         gyro = new Pigeon(chassisConfig.pigeonConfig);
-
+        
 
         addStatus();
         demaciaKinematics = new DemaciaKinematics(modulePositions);
@@ -123,13 +125,14 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-
-        LogManager.log("odmetry pose" + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
+        SmartDashboard.putData("reset odmetry", new InstantCommand(()-> DemaciaOdometry.getOdometryInstance(modulePositions).resetPose(getPose())).ignoringDisable(true));
+        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
+        // LogManager.log("odmetry pose" + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
         RobotPose.initialize(modulePositions, new Matrix<>(
                 new SimpleMatrix(
                         new double[] { 0.03, 0.03, 0 })),
-                VisionConstants.QUEST_STD);
+            VisionConstants.QUEST_STD, DemaciaOdometry.getOdometryInstance(modulePositions));
 
         SmartDashboard.putData("reset with 3d",
                 new InstantCommand(() -> RobotPose.getInstance().setAngle3DLimelight()).ignoringDisable(true));
@@ -159,6 +162,30 @@ public class Chassis extends SubsystemBase {
         lastAccelTime = now;
 
         return new double[] {ax, ay, aOmga };
+    }
+
+    public void restGyro(){
+        double gyroAngle;
+
+        if(!RobotCommon.isRed()){
+            gyroAngle = 0;
+        }else{
+            gyroAngle = 180;
+        }
+
+        gyro.setYaw(gyroAngle);
+    }
+
+    public void resrtGyro180(){
+        double gyroAngle;
+
+        if(!RobotCommon.isRed()){
+            gyroAngle = 180;
+        }else{
+            gyroAngle = 0;
+        }
+
+        gyro.setYaw(gyroAngle);
     }
 
     /**
@@ -345,6 +372,10 @@ public class Chassis extends SubsystemBase {
                 getGyroAngle(),
                 getModulePositions());
 
+
+        
+
+        // LogManager.log("111");
         RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
@@ -395,9 +426,7 @@ public class Chassis extends SubsystemBase {
         if (angle != null) {
             gyro.setYaw(angle.getDegrees());
             RobotPose.getInstance().setQuestHeading(angle);
-            RobotPose.getInstance()
-                    .resetPose(
-                            new Pose2d(Translation2d.kZero, gyro.getRotation2d()));
+            RobotPose.getInstance().resetPose(new Pose2d(Translation2d.kZero, gyro.getRotation2d()));
         }
     }
 

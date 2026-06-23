@@ -20,7 +20,9 @@ import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.log.LogManager;
 
 /** Add your docs here. */
 public class DemaciaPoseEstimator {
@@ -36,7 +38,7 @@ public class DemaciaPoseEstimator {
 
     public DemaciaPoseEstimator(Translation2d[] modulePositions, Matrix<N3, N1> stateSTD, Matrix<N3, N1> visionSTD) {
 
-        this.odometry = new DemaciaOdometry(modulePositions);
+        this.odometry = DemaciaOdometry.getOdometryInstance(modulePositions);
         estimatedPose = odometry.getPose2d();
         for (int i = 0; i < 3; ++i) {
             m_q.set(i, 0, stateSTD.get(i, 0) * stateSTD.get(i, 0));
@@ -190,9 +192,15 @@ public class DemaciaPoseEstimator {
         var odometryEstimation = odometry.update(odometryCalculation.gyroAngle(), odometryCalculation.swerveModules());
         odometryBuffer.addSample(odometryCalculation.timeStamp(), odometryEstimation);
 
+        if (!visionUpdates.isEmpty() && visionUpdates.lastKey() < odometryCalculation.timeStamp() - kBufferDuration) {
+            visionUpdates.clear();
+        }
+
         if (visionUpdates.isEmpty()) {
             estimatedPose = odometryEstimation;
+            // LogManager.log("not vision");
         } else {
+            // LogManager.log("vision");
             var visionUpdate = visionUpdates.get(visionUpdates.lastKey());
             estimatedPose = visionUpdate.compensate(odometryEstimation);
         }
@@ -200,6 +208,8 @@ public class DemaciaPoseEstimator {
     }
 
     public Pose2d getEstimatedPose() {
+        SmartDashboard.putNumber("estimatedPose.getTranslation()x", estimatedPose.getTranslation().getX());
+        SmartDashboard.putNumber("estimatedPose.getTranslation()y", estimatedPose.getTranslation().getY());
         return new Pose2d(estimatedPose.getTranslation(), Chassis.getInstance().getGyroAngle());
     }
 
@@ -250,5 +260,7 @@ public class DemaciaPoseEstimator {
             var delta = pose.minus(this.odometryPose);
             return this.visionPose.plus(delta);
         }
+
+        
     }
 }

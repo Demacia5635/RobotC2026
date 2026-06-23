@@ -46,8 +46,8 @@ public class TurretCommand extends Command {
         turret.setTurretMotion(targetAngle);
         break;
       case SHOOTING:
-        double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.17, 0).rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-180;
-        targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees()+313;
+        double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
+        targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees() +313;
         turret.setTurretMotion((targetAngle < 0 && targetAngle > -5)? targetAngle : MathUtil.clamp(MathUtil.inputModulus(targetAngle, 0, 360), 0, 340));
         break;
       case DELIVERY:

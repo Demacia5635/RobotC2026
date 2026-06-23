@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.Field;
 import frc.robot.Robot;
@@ -52,6 +53,7 @@ public class ShooterCommand extends Command {
     this.shooter =  Shooter.getInstance();
     addRequirements(shooter);
     SmartDashboard.putData("shooter command", this);
+    SmartDashboard.putNumber("dis", getDis());
   }
 
   @Override
@@ -129,7 +131,7 @@ public class ShooterCommand extends Command {
         feederPower = 1;
         break;
       case SHOOTER:
-        Translation2d toHub = RobotCommon.getHubPose().minus(TurretConstants.TURRET_POSE);
+        Translation2d toHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())));
         double lut[] = ShooterConstants.LOOK_UP_TABLE.get(toHub.getNorm());
         // Rotation2d heading = toHub.getAngle();
         //double[] arr = setFlywheelAndHood(lut[0], lut[1], heading);
@@ -172,6 +174,10 @@ public class ShooterCommand extends Command {
     if (shooter.getHoodCurrent() > HoodConstants.MAX_HOOD_CURRENT && Math.abs(shooter.getHoodVelocity()) < HoodConstants.MIN_HOOD_VELOCITY){
       shooter.stopHood();
     }
+  }
+
+  public double getDis(){
+    return (RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())))).getNorm();
   }
 
   // Called once the command ends or is interrupted.

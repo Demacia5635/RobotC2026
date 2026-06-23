@@ -20,7 +20,7 @@ public class ShooterConstants {
     static{
         LOOK_UP_TABLE.add(0.93, 9, Math.toRadians(20));
         LOOK_UP_TABLE.add(2.16, 9.5,Math.toRadians(30));
-        LOOK_UP_TABLE.add(2.43,9,5,Math.toRadians(40));
+        LOOK_UP_TABLE.add(2.43,9.5,Math.toRadians(40));
         LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));
     }
 

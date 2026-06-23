@@ -11,13 +11,4 @@ public class DemaciaUtils{
         DemaciaUtils.isComp = isComp;
         DemaciaUtils.isRed = isRed;
     }
-
-
-    public static boolean getIsComp() {
-        return DemaciaUtils.isComp.getAsBoolean();
-    }
-
-    public static boolean getIsRed() {
-        return DemaciaUtils.isRed.getAsBoolean();
-    }
 }

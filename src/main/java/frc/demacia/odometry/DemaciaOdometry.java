@@ -54,12 +54,12 @@ public class DemaciaOdometry{
         Twist2d robotDisplacement = calculateRobotDisplacement(moduleDisplacements);
         robotDisplacement.dtheta = gyroAngle.minus(lastAngle).getRadians();
 
-        pose = pose.exp(robotDisplacement);
-
+        this.pose = pose.exp(robotDisplacement);
+        
         lastPositions = currentPositions;
         lastAngle = gyroAngle;
 
-        return new Pose2d(pose.getTranslation(), gyroAngle);
+        return new Pose2d(this.pose.getTranslation(), gyroAngle);
     }
 
     private Translation2d calculateModuleDisplacement(SwerveModulePosition lastPosition,
@@ -101,6 +101,10 @@ public class DemaciaOdometry{
 
     public Pose2d getPose2d() {
         return this.pose;
+    }
+
+    public DemaciaOdometry getOdometry() {
+            return this;
     }
 
 }

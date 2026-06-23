@@ -20,15 +20,12 @@ public class RobotCommon {
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    private static boolean isRed;
+    private static boolean isRed = true;
     private static double futureAngleFromTargetRobotRelative;
     public static boolean isComp = false; 
 
     public static boolean isRed(){
-        if(alliance.get() == Alliance.Red) isRed = true;
-        else isRed = false;
-
-        return isRed;        
+        return isRed;
     }
 
     public static void setIsRed(boolean newIsRed){

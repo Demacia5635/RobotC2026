@@ -82,6 +82,8 @@ public class TagPose {
             new InstantCommand(() -> Chassis.getInstance().setYaw(getRobotAngle())).ignoringDisable(true),
             new InstantCommand(() -> changePipeline(0)).ignoringDisable(true)).ignoringDisable(true));
 
+    cropEntry = Table.getEntry("crop");
+
   }
 
   public TagPose(Camera camera, boolean isUpsidedown) {
@@ -104,7 +106,6 @@ public class TagPose {
   }
 
   public void updateValues() {
-    cropEntry = Table.getEntry("crop");
     pipeEntry = Table.getEntry("pipeline");
     camToTagPitch = (isUpsidedown ? -1 : 1) * Table.getEntry("ty").getDouble(0.0);
     camToTagYaw = (isUpsidedown ? 1 : -1) * Table.getEntry("tx").getDouble(0.0);

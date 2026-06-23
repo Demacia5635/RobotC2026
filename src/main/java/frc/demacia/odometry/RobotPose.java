@@ -35,7 +35,7 @@ public class RobotPose {
     private static RobotPose instance;
 
     private Vision vision;
-    private DemaciaPoseEstimator poseEstimator;
+    public DemaciaPoseEstimator poseEstimator;
     private Quest quest;
 
     private Matrix<N3, N1> questSTD;
@@ -47,11 +47,12 @@ public class RobotPose {
     private Matrix<N3, N1> questSTDWhileShooting;
     
     private BuiltInAccelerometer accelerometer;
+    private DemaciaOdometry odometry;
 
     private RobotPose(Translation2d[] modulePositions, Matrix<N3, N1> stateSTD,
-            Matrix<N3, N1> questSTD) {
+            Matrix<N3, N1> questSTD, DemaciaOdometry odometry) {
         this.vision = new Vision((VisionConstants.Tags.TAGS_ARRAY));
-
+        this.odometry = odometry;
         this.quest = new Quest();
         this.questSTD = questSTD;
         this.questSTDWhileShooting = new Matrix<N3, N1>(new SimpleMatrix(new double[] { 0.3, 0.3, 0 }));
@@ -65,6 +66,9 @@ public class RobotPose {
             setQuestPose(hubRedResetPose);
             resetPose(hubRedResetPose);
         }).ignoringDisable(true));
+
+        odometry.resetPose(vision.getPoseEstimation());
+
     }
 
     private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
@@ -75,15 +79,14 @@ public class RobotPose {
     }
 
     public Pose2d getPose() {
-
         return poseEstimator.getEstimatedPose();
     }
 
     public static void initialize(Translation2d[] modulePositions, Matrix<N3, N1> stateSTD,
-            Matrix<N3, N1> questSTD) {
+            Matrix<N3, N1> questSTD, DemaciaOdometry odometry) {
 
         if (instance == null)
-            instance = new RobotPose(modulePositions, stateSTD, questSTD);
+            instance = new RobotPose(modulePositions, stateSTD, questSTD, odometry);
     }
 
     public void resetPose() {
@@ -124,11 +127,15 @@ public class RobotPose {
     }
 
     public void addVisionMeasurement(Rotation2d gyroAngle) {
-        poseEstimator.setVisionMeasurementStdDevs(visionSTD);
-        poseEstimator.addVisionMeasurement(
-                new Pose2d(vision.getPoseEstimation().getX(), vision.getPoseEstimation().getY(), gyroAngle),
-                Timer.getFPGATimestamp() - 0.05);
-    }
+    poseEstimator.setVisionMeasurementStdDevs(visionSTD);
+    
+    Pose2d visionPose = new Pose2d(
+        vision.getPoseEstimation().getX(), 
+        vision.getPoseEstimation().getY(), 
+        gyroAngle);
+    
+    poseEstimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp() - 0.05);
+}
 
     public void addQuestMeasurement(Rotation2d gyroAngle) {
         // poseEstimator.setVisionMeasurementStdDevs(RobotCommon.getState() == RobotStates.Hub ? questSTDWhileShooting : questSTD);

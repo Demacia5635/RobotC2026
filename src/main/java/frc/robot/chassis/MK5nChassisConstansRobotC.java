@@ -89,7 +89,7 @@ public class MK5nChassisConstansRobotC {
               .withRampTime(RAMP_TIME_STEER),
           new TalonFXConfig(i * 3 + 1, CAN_BUS, name + " Drive")
               .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
-              .withBrake(true)
+            .withBrake(true)
               .withMeterMotor(DRIVE_GEAR_RATIO, WHEEL_DIAMETER),
           new CancoderConfig(i * 3 + 3, CAN_BUS, name + " Cancoder"))
           .withPosion(MODULE_LOCATIONS[i])
