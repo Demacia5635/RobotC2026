@@ -54,7 +54,10 @@ public class ShinuaCommand extends Command {
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
-          if (Shooter.getInstance().isReady() && Turret.getInstance().isReady()){
+          if (!(Shooter.getInstance().isReady() && Turret.getInstance().isReady())){
+            shinuaSubsystem.setMecanumDuty(ShinuaState.NO_INDEXER.dutyMecanum);
+            shinuaSubsystem.setVelocityRollers(ShinuaState.NO_INDEXER.velocityRollers);
+          } else {
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
             shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
           }

@@ -24,6 +24,7 @@ import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
 // import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
+import frc.robot.turret.subsystems.Turret;
 
 public class Shooter extends SubsystemBase {
   private static Shooter shooter;
@@ -31,7 +32,7 @@ public class Shooter extends SubsystemBase {
   private TalonFXMotor hood;
   private TalonFXMotor feeder;
 
-  private DigitalInput hood_limet_switch;
+  // private DigitalInput hood_limet_switch;
 
   private ShooterStates shooterState ;
   private double lastWantedFlywheelVelocity = 0;
@@ -42,7 +43,7 @@ public class Shooter extends SubsystemBase {
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
-    hood_limet_switch = new DigitalInput(ShooterConstants.HoodConstants.LIMET_SWITCH_CHANEL);
+    // hood_limet_switch = new DigitalInput(ShooterConstants.HoodConstants.LIMET_SWITCH_CHANEL);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
     addNT();
@@ -65,9 +66,12 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("Hood Voltage", () -> hood.getMotorVoltage().getValueAsDouble(), null);
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
-      builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
+      // builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
       builder.addDoubleProperty("current hood pose", ()-> Math.toDegrees(hood.getPosition().getValueAsDouble()), null);
       builder.addDoubleProperty("distence", ()-> getDis(), null);
+      builder.addBooleanProperty("shooter is ready", ()-> (Shooter.getInstance().isReady()), null);
+      builder.addBooleanProperty("Turret is ready", ()-> (Turret.getInstance().isReady()), null);
+      builder.addBooleanProperty("is ready", ()-> (Shooter.getInstance().isReady() && Turret.getInstance().isReady()), null);
   }
 
   public static Shooter getInstance(){
@@ -185,9 +189,9 @@ public class Shooter extends SubsystemBase {
     hood.stop();
   }
 
-  public boolean isHoodLimetSwithSee(){
-    return hood_limet_switch.get();
-  }
+  // public boolean isHoodLimetSwithSee(){
+  //   return hood_limet_switch.get();
+  // }
 
   public void setHoodPose(double pose){
     hood.setEncoderPosition(pose);

@@ -21,7 +21,7 @@ public class ShooterConstants {
         LOOK_UP_TABLE.add(0.93, 9, Math.toRadians(20));
         LOOK_UP_TABLE.add(2.16, 9.5,Math.toRadians(30));
         LOOK_UP_TABLE.add(2.43,9.5,Math.toRadians(40));
-        LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));
+        LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));//TODO not good point
     }
 
 
@@ -37,7 +37,7 @@ public class ShooterConstants {
         .withMeterMotor(1,2*0.0254)
         .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0);
         public static final double MAX_FLYWHEEL_POWER = 1;
-        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.4;
+        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.7;
         public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2
     }
     
@@ -87,8 +87,7 @@ public class ShooterConstants {
         TRANCH,
         onePoint,
         towPoint,
-        thrrePoint,
-        pointFore
+        thrrePoint
     }
 
     public static final Translation2d DELIVERY_RED_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);

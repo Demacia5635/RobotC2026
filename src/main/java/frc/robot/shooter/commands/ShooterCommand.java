@@ -114,7 +114,7 @@ public class ShooterCommand extends Command {
         break;
       case towPoint:
         flywheelVelocity = 9.5;
-        hoodPosition = Math.toRadians(30);
+        hoodPosition = Math.toRadians(40);
         feederPower = 1;
         //216
         break;
@@ -124,11 +124,6 @@ public class ShooterCommand extends Command {
         feederPower = 1;
         //243
       break;
-      case pointFore:
-        flywheelVelocity = 9.9;
-        hoodPosition = Math.toRadians(50);
-        feederPower = 1;
-        break;
       case SHOOTER:
         Translation2d toHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())));
         double lut[] = ShooterConstants.LOOK_UP_TABLE.get(toHub.getNorm());

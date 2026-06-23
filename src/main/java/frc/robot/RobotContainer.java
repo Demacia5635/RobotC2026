@@ -139,7 +139,6 @@ public class RobotContainer implements Sendable {
     controller.povDown().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turret.setState(TurretStates.ONEPOINT);}));
     controller.povRight().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint); turret.setState(TurretStates.ONEPOINT);}));
     controller.povUp().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint); turret.setState(TurretStates.ONEPOINT);}));
-    controller.povLeft().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.pointFore); turret.setState(TurretStates.ONEPOINT);}));
   }
 
   public static void setIsRed(boolean isRed) {
