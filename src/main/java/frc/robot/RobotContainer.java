@@ -5,13 +5,13 @@
 // bft-pgmc-wgo
 package frc.robot;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,21 +21,14 @@ import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
-import frc.robot.intake.IntakeConstants.IntakeState;
-import frc.robot.intake.commands.ControllerCommand;
+import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
-import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.commands.ShooterCommand;
-import frc.robot.shooter.commands.commandContorller;
 import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.turret.TurretConstants;
-import frc.robot.turret.TurretConstants.TurretStates;
-import frc.robot.turret.commands.TurretCommand;
-import frc.robot.turret.subsystems.Turret;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -55,24 +48,24 @@ public class RobotContainer implements Sendable {
   // The robot's subsystems and commands are defined here...
   public static ShinuaSubsystem shinuaSubsystem;
   public static IntakeSubsystem intakeSubsystem;
-  public static Turret turretSubsystem;
+  public static IntakeCommand intakeCommand;
   public static CommandController controller = new CommandController(0, ControllerType.kPS5); 
   public static Shooter shooter;
 
-  public static boolean isInteaking = false;
+  public static SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
-    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
-    intakeSubsystem = IntakeSubsystem.getInstance();
-    shinuaSubsystem = ShinuaSubsystem.getInstance();
-    turretSubsystem = Turret.getInstance();
-    shooter = Shooter.getInstance();
+    Chassis.initialize(RobotBChassisConstants.CHASSIS_CONFIG);
+    // intakeSubsystem = IntakeSubsystem.getInstance();
+    // shooter = Shooter.getInstance();
+    autoChooser = new SendableChooser<>();
+    
+    SmartDashboard.putData("atou chooser", autoChooser);
 
     // Configure the trigger bindings
     configureBindings();
@@ -97,41 +90,22 @@ public class RobotContainer implements Sendable {
 
 
   private void configureBindings() {
-    controller.rightButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);})); 
-    controller.upButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);})); 
-    controller.downButton().onTrue(new InstantCommand(()-> {intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turretSubsystem.setState(TurretStates.SHOOTING);}));
-    controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.IDLE); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);}));
-    // controller.downButton().onTrue(new InstantCommand(()-> {turretSubsystem.setState(TurretStates.SHOOTING);}));
-  }
+    // controller.povUp().onTrue(new InstantCommand(()->  shooter.setShooterState(ShooterStates.towPoint)));
+    // controller.povRight().onTrue(new InstantCommand(()-> shooter.setShooterState(ShooterStates.onePoint)));
+    // controller.povLeft().onTrue(new InstantCommand(()-> shooter.setShooterState(ShooterStates.thrrePoint)));
+    
+  } 
 
   private void setUserButton(){
-    // controller.downButton().onTrue(new InstantCommand(()->{
-    //   if (RobotContainer.isInteaking){
-    //     if((RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_RED_X < Chassis.getInstance().getPose().getX()) || (!RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_BLUE_X > Chassis.getInstance().getPose().getX())) {
-    //       intakeSubsystem.setState(IntakeState.CLOSED); shooter.setShooterState(ShooterStates.SHOOTER); turretSubsystem.setState(TurretStates.SHOOTING);
-    //     } else{
-    //       intakeSubsystem.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.DELIVERY); turretSubsystem.setState(TurretStates.DELIVERY);
-    //     }
-    //     shinuaSubsystem.setState(ShinuaState.SHINUA_ON);
-    //   } else{
-    //    intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);
-    //   }
-    //    RobotContainer.isInteaking = !RobotContainer.isInteaking;}));
-    //    controller.downButton().onTrue(new InstantCommand(()->{
-    //     intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);
-    //     RobotContainer.isInteaking = true;}));
-    // controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turretSubsystem.setState(TurretStates.IDLE);}));
+    
   }
 
   private void setDefaultCommands() {
-    // chassis.setDefaultCommand(new testDriveCommand(chassis));
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
-    // shooter.setDefaultCommand(new commandContorller(controller));
-    // intakeSubsystem.setDefaultCommand(new ControllerCommand(controller));
-    intakeSubsystem.setDefaultCommand(new IntakeCommand());
     shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
+    intakeSubsystem.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    turretSubsystem.setDefaultCommand(new TurretCommand());
+    // turret.setDefaultCommand(new TurretCommand(turret));
   }
 
   public static void setIsRed(boolean isRed) {
@@ -154,17 +128,14 @@ public class RobotContainer implements Sendable {
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("is comp", () -> RobotCommon.isComp, (isComp) -> RobotCommon.isComp = isComp);
     builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
-    // builder.addBooleanProperty("change is Robot Calibrated for testing", () -> RobotCommon.getRobotCalibrated(),
-    //     (isRobotCalibrated) -> RobotCommon.setIsRobotCalibrated(isRobotCalibrated));
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    // An example command will be run in autonomouP
+    return autoChooser.getSelected();
   }
 }
