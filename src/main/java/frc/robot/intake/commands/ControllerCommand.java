@@ -11,8 +11,8 @@ import frc.robot.intake.subsystems.IntakeSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ControllerCommand extends Command {
   /** Creates a new ControllerCommand. */
-  private final CommandController controller;
   private IntakeSubsystem intakeSubsystem;
+  private final CommandController controller;
   public ControllerCommand(CommandController controller) {
     this.controller = controller;
     this.intakeSubsystem = IntakeSubsystem.getInstance();
@@ -28,7 +28,7 @@ public class ControllerCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setIntakeDeployDuty(controller.getLeftY()*0.5);
+    intakeSubsystem.setIntakeDeployDuty(controller.getLeftY()*0.1);
     
   }
 
