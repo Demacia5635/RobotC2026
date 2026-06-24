@@ -60,7 +60,8 @@ public class RobotContainer implements Sendable {
 
   public static SendableChooser<Command> autoChooser;
   
-  private static boolean isInteaking = false;
+  public static boolean forcedIsReady = false;
+  private static boolean isInteaking = true;
   
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,10 +114,15 @@ public class RobotContainer implements Sendable {
 
   private void setDefaultCommands() {
     Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
-    shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
-    intakeSubsystem.setDefaultCommand(new IntakeCommand());
-    shooter.setDefaultCommand(new ShooterCommand());
-    turret.setDefaultCommand(new TurretCommand());
+    // shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
+    // intakeSubsystem.setDefaultCommand(new IntakeCommand());
+    // shooter.setDefaultCommand(new ShooterCommand());
+    // turret.setDefaultCommand(new TurretCommand());
+
+    // shinuaSubsystem.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
+    intakeSubsystem.setDefaultCommand(new frc.robot.intake.commands.ControllerCommand(controller));
+    shooter.setDefaultCommand(new frc.robot.shooter.commands.commandContorller(controller));
+    turret.setDefaultCommand(new frc.robot.turret.commands.ControllerCommand(controller));
   }
 
   private void setController(){
@@ -136,9 +142,10 @@ public class RobotContainer implements Sendable {
        intakeSubsystem.setState(IntakeState.INTAKING); shinuaSubsystem.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);  turret.setState(TurretStates.IDLE);
        RobotContainer.isInteaking = true;}));
     controller.leftButton().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE); turret.setState(TurretStates.IDLE); RobotContainer.isInteaking = true;}));
-    controller.povDown().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turret.setState(TurretStates.ONEPOINT);}));
-    controller.povRight().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint); turret.setState(TurretStates.ONEPOINT);}));
-    controller.povUp().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint); turret.setState(TurretStates.ONEPOINT);}));
+    controller.povDown().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint); turret.setState(TurretStates.ONEPOINT); RobotContainer.isInteaking = true;}));
+    controller.povRight().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint); turret.setState(TurretStates.ONEPOINT); RobotContainer.isInteaking = true;}));
+    controller.povUp().onTrue(new InstantCommand(()->{intakeSubsystem.setState(IntakeState.CLOSED); shinuaSubsystem.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint); turret.setState(TurretStates.ONEPOINT); RobotContainer.isInteaking = true;}));
+    controller.povUpLeft().onTrue(new InstantCommand(()->{forcedIsReady = !forcedIsReady;}));
   }
 
   public static void setIsRed(boolean isRed) {

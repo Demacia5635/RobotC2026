@@ -28,14 +28,13 @@ public class ControllerCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.setIntakeDeployDuty(controller.getLeftY()*0.5);
-    
+    intakeSubsystem.setIntakeDeployDuty(controller.getRightY());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.stopIntakeDeploy();
+    
   }
 
   // Returns true when the command should end.
