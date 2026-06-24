@@ -71,6 +71,10 @@ public class RobotPose {
 
     }
 
+    public void IsPassBamp(){
+        poseEstimator.isAfterBamp();
+    }
+
     private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
             Rotation2d.kZero);
 

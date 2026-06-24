@@ -7,6 +7,7 @@ package frc.robot;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,7 @@ import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.stateManger.StateManger;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
@@ -77,7 +79,8 @@ public class RobotContainer implements Sendable {
       autoChooser = new SendableChooser<>();
       
       SmartDashboard.putData("atou chooser", autoChooser);
-  
+      SmartDashboard.putBoolean("is our hub", StateManger.isOurHub());
+      
       // Configure the trigger bindings
       configureBindings();
       setUserButton();

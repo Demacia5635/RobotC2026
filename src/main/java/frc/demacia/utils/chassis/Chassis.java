@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaPoseEstimator.OdometryObservation;
 import frc.demacia.odometry.DemaciaOdometry;
+import frc.demacia.odometry.DemaciaPoseEstimator;
 import frc.demacia.odometry.RobotPose;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
@@ -267,6 +268,10 @@ public class Chassis extends SubsystemBase {
         RobotPose.getInstance().resetPose(pose);
     }
 
+    public boolean isPassBamp(){
+        return Math.toDegrees(gyro.getPitch().getValueAsDouble()) < 5 || Math.toDegrees(gyro.getRoll().getValueAsDouble()) < 5;
+    }
+
     public Pose2d getPose() {
         return RobotPose.getInstance().getPose();
     }
@@ -373,7 +378,7 @@ public class Chassis extends SubsystemBase {
                 getModulePositions());
 
 
-        
+        RobotPose.getInstance().IsPassBamp();
 
         // LogManager.log("111");
         RobotPose.getInstance().update(observation);

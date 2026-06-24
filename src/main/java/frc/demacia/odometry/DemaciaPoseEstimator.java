@@ -8,6 +8,8 @@ import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.ejml.simple.SimpleMatrix;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -33,6 +35,7 @@ public class DemaciaPoseEstimator {
     private final double kBufferDuration = 1.5;
     private NavigableMap<Double, VisionUpdate> visionUpdates = new TreeMap<>();
     private Pose2d estimatedPose;
+    private boolean isBigSTD;
 
     private final TimeInterpolatableBuffer<Pose2d> odometryBuffer;
 
@@ -46,6 +49,23 @@ public class DemaciaPoseEstimator {
         setVisionMeasurementStdDevs(visionSTD);
         this.odometryBuffer = TimeInterpolatableBuffer.createBuffer(kBufferDuration);
 
+    }
+
+    public void isAfterBamp(){
+        if (Chassis.getInstance().isPassBamp()) {
+            Matrix<N3, N1> stateSTD = new Matrix<>(new SimpleMatrix(new double[] { 0.2, 0.2, 0 })); //TODO: mabe not right
+            for (int i = 0; i < 3; ++i) {            
+                m_q.set(i, 0, stateSTD.get(i, 0) * stateSTD.get(i, 0));
+            }
+            isBigSTD = true;
+        }
+    }
+
+    public void returnSTD() {
+        Matrix<N3, N1> stateSTD = new Matrix<>(new SimpleMatrix(new double[] { 0.03, 0.03, 0 })); //TODO: mabe not right
+        for (int i = 0; i < 3; ++i) {            
+            m_q.set(i, 0, stateSTD.get(i, 0) * stateSTD.get(i, 0));
+        }
     }
 
     public final void setVisionMeasurementStdDevs(Matrix<N3, N1> visionMeasurementStdDevs) {
@@ -198,6 +218,9 @@ public class DemaciaPoseEstimator {
 
         if (visionUpdates.isEmpty()) {
             estimatedPose = odometryEstimation;
+            if (isBigSTD) {
+                returnSTD();
+            }
             // LogManager.log("not vision");
         } else {
             // LogManager.log("vision");
