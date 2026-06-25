@@ -34,7 +34,7 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 2;// 3
     public static final double MAX_ACCELERATION = 4;// 15
     public static final double MAX_JERK = 35;// 150
-    public static final double DEPLOY_CLOSED_ANGLE = -0.09;
+    public static final double DEPLOY_CLOSED_ANGLE = 0.35;
     public static final double DEPLOY_OPEN_ANGLE = 1.8;
     public static final double DEPLOY_MIDDLE = Math.toRadians(40);
     public static final double ALLOWED_ERROR = Math.toRadians(7);

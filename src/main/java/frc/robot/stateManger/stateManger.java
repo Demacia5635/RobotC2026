@@ -1,9 +1,9 @@
 package frc.robot.stateManger;
 
-import java.io.ObjectInputFilter.Status;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Field;
 import frc.robot.RobotCommon;
@@ -16,6 +16,9 @@ import frc.robot.turret.TurretConstants.TurretStates;
 public class StateManger extends SubsystemBase{
 
     public static boolean isWork;
+    private static Timer shiftTimer = new Timer();
+    private static boolean isRedWonAuto = true;
+    private static int shiftNum = -1;
     
    private static boolean isTrench() {
     Pose2d pose = RobotCommon.getRobotFucerPose();
@@ -75,23 +78,23 @@ public class StateManger extends SubsystemBase{
 
 
     public static Double getTimeUntilNextHubChange() {
-    double time = DriverStation.getMatchTime();
+        double time = DriverStation.getMatchTime();
 
-    if (time < 0) {
-        return null;
-    }
+        if (time < 0) {
+            return null;
+        }
 
-    if (time > 105) {
-        return time - 105;
-    } else if (time > 80) {
-        return time - 80;
-    } else if (time > 55) {
-        return time - 55;
-    } else if (time > 30) {
-        return time - 30;
-    } else {
-        return time;
-    }
+        if (time > 105) {
+            return time - 105;
+        } else if (time > 80) {
+            return time - 80;
+        } else if (time > 55) {
+            return time - 55;
+        } else if (time > 30) {
+            return time - 30;
+        } else {
+            return time;
+        }
     }
 
 
@@ -145,12 +148,108 @@ public class StateManger extends SubsystemBase{
         }
     }
 
-public enum Shifts{
-    Transition,
-    Active,
-    Inactive,
-    Endgame,
-    Disable
-}
+    public static void startingTeam() {
+        if (DriverStation.getGameSpecificMessage() != "") {
+            switch (DriverStation.getGameSpecificMessage()) {
+                case "R":
+                    isRedWonAuto = true;
+                    break;
 
+                case "B":
+                    isRedWonAuto = false;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public static void resetShift() {
+        if (shiftNum != 0) {
+            shiftTimer.stop();
+            shiftTimer.reset();
+            shiftNum = -1;
+            RobotCommon.setShift(Shifts.Disable);
+        }
+    }
+
+    private static void updateShift() {
+        if (RobotCommon.getShift().equals(Shifts.Disable) && RobotState.isEnabled() && RobotState.isAutonomous()) {
+            RobotCommon.setShift(Shifts.Auto);
+            shiftTimer.start();
+            shiftNum = 0;
+        } else if (RobotCommon.getShift().equals(Shifts.Auto) && RobotState.isTeleop()) {
+            RobotCommon.setShift(Shifts.Transition);
+            shiftNum = 1;
+            shiftTimer.reset();
+            shiftTimer.start();
+        } else if (RobotCommon.getShift().equals(Shifts.Transition) && shiftTimer.hasElapsed(10)) {
+            RobotCommon.setShift(isRedWonAuto && RobotCommon.isRed() ? Shifts.Inactive : Shifts.Active);
+            shiftTimer.reset();
+            shiftNum = 2;
+        } else if (RobotCommon.getShift().equals(Shifts.Active) && shiftTimer.hasElapsed(25) && shiftNum != 5) {
+            RobotCommon.setShift(Shifts.Inactive);
+            shiftTimer.reset();
+            shiftNum++;
+        } else if (RobotCommon.getShift().equals(Shifts.Inactive) && shiftTimer.hasElapsed(25) && shiftNum != 5) {
+            RobotCommon.setShift(Shifts.Active);
+            shiftTimer.reset();
+            shiftNum++;
+        } else if (shiftNum == 5 && shiftTimer.hasElapsed(25)) {
+            RobotCommon.setShift(Shifts.Endgame);
+            shiftNum = 6;
+            shiftTimer.reset();
+        }
+    }
+
+    public static Timer getShiftTimer() {
+        return shiftTimer;
+    }
+
+    public static boolean isRedWonAuto() {
+        return isRedWonAuto;
+    }
+
+    public static void setRedWonAuto(boolean isRedWonAuto) {
+        StateManger.isRedWonAuto = isRedWonAuto;
+    }
+
+    public static int getShiftNum() {
+        return shiftNum;
+    }
+
+    public static void setShiftNum(int shiftNum) {
+        StateManger.shiftNum = shiftNum;
+    }
+
+    public static double getTheTimeLeft() {
+        switch (shiftNum) {
+            case 0:
+                return 20 - shiftTimer.get();
+            case 1:
+                return 10 - shiftTimer.get();
+            case 6:
+                return 30 - shiftTimer.get();
+
+            default:
+                return 25 - shiftTimer.get();
+
+        }
+    }
+
+    @Override
+    public void periodic() {
+        StateManger.startingTeam();
+        StateManger.updateShift();
+    }
+
+    public enum Shifts{
+        Transition,
+        Active,
+        Inactive,
+        Endgame,
+        Disable,
+        Auto
+    }
 }

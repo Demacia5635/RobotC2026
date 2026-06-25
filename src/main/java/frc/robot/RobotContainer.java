@@ -65,17 +65,18 @@ public class RobotContainer implements Sendable {
      */
     public RobotContainer() {
       SmartDashboard.putData("RC", this);
+      new StateManger();
       // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
       Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
       intake = IntakeSubsystem.getInstance();
-      shooter = Shooter.getInstance();
-      shinua = ShinuaSubsystem.getInstance();
-      turret = Turret.getInstance();
+      // shooter = Shooter.getInstance();
+      // shinua = ShinuaSubsystem.getInstance();
+      // turret = Turret.getInstance();
       autoChooser = new SendableChooser<>();
       
       SmartDashboard.putData("atou chooser", autoChooser);
-      SmartDashboard.putBoolean("is our hub", StateManger.isOurHub());
-      SmartDashboard.putNumber("time left for the state", StateManger.getTimeUntilNextHubChange());
+      // SmartDashboard.putBoolean("is our hub", StateManger.isOurHub());
+      // SmartDashboard.putNumber("Time left", StateManger.getTheTimeLeft());
       
       // Configure the trigger bindings
       configureBindings();
@@ -112,15 +113,15 @@ public class RobotContainer implements Sendable {
     }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
+    // Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
     // shinuaSubsystem.setDefaultCommand(new ShinuaCommand());
     // intakeSubsystem.setDefaultCommand(new IntakeCommand());
     // shooter.setDefaultCommand(new ShooterCommand());
     // turret.setDefaultCommand(new TurretCommand());
 
-    shinua.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
+    // shinua.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
     // intake.setDefaultCommand(new frc.robot.intake.commands.ControllerCommand(controller));
-    shooter.setDefaultCommand(new frc.robot.shooter.commands.commandContorller(controller));
+    // shooter.setDefaultCommand(new frc.robot.shooter.commands.commandContorller(controller));
     // turret.setDefaultCommand(new frc.robot.turret.commands.ControllerCommand(controller));
   }
 

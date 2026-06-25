@@ -106,6 +106,8 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrent;
     cfg.CurrentLimits.SupplyCurrentLowerTime = 0.1;
     cfg.CurrentLimits.SupplyCurrentLimitEnable = true;
+    cfg.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = config.rampUpTime;
+    cfg.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = config.rampUpTime;
     cfg.ClosedLoopRamps.VoltageClosedLoopRampPeriod = config.rampUpTime;
     cfg.OpenLoopRamps.VoltageOpenLoopRampPeriod = config.rampUpTime;
 

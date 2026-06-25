@@ -35,7 +35,8 @@ public class ShooterConstants {
         .withInvert(true)
         .withBrake(false)
         .withMeterMotor(1,2*0.0254)
-        .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0);
+        .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0)
+        .withRampTime(0.5);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.7;
         public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2

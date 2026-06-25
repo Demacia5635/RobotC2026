@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.demacia.utils.chassis.Chassis;
 import frc.robot.shooter.ShooterConstants;
+import frc.robot.stateManger.StateManger.Shifts;
 public class RobotCommon {
     public static Pose2d currentRobotPose = Pose2d.kZero;
     private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
@@ -19,6 +20,7 @@ public class RobotCommon {
     private static boolean isStuck = false;
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
+    private static Shifts shift;
 
     private static boolean isRed = true;
     private static double futureAngleFromTargetRobotRelative;
@@ -30,6 +32,14 @@ public class RobotCommon {
 
     public static void setIsRed(boolean newIsRed){
         isRed = newIsRed;
+    }
+
+    public static Shifts getShift(){
+        return shift;
+    }
+
+    public static void setShift(Shifts shift){
+        RobotCommon.shift = shift;
     }
 
     public static Translation2d getHubPose(){
