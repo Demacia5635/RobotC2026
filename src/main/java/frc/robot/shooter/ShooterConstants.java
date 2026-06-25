@@ -22,6 +22,7 @@ public class ShooterConstants {
         LOOK_UP_TABLE.add(2.16, 9.5,Math.toRadians(30));
         LOOK_UP_TABLE.add(2.43,9.5,Math.toRadians(40));
         LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));//TODO not good point
+        LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));//TODO not good point
     }
 
 
@@ -35,7 +36,8 @@ public class ShooterConstants {
         .withInvert(true)
         .withBrake(false)
         .withMeterMotor(1,2*0.0254)
-        .withPID(4.39, 0, 0, 0.07, 0.8, 0.26, 0)
+        .withPID(5, 0, 0, 0.577, 0.69, 0.13, 0)
+        .withFeedForward(0.00162, 0)
         .withRampTime(0.5);
         public static final double MAX_FLYWHEEL_POWER = 1;
         public static final double FLYWHEEL_VELOCITY_OFFSET = 0.7;
@@ -55,7 +57,7 @@ public class ShooterConstants {
         .withPID(60, 6, 0, 0.0561,1.0495 , 0.0501, 0)
         .withMotionParam(6, 30, 240);
 
-        public static final double HOOD_POSITION_OFFSET = 0.4;
+        public static final double HOOD_POSITION_OFFSET = Math.toRadians(2);
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = Math.toRadians(60);
         public static final double MAX_HOOD_CURRENT = 0;

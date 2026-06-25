@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployLimitSwitch = new DigitalInput(9);
     state = IntakeState.IDLE;
     SmartDashboard.putData("reset encoder intake deploy",
-        new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+        new InstantCommand(() -> {resetEncoderIntakeDeploy(); setCalibrated();}).ignoringDisable(true));
         
     SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(true);
@@ -162,6 +162,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!isCalibrated && isIntakeDeployClosed()){
+      setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
+      setCalibrated();
+    }
     // This method will be called once per scheduler run
     // LogManager.log("current state: " + state.toString());
   }

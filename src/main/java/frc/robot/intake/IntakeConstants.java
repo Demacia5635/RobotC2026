@@ -34,17 +34,18 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 2;// 3
     public static final double MAX_ACCELERATION = 4;// 15
     public static final double MAX_JERK = 35;// 150
-    public static final double DEPLOY_CLOSED_ANGLE = 0.35;
-    public static final double DEPLOY_OPEN_ANGLE = 1.8;
-    public static final double DEPLOY_MIDDLE = Math.toRadians(40);
+    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-31);
+    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(82);
+    public static final double DEPLOY_MIDDLE = Math.toRadians(15);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
-    public static final double kp = 0.0;
+    public static final double OPEN_POWER = 0.1;
+    public static final double kp = 0.2;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
     public static final double ks = 0.02;
     public static final double kv = 0.97;
     public static final double ka = 0.04161;
-    public static final double kg = 0.05;// -0.1745
+    public static final double kg = -0.2;// -0.1745
 
     public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS,
             INTAKE_DEPLOY_NAME)
@@ -61,7 +62,8 @@ public class IntakeConstants {
         EJECTING(-1, DEPLOY_OPEN_ANGLE),
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, DEPLOY_CLOSED_ANGLE),
-        MIDDLE(1, DEPLOY_MIDDLE),
+        MIDDLE(0, DEPLOY_MIDDLE),
+        SHOOTING(0.7, DEPLOY_MIDDLE),
         IDLE(0, 0);
 
         public double duty;

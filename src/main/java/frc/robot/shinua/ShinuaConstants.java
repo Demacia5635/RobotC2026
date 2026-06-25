@@ -14,7 +14,7 @@ public class ShinuaConstants {
     public static final double MECANUM_BALLS_STUCK_CURRENT = 0;
     public static final double MECANUM_BALLS_STUCK_VELOCITY = 0;
     public static final double MECANUM_GEAR_RATIO = 3d;
-    public static final double MECANUM_DIMETER = 0;
+    public static final double MECANUM_DIMETER = 0.05;
     // stuck balls time constants
     public static final double BALLS_STUCK_DURATION = 0.1; 
     public static final double BALLS_STUCK_HANDLING_TIME = 1.0;
@@ -34,11 +34,11 @@ public class ShinuaConstants {
     public static final double ROLLERS_BALLS_STUCK_CURRENT = 0;
     public static final double ROLLERS_BALLS_STUCK_VELOCITY = 0;
     public static final double ROLLERS_GEAR_RATIO = 4d;
-    public static double kp = 0.5;
+    public static double kp = 2.9;
     public static double ki = 0.0;
     public static double kd = 0.0;
-    public static double ks = 0.07668;
-    public static double kv = 0.07353;
+    public static double ks = 0.63;
+    public static double kv = 2.48;
     public static double ka = 0;
     public static double kg = 0.0;
 
@@ -52,10 +52,10 @@ public class ShinuaConstants {
             .withRampTime(0.8);
 
     public static enum ShinuaState {
-        SHINUA_ON(-12.5, 1),
+        SHINUA_ON(-0.1, 1),
         SHINUA_OFF(0, 0),
-        EJECTING(12.5, 1),
-        NO_INDEXER(-13 , 0.18),
+        EJECTING(-0.1, -1),
+        NO_INDEXER(-4 , 0.2),
         TESTING(0, 0);
 
         public double velocityRollers;

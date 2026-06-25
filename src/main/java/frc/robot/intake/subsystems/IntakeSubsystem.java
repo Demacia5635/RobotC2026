@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
+import frc.robot.RobotCommon;
 import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.IntakeConstants.IntakeState;
@@ -36,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
     instance = this;
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    intakeDeployLimitSwitch = new DigitalInput(9);
+    intakeDeployLimitSwitch = new DigitalInput(7);
     state = IntakeState.IDLE;
     // isCalibrated = true;
     setEncoderIntakeDeploy(IntakeState.DEPLOYED.angle);
@@ -102,7 +104,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setAngleIntakeDeploy(double angle) {
     double currentAngle = intakeDeployMotor.getCurrentAngle();
     if (Math.abs(currentAngle - angle) < IntakeConstants.ALLOWED_ERROR) {
-      stopIntakeDeploy();
+      if (getState() == IntakeState.INTAKING && RobotCommon.isRed()){
+        stopIntakeDeploy();
+      }
     } else {
       double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
       angle = MathUtil.clamp(angle, IntakeConstants.DEPLOY_CLOSED_ANGLE, IntakeConstants.DEPLOY_OPEN_ANGLE);
@@ -165,6 +169,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // LogManager.log("hood motor" + intakeDeployMotor.getCurrentAngle());
   }
 
 }

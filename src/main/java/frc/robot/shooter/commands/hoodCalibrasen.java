@@ -28,6 +28,7 @@ public class hoodCalibrasen extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setHoodPose(ShooterConstants.HoodConstants.HOOD_LIMET_SWITCH_POSE);
+    shooter.setCaliberation();
     shooter.stopHood();
   }
 

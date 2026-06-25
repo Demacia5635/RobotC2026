@@ -128,6 +128,7 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
         SmartDashboard.putData("reset odmetry", new InstantCommand(()-> DemaciaOdometry.getOdometryInstance(modulePositions).resetPose(getPose())).ignoringDisable(true));
         SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
+        SmartDashboard.putData("reset odmetry by camera", new InstantCommand(()-> RobotPose.getInstance().resetOdometryByCamra()));
         // LogManager.log("odmetry pose" + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
         RobotPose.initialize(modulePositions, new Matrix<>(
@@ -378,14 +379,15 @@ public class Chassis extends SubsystemBase {
                 getModulePositions());
 
 
-        RobotPose.getInstance().IsPassBamp();
+        // RobotPose.getInstance().IsPassBamp();
+        RobotPose.getInstance().addOdometryCalculation(getGyroAngle(),getModulePositions());
 
         // LogManager.log("111");
         RobotPose.getInstance().update(observation);
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
-        LogManager.log("odmetry pose: " + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
+        // LogManager.log("odmetry pose: " + DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
         double[] accel = getAcceleration();
         SmartDashboard.putNumber("accel/ax", accel[0]);

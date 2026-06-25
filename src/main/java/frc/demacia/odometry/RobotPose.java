@@ -68,8 +68,12 @@ public class RobotPose {
 
     }
 
-    public void IsPassBamp(){
-        poseEstimator.isAfterBamp();
+    // public void IsPassBamp(){
+    //     poseEstimator.isAfterBamp();
+    // }
+
+    public void resetOdometryByCamra(){
+        odometry.resetPose(vision.getPoseEstimation());
     }
 
     private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
@@ -107,8 +111,7 @@ public class RobotPose {
         poseEstimator.addOdometryCalculation(odometryObservation);
     }
 
-    public void addOdometryCalculation(Pose2d odometryPose, Rotation2d gyroAngle,
-            SwerveModulePosition[] modulePositions) {
+    public void addOdometryCalculation(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
         addOdometryCalculation(new OdometryObservation(Timer.getFPGATimestamp(), gyroAngle, modulePositions));
     }
 

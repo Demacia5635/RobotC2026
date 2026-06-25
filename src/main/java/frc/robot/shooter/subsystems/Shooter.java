@@ -32,14 +32,19 @@ public class Shooter extends SubsystemBase {
   private TalonFXMotor hood;
   private TalonFXMotor feeder;
 
+  private double wantedVel;
+  private double wantedAngle;
+
   // private DigitalInput hood_limet_switch;
 
   private ShooterStates shooterState ;
   private double lastWantedFlywheelVelocity = 0;
+  private boolean isCalibrated;
 
   /** Creates a new Shooter. */
   private Shooter() {
     super();
+    shooter = this;
     shooterState = ShooterStates.IDLE;
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
@@ -70,8 +75,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("current hood pose", ()-> Math.toDegrees(hood.getPosition().getValueAsDouble()), null);
       builder.addDoubleProperty("distence", ()-> getDis(), null);
       builder.addBooleanProperty("shooter is ready", ()-> (Shooter.getInstance().isReady()), null);
-      builder.addBooleanProperty("Turret is ready", ()-> (Turret.getInstance().isReady()), null);
-      builder.addBooleanProperty("is ready", ()-> (Shooter.getInstance().isReady() && Turret.getInstance().isReady()), null);
+      builder.addBooleanProperty("is ready", ()-> (Shooter.getInstance().isReady()), null);
   }
 
   public static Shooter getInstance(){
@@ -91,6 +95,10 @@ public class Shooter extends SubsystemBase {
 
   }
 
+  public void setCaliberation(){
+    isCalibrated = true;
+  }
+
   public void setNatralMode(boolean isBrake){
     hood.setNeutralMode(isBrake);
   }
@@ -106,6 +114,7 @@ public class Shooter extends SubsystemBase {
 
   public void restHoodMotor(){
     hood.setEncoderPosition(0);
+    shooter.setCaliberation();
   }
 
   public void setFlywheelPower(double power){
@@ -125,6 +134,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFlywheelVelocity (double velocity){
+    wantedVel = velocity;
     if(Math.abs(velocity - lastWantedFlywheelVelocity) > FlywheelConstants.MAX_FLYWHEEL_ACCEL * 0.02) { 
       velocity = lastWantedFlywheelVelocity + Math.signum(velocity - lastWantedFlywheelVelocity) * FlywheelConstants.MAX_FLYWHEEL_ACCEL * 0.02;
     }
@@ -157,8 +167,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setHoodMotion(double position){
-    position = MathUtil.clamp(position, HoodConstants.MIN_POSITION, HoodConstants.MAX_POSITION);
-    hood.setMotion(position);
+    if (isCalibrated){
+      wantedAngle = position;
+      position = MathUtil.clamp(position, HoodConstants.MIN_POSITION, HoodConstants.MAX_POSITION);
+      hood.setMotion(position);
+    }
   }
 
   public void setShooterState(ShooterStates state){
@@ -176,13 +189,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return Math.abs(flywheel.getCurrentClosedLoopError()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
-    Math.abs(hood.getCurrentClosedLoopError()) < HoodConstants.HOOD_POSITION_OFFSET;
-  }
-
-  public boolean isReady(double flywheelVelocity){
-    return (Math.abs(flywheel.getCurrentVelocity() - flywheelVelocity) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
-    (Math.abs(hood.getCurrentClosedLoopError()) < HoodConstants.HOOD_POSITION_OFFSET);
+    return Math.abs(wantedVel - flywheel.getCurrentVelocity()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
+    Math.abs(wantedAngle - hood.getCurrentAngle()) < HoodConstants.HOOD_POSITION_OFFSET;
   }
 
   public void stopFeeder() {
@@ -208,6 +216,9 @@ public class Shooter extends SubsystemBase {
   //fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
   @Override
   public void periodic() { 
-      
+      // if (!isCalibrated && ){
+      //   shooter.setHoodPose(ShooterConstants.HoodConstants.HOOD_LIMET_SWITCH_POSE);
+      //   shooter.setCaliberation();
+      // }
   }
 }

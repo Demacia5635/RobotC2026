@@ -89,7 +89,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void setPositionByLimit(){
-    if(getMaxLimitSwich()) turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGLE);
+    if(getMaxLimitSwich()) turretMotor.setEncoderPosition(Math.toRadians(TurretConstants.MIN_TURRET_ANGLE));
   }
 
 

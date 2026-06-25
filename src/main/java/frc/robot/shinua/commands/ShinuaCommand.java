@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotContainer;
+import frc.robot.intake.subsystem.IntakeSubsystem;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.subsystems.Shooter;
@@ -55,7 +56,7 @@ public class ShinuaCommand extends Command {
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
-          if (!((Shooter.getInstance().isReady() && Turret.getInstance().isReady()) || RobotContainer.forcedIsReady)){
+          if (!((Shooter.getInstance().isReady()) || IntakeSubsystem.getInstance().getIntakeDeployAngle() < 0 || RobotContainer.forcedIsReady)){
             shinuaSubsystem.setMecanumDuty(ShinuaState.NO_INDEXER.dutyMecanum);
             shinuaSubsystem.setVelocityRollers(ShinuaState.NO_INDEXER.velocityRollers);
           } else {

@@ -65,6 +65,7 @@ public class DemaciaPoseEstimator {
         for (int i = 0; i < 3; ++i) {            
             m_q.set(i, 0, stateSTD.get(i, 0) * stateSTD.get(i, 0));
         }
+        isBigSTD = false;
     }
 
     public final void setVisionMeasurementStdDevs(Matrix<N3, N1> visionMeasurementStdDevs) {
@@ -217,9 +218,9 @@ public class DemaciaPoseEstimator {
 
         if (visionUpdates.isEmpty()) {
             estimatedPose = odometryEstimation;
-            if (isBigSTD) {
-                returnSTD();
-            }
+            // if (isBigSTD) {
+            //     returnSTD();
+            // }
             // LogManager.log("not vision");
         } else {
             // LogManager.log("vision");
