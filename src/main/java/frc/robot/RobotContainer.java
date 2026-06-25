@@ -118,10 +118,10 @@ public class RobotContainer implements Sendable {
     // shooter.setDefaultCommand(new ShooterCommand());
     // turret.setDefaultCommand(new TurretCommand());
 
-    // shinuaSubsystem.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
-    intake.setDefaultCommand(new frc.robot.intake.commands.ControllerCommand(controller));
+    shinua.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
+    // intake.setDefaultCommand(new frc.robot.intake.commands.ControllerCommand(controller));
     shooter.setDefaultCommand(new frc.robot.shooter.commands.commandContorller(controller));
-    turret.setDefaultCommand(new frc.robot.turret.commands.ControllerCommand(controller));
+    // turret.setDefaultCommand(new frc.robot.turret.commands.ControllerCommand(controller));
   }
 
   private void setController(){

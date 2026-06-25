@@ -94,4 +94,6 @@ public class ShooterConstants {
     public static final Translation2d DELIVERY_RED_RIGHT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER*3/2);
     public static final Translation2d DELIVERY_BLUE_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_BLUE_X - Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);
     public static final Translation2d DELIVERY_BLUE_RIGHT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_BLUE_X - Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER*3/2);
+
+    public static final Translation2d SHOOTER_OFFSET = new Translation2d(-0.115, 0);
 }

@@ -27,7 +27,7 @@ public class commandContorller extends Command {
   @Override
   public void execute() {
     Shooter.getInstance().setFlywheelPower(controller.getLeftX());
-    Shooter.getInstance().setHoodPower(controller.getLeftY());
+    // Shooter.getInstance().setHoodPower(controller.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

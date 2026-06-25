@@ -29,8 +29,9 @@ public class TurretConstants {
     .withRadiansMotor(TURRET_GEAR_RASIO)
     .withBrake(false);
 
-    public static final double MAX_TURRET_ANGLE = 340;
-    public static final double MIN_TURRET_ANGLE = 0;
+    public static final double MAX_TURRET_ANGLE = 27;
+    public static final double MIN_TURRET_ANGLE = -313;
+    public static final double TURRET_ANGLE_RANGE = MAX_TURRET_ANGLE + Math.abs(MIN_TURRET_ANGLE);
 
     //TODO: Set the limit switch config
     public static final int MAX_LIMIT_SWITCH_ID = 6;

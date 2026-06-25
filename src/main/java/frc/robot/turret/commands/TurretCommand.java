@@ -47,8 +47,10 @@ public class TurretCommand extends Command {
         break;
       case SHOOTING:
         double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
-        targetAngle = shooterToHub - Chassis.getInstance().getGyroAngle().getDegrees() +313;
-        turret.setTurretMotion((targetAngle < 0 && targetAngle > -5) ? targetAngle : MathUtil.clamp(MathUtil.inputModulus(targetAngle, 0, 360), 0, 340));
+        targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees();
+        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
         break;
       case DELIVERY:
         // if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
@@ -58,12 +60,14 @@ public class TurretCommand extends Command {
         //   targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
         //   turret.setTurretMotion(targetAngle);
         // }
-        double shooterToDelivery = RobotCommon.getDeliveryPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.17, 0).rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
-        targetAngle = shooterToDelivery-Chassis.getInstance().getGyroAngle().getDegrees()+313;
-        turret.setTurretMotion((targetAngle < 0 && targetAngle > -5)? targetAngle : MathUtil.clamp(MathUtil.inputModulus(targetAngle, 0, 360), 0, 340));
+        double shooterToDelivery = RobotCommon.getDeliveryPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
+        targetAngle = shooterToDelivery-Chassis.getInstance().getGyroAngle().getDegrees();
+        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
         break;
       case ONEPOINT:
-        turret.setTurretMotion(313);
+        turret.setTurretMotion(0);
         break;
     }
   }

@@ -125,7 +125,7 @@ public class ShooterCommand extends Command {
         //243
       break;
       case SHOOTER:
-        Translation2d toHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(new Translation2d(-0.115, 0).rotateBy(Chassis.getInstance().getGyroAngle())));
+        Translation2d toHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle())));
         double lut[] = ShooterConstants.LOOK_UP_TABLE.get(toHub.getNorm());
         // Rotation2d heading = toHub.getAngle();
         //double[] arr = setFlywheelAndHood(lut[0], lut[1], heading);
