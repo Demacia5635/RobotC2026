@@ -24,7 +24,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.chassis.Chassis;
-import frc.demacia.utils.log.LogManager;
 
 /** Add your docs here. */
 public class DemaciaPoseEstimator {

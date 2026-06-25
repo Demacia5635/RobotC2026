@@ -7,12 +7,9 @@ package frc.robot;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,19 +19,15 @@ import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
-import frc.robot.chassis.RobotBChassisConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
-import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
-import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.stateManger.StateManger;
 import frc.robot.turret.TurretConstants.TurretStates;
-import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
 
 /**
@@ -71,7 +64,7 @@ public class RobotContainer implements Sendable {
     public RobotContainer() {
       SmartDashboard.putData("RC", this);
       // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-    Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
+      Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
       intakeSubsystem = IntakeSubsystem.getInstance();
       shooter = Shooter.getInstance();
       shinuaSubsystem = ShinuaSubsystem.getInstance();
@@ -80,6 +73,7 @@ public class RobotContainer implements Sendable {
       
       SmartDashboard.putData("atou chooser", autoChooser);
       SmartDashboard.putBoolean("is our hub", StateManger.isOurHub());
+      SmartDashboard.putNumber("time left for the state", StateManger.getTimeUntilNextHubChange());
       
       // Configure the trigger bindings
       configureBindings();

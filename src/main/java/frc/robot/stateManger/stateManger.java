@@ -29,40 +29,61 @@ public class StateManger extends SubsystemBase{
         && stateMangerUtils.inRange(y, Field.TrenchRedAudience.Y_FRONT + 0.5,  Field.TrenchRedAudience.Y_BACK - 0.5)
         && stateMangerUtils.inRange(y, Field.TrenchRedScoring.Y_FRONT + 0.5,   Field.TrenchRedScoring.Y_BACK - 0.5);
     }
+    public static Boolean isRedWonAtou(){
+        if(DriverStation.getGameSpecificMessage() != ""){
+            switch (DriverStation.getGameSpecificMessage()) {
+                case "R":
+                    return true;
+                default:
+                    return false;
+            }
+        }else{
+            return null;
+        }
+    }
 
     public static Boolean isOurHub() {
+        double time = DriverStation.getMatchTime();
+
+        if (time < 0) {
+            return false;
+        }
+
+        boolean autoWinnerIsRed = isRedWonAtou(); 
+
+        boolean ourAllianceWonAuto = (autoWinnerIsRed && RobotCommon.isRed()) || (!autoWinnerIsRed && !RobotCommon.isRed());
+
+        if (time > 105) {
+            return !ourAllianceWonAuto; 
+        } else if (time > 80) {
+            return ourAllianceWonAuto; 
+        } else if (time > 55) {
+            return !ourAllianceWonAuto;
+        } else if (time > 30) {
+            return ourAllianceWonAuto; 
+        } else {
+            return true; 
+        }
+    }
+
+
+    public static Double getTimeUntilNextHubChange() {
     double time = DriverStation.getMatchTime();
 
     if (time < 0) {
-        return false;
-    }
-
-    boolean autoWinnerIsRed; 
-
-    if(DriverStation.getGameSpecificMessage() != ""){
-        switch (DriverStation.getGameSpecificMessage()) {
-            case "R":
-                autoWinnerIsRed = true;
-                break;
-            default:
-                autoWinnerIsRed = false;
-                break;
-        }
-    }else{
         return null;
     }
-    boolean ourAllianceWonAuto = (autoWinnerIsRed && RobotCommon.isRed()) || (!autoWinnerIsRed && !RobotCommon.isRed());
 
     if (time > 105) {
-        return !ourAllianceWonAuto; 
+        return time - 105;
     } else if (time > 80) {
-        return ourAllianceWonAuto; 
+        return time - 80;
     } else if (time > 55) {
-        return !ourAllianceWonAuto;
+        return time - 55;
     } else if (time > 30) {
-        return ourAllianceWonAuto; 
+        return time - 30;
     } else {
-        return true; 
+        return time;
     }
 }
     
