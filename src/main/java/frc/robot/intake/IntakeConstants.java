@@ -10,7 +10,7 @@ public class IntakeConstants {
     public static final Canbus INTAKE_CANBUS = Canbus.Rio;
     public static final int ROLLER_ID = 51;
     public static final String ROLLER_NAME = "Intake Roller Motor";
-    public static final boolean ROLLER_INVERTED = true;
+    public static final boolean ROLLER_INVERTED = false;
     public static final double ROLLER_CURRENT_LIMIT = 40.0;
     public static final boolean ROLLER_BRAKE = false;
     public static final double ROLLER_BALLS_STUCK_CURRENT = 0;
@@ -31,20 +31,20 @@ public class IntakeConstants {
     public static final double INTAKE_DEPLOY_CURRENT_LIMIT = 15.0;
     public static final boolean INTAKE_DEPLOY_BRAKE = false;  
      public static final double INTAKE_DEPLOY_GEAR_RATIO = 64d;
-    public static final double MAX_VELOCITY = 1;// 3
-    public static final double MAX_ACCELERATION = 5;// 15
+    public static final double MAX_VELOCITY = 2;// 3
+    public static final double MAX_ACCELERATION = 4;// 15
     public static final double MAX_JERK = 35;// 150
     public static final double DEPLOY_CLOSED_ANGLE = -0.09;
     public static final double DEPLOY_OPEN_ANGLE = 1.8;
     public static final double DEPLOY_MIDDLE = Math.toRadians(40);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
-    public static final double kp = 0.5;
+    public static final double kp = 0.0;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
-    public static final double ks = 0.20021;
-    public static final double kv = 1.06408;
+    public static final double ks = 0.02;
+    public static final double kv = 0.97;
     public static final double ka = 0.04161;
-    public static final double kg = -0.10197;// -0.1745
+    public static final double kg = 0.05;// -0.1745
 
     public static final TalonFXConfig INTAKE_DEPLOY_CONFIG = new TalonFXConfig(INTAKE_DEPLOY_ID, INTAKE_CANBUS,
             INTAKE_DEPLOY_NAME)
