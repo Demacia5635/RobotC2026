@@ -84,13 +84,15 @@ public class Turret extends SubsystemBase {
   public void setTurretMotion(double position){
     if(getIsCaliberation()){ //if not stop
       position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
-      turretMotor.setMotion(Math.toRadians(position));
+      turretMotor.setMotion(Math.toRadians(position), 1);
     }
   }
 
   public void setPositionByLimit(){
     if(getMaxLimitSwich()) turretMotor.setEncoderPosition(TurretConstants.MIN_TURRET_ANGLE);
   }
+
+
   public void stopMotor(){
     turretMotor.stop();
   }

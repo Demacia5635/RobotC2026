@@ -91,6 +91,10 @@ public class Shooter extends SubsystemBase {
 
   }
 
+  public void setNatralMode(boolean isBrake){
+    hood.setNeutralMode(isBrake);
+  }
+
 
   public void setCostHood(){
     hood.setNeutralMode(false);
