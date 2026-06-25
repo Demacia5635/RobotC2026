@@ -39,7 +39,7 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
     switch (intakeSubsystem.getState()) {
-      case INTAKING, EJECTING, DEPLOYED, CLOSED, MIDDLE:
+      case INTAKING, EJECTING, DEPLOYED, CLOSED, MIDDLE, SHOOTING:
         intakeSubsystem.setRollerDuty(intakeSubsystem.getState().duty);
         intakeSubsystem.setAngleIntakeDeploy(intakeSubsystem.getState().angle);
         break;

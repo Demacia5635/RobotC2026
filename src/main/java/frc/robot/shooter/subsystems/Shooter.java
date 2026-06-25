@@ -91,7 +91,7 @@ public class Shooter extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.shooterState = newState);
-    SmartDashboard.putData("shooter State Chooser!!!!!!!!!", stateChooser);
+    SmartDashboard.putData("shooter State Chooser!", stateChooser);
 
   }
 

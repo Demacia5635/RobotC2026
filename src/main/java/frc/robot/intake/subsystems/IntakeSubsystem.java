@@ -13,10 +13,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
-import frc.robot.RobotCommon;
 import frc.robot.intake.IntakeConstants;
-import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsytem. */
@@ -25,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonFXMotor intakeDeployMotor;
   private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
-  private boolean isCalibrated;
+  private boolean isCalibrated = false;
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)
@@ -40,10 +39,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     intakeDeployLimitSwitch = new DigitalInput(7);
     state = IntakeState.IDLE;
-    // isCalibrated = true;
-    setEncoderIntakeDeploy(IntakeState.DEPLOYED.angle);
     SmartDashboard.putData("reset encoder intake deploy",
-        new InstantCommand(this::resetEncoderIntakeDeploy).ignoringDisable(true));
+        new InstantCommand(() -> {resetEncoderIntakeDeploy(); setCalibrated();}).ignoringDisable(true));
         
     SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(true);
@@ -64,7 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData("Intake State Chooser!!!!!!!!!", stateChooser);
+    SmartDashboard.putData("Intake State Chooser!", stateChooser);
 
   }
 
@@ -73,6 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
     super.initSendable(builder);
     builder.addBooleanProperty("limit Switch", this::isIntakeDeployClosed, null);
     builder.addDoubleProperty("encoder intake deploy", this::getIntakeDeployAngle, null);
+    builder.addBooleanProperty("is cal intack", this::isCalibrated, null);
 
   }
 
@@ -104,8 +102,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setAngleIntakeDeploy(double angle) {
     double currentAngle = intakeDeployMotor.getCurrentAngle();
     if (Math.abs(currentAngle - angle) < IntakeConstants.ALLOWED_ERROR) {
-      if (getState() == IntakeState.INTAKING && RobotCommon.isRed()){
+      if (getState() == IntakeState.INTAKING){
         stopIntakeDeploy();
+      } else {
+        intakeDeployMotor.setDuty(IntakeConstants.OPEN_POWER);
       }
     } else {
       double gravitySineFF = IntakeConstants.kg * Math.sin(currentAngle);
@@ -168,8 +168,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!isCalibrated && isIntakeDeployClosed()){
+      setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
+      LogManager.log("yes");
+      setCalibrated();
+    }
     // This method will be called once per scheduler run
-    // LogManager.log("hood motor" + intakeDeployMotor.getCurrentAngle());
+    // LogManager.log("current state: " + state.toString());
   }
 
 }

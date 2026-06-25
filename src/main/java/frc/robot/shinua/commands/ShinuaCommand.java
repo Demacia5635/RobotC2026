@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotContainer;
-import frc.robot.intake.subsystem.IntakeSubsystem;
+import frc.robot.intake.subsystems.IntakeSubsystem;
+import frc.robot.shinua.ShinuaConstants;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.subsystems.Shooter;
-import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShinuaCommand extends Command {
@@ -23,14 +23,14 @@ public class ShinuaCommand extends Command {
   private double wantedDutyMecanum = 0;
   private double wantedvelDutyRollers = 0;
 
-  // private Timer timerForStuckBalls;
-  // private boolean startedHandlingBalls = false;
+  private Timer timerForStuckBalls;
+  private boolean startedHandlingBalls = false;
   private Timer timerForReleasingPressure;
 
   public ShinuaCommand() {
     super();
     shinuaSubsystem = ShinuaSubsystem.getInstance();
-    // timerForStuckBalls = new Timer();
+    timerForStuckBalls = new Timer();
     timerForReleasingPressure = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shinuaSubsystem);
@@ -44,24 +44,38 @@ public class ShinuaCommand extends Command {
 
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    // timerForStuckBalls.reset();
-    timerForReleasingPressure.restart();
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
-          if (!((Shooter.getInstance().isReady()) || IntakeSubsystem.getInstance().getIntakeDeployAngle() < 0 || RobotContainer.forcedIsReady)){
+          if (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.MAX_CURRENT){
+            timerForStuckBalls.start();
+          }
+          if (timerForStuckBalls.isRunning() && shinuaSubsystem.getRollerCurrent() < ShinuaConstants.MAX_CURRENT){
+            timerForStuckBalls.reset();
+            timerForStuckBalls.stop();
+            LogManager.log("bad");
+          }
+          if (timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !timerForReleasingPressure.hasElapsed(ShinuaConstants.BALLS_STUCK_HANDLING_TIME)) {
+            timerForReleasingPressure.start();
+            timerForStuckBalls.reset();
+            timerForStuckBalls.stop();
+            shinuaSubsystem.setMecanumDuty(ShinuaConstants.DUTY_WHEN_MAX_CURRENT);
+            LogManager.log("no pow");
+          } else if (!((Shooter.getInstance().isReady()) || IntakeSubsystem.getInstance().getIntakeDeployAngle() < 0 || RobotContainer.forcedIsReady)){
             shinuaSubsystem.setMecanumDuty(ShinuaState.NO_INDEXER.dutyMecanum);
             shinuaSubsystem.setVelocityRollers(ShinuaState.NO_INDEXER.velocityRollers);
           } else {
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
             shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
+          }
+          if (timerForReleasingPressure.isRunning() && timerForReleasingPressure.hasElapsed(ShinuaConstants.BALLS_STUCK_HANDLING_TIME)) {
+            timerForReleasingPressure.reset();
+            timerForReleasingPressure.stop();
+            timerForStuckBalls.reset();
+            timerForStuckBalls.stop();
+            LogManager.log("end");
           }
         break;
       case SHINUA_OFF, EJECTING, NO_INDEXER:

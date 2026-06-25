@@ -35,11 +35,11 @@ public class IntakeConstants {
     public static final double MAX_ACCELERATION = 4;// 15
     public static final double MAX_JERK = 35;// 150
     public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-31);
-    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(82);
-    public static final double DEPLOY_MIDDLE = Math.toRadians(15);
+    public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(90);
+    public static final double DEPLOY_MIDDLE = Math.toRadians(11);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
     public static final double OPEN_POWER = 0.1;
-    public static final double kp = 0.2;
+    public static final double kp = 0.4;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
     public static final double ks = 0.02;
@@ -63,7 +63,7 @@ public class IntakeConstants {
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, DEPLOY_CLOSED_ANGLE),
         MIDDLE(0, DEPLOY_MIDDLE),
-        SHOOTING(0.7, DEPLOY_MIDDLE),
+        SHOOTING(1, DEPLOY_MIDDLE),
         IDLE(0, 0);
 
         public double duty;

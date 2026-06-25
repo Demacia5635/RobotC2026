@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.chassis.Chassis;
-import frc.robot.intake.subsystem.IntakeSubsystem;
+import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.subsystems.Turret;

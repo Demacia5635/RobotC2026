@@ -138,10 +138,11 @@ public class RobotContainer implements Sendable {
     controller.rightButton().onTrue(new InstantCommand(()->{
        intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.leftButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.MIDDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.upButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.EJECTING); shinua.setState(ShinuaState.EJECTING); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.povUp().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint);}));
     controller.povDown().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint);}));
     controller.povRight().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint);}));
-    controller.povUpLeft().onTrue(new InstantCommand(()->{forcedIsReady = !forcedIsReady;}));
+    controller.povLeft().onTrue(new InstantCommand(()->{forcedIsReady = !forcedIsReady;}));
   }
 
   public static void setIsRed(boolean isRed) {
