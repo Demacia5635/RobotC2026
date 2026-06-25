@@ -1,5 +1,7 @@
 package frc.robot.stateManger;
 
+import java.io.ObjectInputFilter.Status;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +23,7 @@ public class StateManger extends SubsystemBase{
     double y = pose.getY();
 
     return stateMangerUtils.inRange(x, Field.TrenchBlueAudience.X_BACK + 0.5,  Field.TrenchBlueAudience.X_FRONT - 0.5)
-         && stateMangerUtils.inRange(x, Field.TrenchBlueScoring.X_BACK + 0.5,   Field.TrenchBlueScoring.X_FRONT - 0.5)
+        && stateMangerUtils.inRange(x, Field.TrenchBlueScoring.X_BACK + 0.5,   Field.TrenchBlueScoring.X_FRONT - 0.5)
         && stateMangerUtils.inRange(y, Field.TrenchBlueAudience.Y_FRONT + 0.5,  Field.TrenchBlueAudience.Y_BACK - 0.5)
         && stateMangerUtils.inRange(y, Field.TrenchBlueScoring.Y_FRONT+ 0.5,   Field.TrenchBlueScoring.Y_BACK - 0.5)
         && stateMangerUtils.inRange(x, Field.TrenchRedAudience.X_FRONT + 0.5,  Field.TrenchRedAudience.X_BACK - 0.5)
@@ -29,6 +31,11 @@ public class StateManger extends SubsystemBase{
         && stateMangerUtils.inRange(y, Field.TrenchRedAudience.Y_FRONT + 0.5,  Field.TrenchRedAudience.Y_BACK - 0.5)
         && stateMangerUtils.inRange(y, Field.TrenchRedScoring.Y_FRONT + 0.5,   Field.TrenchRedScoring.Y_BACK - 0.5);
     }
+
+    public static double getTimeLeft(){
+        return DriverStation.getMatchTime();
+    }
+
     public static Boolean isRedWonAtou(){
         if(DriverStation.getGameSpecificMessage() != ""){
             switch (DriverStation.getGameSpecificMessage()) {
@@ -85,8 +92,7 @@ public class StateManger extends SubsystemBase{
     } else {
         return time;
     }
-}
-    
+    }
 
 
     private static boolean isHub(){
@@ -119,6 +125,32 @@ public class StateManger extends SubsystemBase{
         RobotContainer.turret.setState(TurretStates.IDLE);
         RobotContainer.intakeSubsystem.setState(IntakeState.IDLE);
     }
+    }
+
+    public static Shifts getCurrenTShifts(){
+        double time = DriverStation.getMatchTime();
+
+        if(time > 105){
+            return Shifts.Transition;
+        }else if (time < 30) {
+            return Shifts.Endgame;
+        }else if(DriverStation.isDisabled()){
+            return Shifts.Disable;
+        }else{
+            if(isOurHub()){
+                return Shifts.Active;
+            }else{
+                return Shifts.Disable;
+            }
+        }
+    }
+
+public enum Shifts{
+    Transition,
+    Active,
+    Inactive,
+    Endgame,
+    Disable
 }
 
 }
