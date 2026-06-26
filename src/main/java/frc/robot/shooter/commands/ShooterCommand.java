@@ -110,25 +110,25 @@ public class ShooterCommand extends Command {
         flywheelVelocity = 9.0;
         break;
       case outoPoint:
-        flywheelVelocity = 9.0;
-        hoodPosition = Math.toRadians(14);
-        feederPower = 0.4;
+        flywheelVelocity = 8.2;
+        hoodPosition = Math.toRadians(12.7);
+        feederPower = 0.3;
       break;
       case onePoint:
-          flywheelVelocity = 9.0;
-          hoodPosition = Math.toRadians(17);
-          feederPower = 0.4;
+          flywheelVelocity = 9.2;
+          hoodPosition = Math.toRadians(26);
+          feederPower = 0.6;
         break;
       case towPoint:
-        flywheelVelocity = 9.7;
-        hoodPosition = Math.toRadians(43);
-        feederPower = 0.4;
+        flywheelVelocity = 10;
+        hoodPosition = Math.toRadians(45);
+        feederPower = 0.8;
         //216
         break;
       case thrrePoint:
-        flywheelVelocity = 10;
-        hoodPosition = Math.toRadians(47);
-        feederPower = 0.4;
+        flywheelVelocity = 10.4;
+        hoodPosition = Math.toRadians(50);
+        feederPower = 0.8;
         //243
       break;
       case SHOOTER:

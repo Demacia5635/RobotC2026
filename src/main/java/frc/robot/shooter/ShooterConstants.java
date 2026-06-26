@@ -38,9 +38,9 @@ public class ShooterConstants {
         .withMeterMotor(1, 2*0.0254)
         .withPID(5, 0, 0, 0.577, 0.69, 0.13, 0)
         .withFeedForward(0.00162, 0)
-        .withRampTime(0.5);
+        .withRampTime(0.6);
         public static final double MAX_FLYWHEEL_POWER = 1;
-        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.7;
+        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.5;
         public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2
     }
     
@@ -57,7 +57,7 @@ public class ShooterConstants {
         .withPID(60, 6, 0, 0.0561,1.0495 , 0.0501, 0)
         .withMotionParam(6, 30, 240);
 
-        public static final double HOOD_POSITION_OFFSET = Math.toRadians(2);
+        public static final double HOOD_POSITION_OFFSET = Math.toRadians(3);
         public static final double MIN_POSITION = 0;
         public static final double MAX_POSITION = Math.toRadians(60);
         public static final double MAX_HOOD_CURRENT = 0;

@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -189,8 +190,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return Math.abs(wantedVel - flywheel.getCurrentVelocity()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
-    Math.abs(wantedAngle - hood.getCurrentAngle()) < HoodConstants.HOOD_POSITION_OFFSET;
+    return (Math.abs(wantedVel - flywheel.getCurrentVelocity()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
+    Math.abs(wantedAngle - hood.getCurrentAngle()) < HoodConstants.HOOD_POSITION_OFFSET) && 
+    (Math.abs(flywheel.getCurrentVelocity()) > FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
+    (Math.abs(hood.getCurrentAngle()) > HoodConstants.HOOD_POSITION_OFFSET);
   }
 
   public void stopFeeder() {

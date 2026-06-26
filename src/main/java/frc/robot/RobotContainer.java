@@ -6,14 +6,17 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.chassis.Chassis;
@@ -60,6 +63,9 @@ public class RobotContainer implements Sendable {
   public static Shooter shooter;
   public static Turret turret;
   public static DriveCommand driveCommand;
+  public static Timer autoTimer;
+  public static Timer timerToClose;
+  public static boolean hasAutoClosed;
 
   public static SendableChooser<Command> autoChooser;
   
@@ -81,7 +87,9 @@ public class RobotContainer implements Sendable {
       driveCommand = new DriveCommand(Chassis.getInstance(), controller);
       SmartDashboard.putData("atou chooser", autoChooser);
       SmartDashboard.putData("reset Shift", new InstantCommand(() -> StateManger.resetShift()).ignoringDisable(true));
-      
+      autoTimer = new Timer();
+      timerToClose = new Timer();
+
       // Configure the trigger bindings
       configureBindings();
       setUserButton();
@@ -179,27 +187,62 @@ public class RobotContainer implements Sendable {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    autoTimer.reset();
+    timerToClose.reset();
+    hasAutoClosed = false;
     // An example command will be run in autonomouP
-    return new InstantCommand(()->{
-      Chassis.getInstance().setYaw(
-      RobotCommon.isRed() ? 
-        (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
-          Rotation2d.kZero : 
-          RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
-            new Rotation2d(Math.toRadians(90)) : 
-            new Rotation2d(Math.toRadians(-90))) :
-        (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
-          Rotation2d.kPi : 
-          RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
-            new Rotation2d(Math.toRadians(-90)) : 
-            new Rotation2d(Math.toRadians(90)))); 
-      shooter.restHoodMotor(); 
-      intake.setState(IntakeState.SHOOTING); 
-      shinua.setState(ShinuaState.SHINUA_ON); 
-      shooter.setShooterState(
-        RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? 
-          ShooterStates.outoPoint : 
-          ShooterStates.thrrePoint
-      );});
+    return new RunCommand(()->{
+      if (autoTimer.hasElapsed(1.05)){
+        LogManager.log("333333");
+        autoTimer.stop();
+        Chassis.getInstance().setVelocities(new ChassisSpeeds());
+
+        shooter.setShooterState(
+          RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? 
+            ShooterStates.onePoint : 
+            ShooterStates.thrrePoint
+        );  
+
+        if (timerToClose.hasElapsed(3)){
+          timerToClose.stop();
+
+          if (intake.getIntakeDeployAngle() < Math.toRadians(-20)){
+            intake.setState(IntakeState.SHOOTING);
+            shinua.setState(ShinuaState.SHINUA_ON);
+            hasAutoClosed = true;
+          } else if (hasAutoClosed == false){
+            shinua.setState(ShinuaState.SHINUA_OFF);
+            intake.setState(IntakeState.CLOSED_SHOOTING);
+          }
+        } else if (!timerToClose.isRunning()){
+          timerToClose.restart();
+        } else {
+          intake.setState(IntakeState.SHOOTING); 
+          shinua.setState(ShinuaState.SHINUA_ON);
+        }
+      } else if (!autoTimer.isRunning()) {
+        LogManager.log("11111111 start");
+        Chassis.getInstance().setYaw(
+        RobotCommon.isRed() ? 
+          (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
+            Rotation2d.kZero : 
+            RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
+              new Rotation2d(Math.toRadians(90)) : 
+              new Rotation2d(Math.toRadians(-90))) :
+          (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
+            Rotation2d.kPi : 
+            RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
+              new Rotation2d(Math.toRadians(-90)) : 
+              new Rotation2d(Math.toRadians(90))));
+        shooter.restHoodMotor();
+      
+        autoTimer.restart();
+      } else {
+        LogManager.log("22222222 move");
+        
+        shooter.setShooterState(ShooterStates.getRaedy);
+        Chassis.getInstance().setVelocities(new ChassisSpeeds(0.5,0,0));
+      }
+    });
   }
 }
