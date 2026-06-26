@@ -36,10 +36,10 @@ public class IntakeConstants {
     public static final double MAX_JERK = 35;// 150
     public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-31);
     public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(90);
-    public static final double DEPLOY_MIDDLE = Math.toRadians(11);
+    public static final double DEPLOY_MIDDLE = Math.toRadians(9);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
-    public static final double OPEN_POWER = 0.1;
-    public static final double kp = 0.4;
+    public static final double OPEN_POWER = 0.05;
+    public static final double kp = 0.6;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
     public static final double ks = 0.02;

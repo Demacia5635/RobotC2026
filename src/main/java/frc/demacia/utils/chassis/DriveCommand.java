@@ -16,7 +16,7 @@ public class DriveCommand extends Command {
   private CommandController controller;
   private double direction;
   private ChassisSpeeds speeds;
-  private boolean precisionMode;
+  public boolean precisionMode;
 
   private double velRot;
 
@@ -65,9 +65,9 @@ public class DriveCommand extends Command {
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
       velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
     if(precisionMode){
-        velX /= 4;
-        velY /= 4;
-        velRot /= 4;
+        velX /= 2;
+        velY /= 2;
+        velRot /= 2;
     }
 
     speeds = new ChassisSpeeds(velX, velY, velRot);

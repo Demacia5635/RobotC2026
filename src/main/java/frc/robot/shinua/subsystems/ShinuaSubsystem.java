@@ -4,6 +4,7 @@
 
 package frc.robot.shinua.subsystems;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,6 +31,7 @@ public class ShinuaSubsystem extends SubsystemBase {
     rollersMotor = new TalonFXMotor(ShinuaConstants.ROLLERS_CONFIG);
     state = ShinuaState.SHINUA_OFF;
     addNT();
+    SmartDashboard.putData("shinua subsystem", this);
   }
 
   private void addNT() {
@@ -39,6 +41,14 @@ public class ShinuaSubsystem extends SubsystemBase {
     }
     stateChooser.onChange(newState -> this.state = newState);
     SmartDashboard.putData( " Shinua State Chooser!!", stateChooser);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      // TODO Auto-generated method stub
+      super.initSendable(builder);
+      builder.addDoubleProperty("rollers voltage", ()-> rollersMotor.getCurrentVoltage(), null);
+      builder.addDoubleProperty("current current", () -> rollersMotor.getCurrentCurrent(), null);
   }
 
   public void checkElectronics() {

@@ -49,33 +49,12 @@ public class ShinuaCommand extends Command {
   public void execute() {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
-          if (shinuaSubsystem.getRollerCurrent() > ShinuaConstants.MAX_CURRENT){
-            timerForStuckBalls.start();
-          }
-          if (timerForStuckBalls.isRunning() && shinuaSubsystem.getRollerCurrent() < ShinuaConstants.MAX_CURRENT){
-            timerForStuckBalls.reset();
-            timerForStuckBalls.stop();
-            LogManager.log("bad");
-          }
-          if (timerForStuckBalls.hasElapsed(ShinuaConstants.BALLS_STUCK_DURATION) && !timerForReleasingPressure.hasElapsed(ShinuaConstants.BALLS_STUCK_HANDLING_TIME)) {
-            timerForReleasingPressure.start();
-            timerForStuckBalls.reset();
-            timerForStuckBalls.stop();
-            shinuaSubsystem.setMecanumDuty(ShinuaConstants.DUTY_WHEN_MAX_CURRENT);
-            LogManager.log("no pow");
-          } else if (!((Shooter.getInstance().isReady()) || IntakeSubsystem.getInstance().getIntakeDeployAngle() < 0 || RobotContainer.forcedIsReady)){
-            shinuaSubsystem.setMecanumDuty(ShinuaState.NO_INDEXER.dutyMecanum);
-            shinuaSubsystem.setVelocityRollers(ShinuaState.NO_INDEXER.velocityRollers);
+          if (!((Shooter.getInstance().isReady()) || IntakeSubsystem.getInstance().getIntakeDeployAngle() < 0 || RobotContainer.forcedIsReady)){
+            shinuaSubsystem.setMecanumDuty(0);
+            shinuaSubsystem.setVelocityRollers(0);
           } else {
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
             shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
-          }
-          if (timerForReleasingPressure.isRunning() && timerForReleasingPressure.hasElapsed(ShinuaConstants.BALLS_STUCK_HANDLING_TIME)) {
-            timerForReleasingPressure.reset();
-            timerForReleasingPressure.stop();
-            timerForStuckBalls.reset();
-            timerForStuckBalls.stop();
-            LogManager.log("end");
           }
         break;
       case SHINUA_OFF, EJECTING, NO_INDEXER:

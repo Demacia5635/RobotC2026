@@ -35,7 +35,7 @@ public class ShooterConstants {
         public static final TalonFXConfig FLYWHEEL_CONFIG = new TalonFXConfig(FLYWEEL_ID, FLYWEEL_CANBUS, FLYWEEL_NAME)
         .withInvert(true)
         .withBrake(false)
-        .withMeterMotor(1,2*0.0254)
+        .withMeterMotor(1, 2*0.0254)
         .withPID(5, 0, 0, 0.577, 0.69, 0.13, 0)
         .withFeedForward(0.00162, 0)
         .withRampTime(0.5);
@@ -83,6 +83,8 @@ public class ShooterConstants {
         public static final double MIN_FEEDER_VELOCITY = 0;
     }
     public enum ShooterStates {
+        getRaedy,
+        outoPoint,
         SHOOTER,
         IDLE,
         TEST,

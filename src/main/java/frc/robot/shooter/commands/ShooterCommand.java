@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+  // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -106,22 +106,29 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     switch (shooter.getShooterState()) {
+      case getRaedy:
+        flywheelVelocity = 9.0;
+        break;
+      case outoPoint:
+        flywheelVelocity = 9.0;
+        hoodPosition = Math.toRadians(14);
+        feederPower = 0.4;
+      break;
       case onePoint:
           flywheelVelocity = 9.0;
-          hoodPosition = Math.toRadians(20);
-          feederPower = 1;
-          //93
+          hoodPosition = Math.toRadians(17);
+          feederPower = 0.4;
         break;
       case towPoint:
-        flywheelVelocity = 9.5;
-        hoodPosition = Math.toRadians(40);
-        feederPower = 1;
+        flywheelVelocity = 9.7;
+        hoodPosition = Math.toRadians(43);
+        feederPower = 0.4;
         //216
         break;
       case thrrePoint:
-        flywheelVelocity = 9.5;
-        hoodPosition = Math.toRadians(40);
-        feederPower = 1;
+        flywheelVelocity = 10;
+        hoodPosition = Math.toRadians(47);
+        feederPower = 0.4;
         //243
       break;
       case SHOOTER:
@@ -146,9 +153,9 @@ public class ShooterCommand extends Command {
       case DELIVERY:
         testingFeederPower = FeederConstants.MAX_FEEDER_POWER;
         shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
-        shooterToTarget = shooterToTarget.minus(new Translation2d(RobotCommon.getRobotFucerSpeed(0.02).vxMetersPerSecond * 1.2, RobotCommon.getFieldRelativeSpeeds().vyMetersPerSecond * 1.2));
-        hoodPosition = 45;
-        flywheelVelocity = FlywheelConstants.MAX_FLYWHEEL_POWER;
+        shooterToTarget = shooterToTarget.minus(RobotCommon.getRobotFucerPose().getTranslation());
+        hoodPosition = Math.toRadians(45);
+        flywheelVelocity = Math.sqrt(shooterToTarget.getNorm()*9.81);
         feederPower = 1;
         break;
       case TRANCH:

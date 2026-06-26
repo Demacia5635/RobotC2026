@@ -5,6 +5,7 @@
 // bft-pgmc-wgo
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,6 +21,7 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.log.LogManager;
+import frc.robot.RobotCommon.StartingPlaces;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.commands.IntakeCommand;
@@ -57,6 +59,7 @@ public class RobotContainer implements Sendable {
   public static CommandController controller = new CommandController(0, ControllerType.kPS5); 
   public static Shooter shooter;
   public static Turret turret;
+  public static DriveCommand driveCommand;
 
   public static SendableChooser<Command> autoChooser;
   
@@ -67,7 +70,7 @@ public class RobotContainer implements Sendable {
      */
     public RobotContainer() {
       SmartDashboard.putData("RC", this);
-      // new StateManger();
+      new StateManger();
       // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
       Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
       intake = IntakeSubsystem.getInstance();
@@ -75,10 +78,9 @@ public class RobotContainer implements Sendable {
       shinua = ShinuaSubsystem.getInstance();
       // turret = Turret.getInstance();
       autoChooser = new SendableChooser<>();
-      
+      driveCommand = new DriveCommand(Chassis.getInstance(), controller);
       SmartDashboard.putData("atou chooser", autoChooser);
-      // SmartDashboard.putBoolean("is our hub", StateManger.isOurHub());
-      // SmartDashboard.putNumber("Time left", StateManger.getTheTimeLeft());
+      SmartDashboard.putData("reset Shift", new InstantCommand(() -> StateManger.resetShift()).ignoringDisable(true));
       
       // Configure the trigger bindings
       configureBindings();
@@ -115,7 +117,7 @@ public class RobotContainer implements Sendable {
     }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(new DriveCommand(Chassis.getInstance(), controller));
+    Chassis.getInstance().setDefaultCommand(driveCommand);
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
@@ -134,15 +136,18 @@ public class RobotContainer implements Sendable {
   //       } else{
   //         intake.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.DELIVERY); turret.setState(TurretStates.IDLE);
   //       }
+  
   //       shinua.setState(ShinuaState.SHINUA_ON);}));
-    controller.rightButton().onTrue(new InstantCommand(()->{
-       intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.rightButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.IDLE);})); //
     controller.leftButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.MIDDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.upButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.EJECTING); shinua.setState(ShinuaState.EJECTING); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.DEPLOYED);shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.povUp().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint);}));
     controller.povDown().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint);}));
     controller.povRight().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint);}));
     controller.povLeft().onTrue(new InstantCommand(()->{forcedIsReady = !forcedIsReady;}));
+    controller.leftBumper().onTrue(new InstantCommand(()-> driveCommand.precisionMode =  !driveCommand.precisionMode));
+    controller.rightBumper().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.getRaedy);}));
   }
 
   public static void setIsRed(boolean isRed) {
@@ -165,6 +170,8 @@ public class RobotContainer implements Sendable {
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("is comp", () -> RobotCommon.isComp, (isComp) -> RobotCommon.isComp = isComp);
     builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
+    builder.addDoubleProperty("Time Left", () -> StateManger.getTheTimeLeft(), null);
+    builder.addBooleanProperty("is our hub", () -> StateManger.isOurHub(), null);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -173,6 +180,26 @@ public class RobotContainer implements Sendable {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomouP
-    return autoChooser.getSelected();
+    return new InstantCommand(()->{
+      Chassis.getInstance().setYaw(
+      RobotCommon.isRed() ? 
+        (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
+          Rotation2d.kZero : 
+          RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
+            new Rotation2d(Math.toRadians(90)) : 
+            new Rotation2d(Math.toRadians(-90))) :
+        (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
+          Rotation2d.kPi : 
+          RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
+            new Rotation2d(Math.toRadians(-90)) : 
+            new Rotation2d(Math.toRadians(90)))); 
+      shooter.restHoodMotor(); 
+      intake.setState(IntakeState.SHOOTING); 
+      shinua.setState(ShinuaState.SHINUA_ON); 
+      shooter.setShooterState(
+        RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? 
+          ShooterStates.outoPoint : 
+          ShooterStates.thrrePoint
+      );});
   }
 }

@@ -61,7 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
       stateChooser.addOption(intakeState.name(), intakeState);
     }
     stateChooser.onChange(newState -> this.state = newState);
-    SmartDashboard.putData("Intake State Chooser!", stateChooser);
+    SmartDashboard.putData("Intake State Chooser!!", stateChooser);
 
   }
 

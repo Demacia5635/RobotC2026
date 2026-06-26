@@ -53,15 +53,8 @@ public class TurretCommand extends Command {
         TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
         break;
       case DELIVERY:
-        // if (TurretConstants.TURRET_POSE.getX() < ShooterConstants.HEIGHT/2) {
-        //   targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_LEFT_POINT).getAngle().getRadians();
-        //   turret.setTurretMotion(targetAngle);
-        // } else{
-        //   targetAngle = TurretConstants.TURRET_POSE.getTranslation().plus(ShooterConstants.DELIVERY_RIGHT_POINT).getAngle().getRadians();
-        //   turret.setTurretMotion(targetAngle);
-        // }
         double shooterToDelivery = RobotCommon.getDeliveryPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
-        targetAngle = shooterToDelivery-Chassis.getInstance().getGyroAngle().getDegrees();
+        targetAngle = shooterToDelivery - Chassis.getInstance().getGyroAngle().getDegrees();
         turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
         TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
         TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));

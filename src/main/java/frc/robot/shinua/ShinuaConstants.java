@@ -10,7 +10,7 @@ public class ShinuaConstants {
     public static final String MECANUM_NAME = "Mecanum Motor";
     public static final boolean MECANUM_INVERTED = false;
     public static final double MECANUM_CURRENT_LIMIT = 40.0;
-    public static final boolean MECANUM_BRAKE = false;
+    public static final boolean MECANUM_BRAKE = true;
     public static final double MECANUM_BALLS_STUCK_CURRENT = 0;
     public static final double MECANUM_BALLS_STUCK_VELOCITY = 0;
     public static final double MECANUM_GEAR_RATIO = 3d;
@@ -54,10 +54,10 @@ public class ShinuaConstants {
             .withRampTime(0.8);
 
     public static enum ShinuaState {
-        SHINUA_ON(-0.1, 1),
+        SHINUA_ON(-0.2, 1),
         SHINUA_OFF(0, 0),
-        EJECTING(-6, 0.2),
-        NO_INDEXER(-6 , 0.1),
+        EJECTING(-1.5, 0.3),
+        NO_INDEXER(-1.5 , 0.3),
         TESTING(0, 0);
 
         public double velocityRollers;

@@ -20,17 +20,26 @@ public class RobotCommon {
     private static boolean isStuck = false;
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
-    private static Shifts shift;
+    private static Shifts shift = Shifts.Disable;
 
     private static boolean isRed = true;
     private static double futureAngleFromTargetRobotRelative;
-    public static boolean isComp = false; 
+    public static boolean isComp = false;
+    private static StartingPlaces startingPlace = StartingPlaces.HUB;
 
     public static boolean isRed(){
         return isRed;
     }
 
     public static void setIsRed(boolean newIsRed){
+        isRed = newIsRed;
+    }
+
+    public static StartingPlaces getStartingPlace(){
+        return startingPlace;
+    }
+
+    public static void setStarting(boolean newIsRed){
         isRed = newIsRed;
     }
 
@@ -129,5 +138,9 @@ public class RobotCommon {
         RobotCommon.isStuck = isStuck;
     }
 
-
+    public enum StartingPlaces{
+        HUB,
+        TRANCH_LEFT, 
+        TRANCH_RIGHT
+    }
 }
