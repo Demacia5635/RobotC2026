@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Field;
 import frc.robot.RobotCommon;
@@ -108,7 +109,7 @@ public class StateManger extends SubsystemBase{
     }
 
     public static void update(){   
-        if(isWork){
+        if(StateManger.isWork){
             if(!isTrench()){
                 if(isHub()){
                     RobotContainer.shooter.setShooterState(ShooterStates.SHOOTER);
@@ -152,11 +153,11 @@ public class StateManger extends SubsystemBase{
         if (DriverStation.getGameSpecificMessage() != "") {
             switch (DriverStation.getGameSpecificMessage()) {
                 case "R":
-                    isRedWonAuto = true;
+                    StateManger.isRedWonAuto = true;
                     break;
 
                 case "B":
-                    isRedWonAuto = false;
+                    StateManger.isRedWonAuto = false;
                     break;
 
                 default:
@@ -166,10 +167,10 @@ public class StateManger extends SubsystemBase{
     }
 
     public static void resetShift() {
-        if (shiftNum != 0) {
-            shiftTimer.stop();
-            shiftTimer.reset();
-            shiftNum = -1;
+        if (StateManger.shiftNum != 0) {
+            StateManger.shiftTimer.stop();
+            StateManger.shiftTimer.reset();
+            StateManger.shiftNum = -1;
             RobotCommon.setShift(Shifts.Disable);
         }
     }
@@ -177,38 +178,38 @@ public class StateManger extends SubsystemBase{
     private static void updateShift() {
         if (RobotCommon.getShift().equals(Shifts.Disable) && RobotState.isEnabled() && RobotState.isAutonomous()) {
             RobotCommon.setShift(Shifts.Auto);
-            shiftTimer.start();
-            shiftNum = 0;
-        } else if (RobotCommon.getShift().equals(Shifts.Auto) && RobotState.isTeleop()) {
+            StateManger.shiftTimer.start();
+            StateManger.shiftNum = 0;
+        } else if ((RobotCommon.getShift().equals(Shifts.Auto) && RobotState.isTeleop()) || (RobotCommon.getShift().equals(Shifts.Disable) && RobotState.isEnabled() && RobotState.isTeleop())) {
             RobotCommon.setShift(Shifts.Transition);
-            shiftNum = 1;
-            shiftTimer.reset();
+            StateManger.shiftNum = 1;
+            StateManger.shiftTimer.reset();
             shiftTimer.start();
-        } else if (RobotCommon.getShift().equals(Shifts.Transition) && shiftTimer.hasElapsed(10)) {
+        } else if (RobotCommon.getShift().equals(Shifts.Transition) && StateManger.shiftTimer.hasElapsed(10)) {
             RobotCommon.setShift(isRedWonAuto && RobotCommon.isRed() ? Shifts.Inactive : Shifts.Active);
-            shiftTimer.reset();
-            shiftNum = 2;
-        } else if (RobotCommon.getShift().equals(Shifts.Active) && shiftTimer.hasElapsed(25) && shiftNum != 5) {
+            StateManger.shiftTimer.reset();
+            StateManger.shiftNum = 2;
+        } else if (RobotCommon.getShift().equals(Shifts.Active) && StateManger.shiftTimer.hasElapsed(25) && StateManger.shiftNum != 5) {
             RobotCommon.setShift(Shifts.Inactive);
-            shiftTimer.reset();
-            shiftNum++;
-        } else if (RobotCommon.getShift().equals(Shifts.Inactive) && shiftTimer.hasElapsed(25) && shiftNum != 5) {
+            StateManger.shiftTimer.reset();
+            StateManger.shiftNum++;
+        } else if (RobotCommon.getShift().equals(Shifts.Inactive) && StateManger.shiftTimer.hasElapsed(25) && StateManger.shiftNum != 5) {
             RobotCommon.setShift(Shifts.Active);
-            shiftTimer.reset();
-            shiftNum++;
-        } else if (shiftNum == 5 && shiftTimer.hasElapsed(25)) {
+            StateManger.shiftTimer.reset();
+            StateManger.shiftNum++;
+        } else if (StateManger.shiftNum == 5 && StateManger.shiftTimer.hasElapsed(25)) {
             RobotCommon.setShift(Shifts.Endgame);
-            shiftNum = 6;
-            shiftTimer.reset();
+            StateManger.shiftNum = 6;
+            StateManger.shiftTimer.reset();
         }
     }
 
     public static Timer getShiftTimer() {
-        return shiftTimer;
+        return StateManger.shiftTimer;
     }
 
     public static boolean isRedWonAuto() {
-        return isRedWonAuto;
+        return StateManger.isRedWonAuto;
     }
 
     public static void setRedWonAuto(boolean isRedWonAuto) {
@@ -216,7 +217,7 @@ public class StateManger extends SubsystemBase{
     }
 
     public static int getShiftNum() {
-        return shiftNum;
+        return StateManger.shiftNum;
     }
 
     public static void setShiftNum(int shiftNum) {
@@ -224,16 +225,16 @@ public class StateManger extends SubsystemBase{
     }
 
     public static double getTheTimeLeft() {
-        switch (shiftNum) {
+        switch (StateManger.shiftNum) {
             case 0:
-                return 20 - shiftTimer.get();
+                return 20 - StateManger.shiftTimer.get();
             case 1:
-                return 10 - shiftTimer.get();
+                return 10 - StateManger.shiftTimer.get();
             case 6:
-                return 30 - shiftTimer.get();
+                return 30 - StateManger.shiftTimer.get();
 
             default:
-                return 25 - shiftTimer.get();
+                return 25 - StateManger.shiftTimer.get();
 
         }
     }

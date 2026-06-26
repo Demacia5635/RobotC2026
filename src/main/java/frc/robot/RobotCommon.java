@@ -20,7 +20,7 @@ public class RobotCommon {
     private static boolean isStuck = false;
 
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
-    private static Shifts shift;
+    private static Shifts shift = Shifts.Disable;
 
     private static boolean isRed = true;
     private static double futureAngleFromTargetRobotRelative;
