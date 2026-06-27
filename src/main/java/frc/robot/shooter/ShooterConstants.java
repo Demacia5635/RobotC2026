@@ -83,8 +83,8 @@ public class ShooterConstants {
         public static final double MIN_FEEDER_VELOCITY = 0;
     }
     public enum ShooterStates {
-        getRaedy,
-        outoPoint,
+        GET_READY,
+        AUTO_POINT,
         SHOOTER,
         IDLE,
         TEST,

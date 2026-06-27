@@ -24,7 +24,7 @@ public class IntakeConstants {
             .withCurrent(ROLLER_CURRENT_LIMIT);
 
     // constants for intake deploy motor
-    public static final double INTAKE_DEPLOY_OFFSET = Math.toRadians(-31.05);
+    public static final double INTAKE_DEPLOY_OFFSET = Math.toRadians(-33);
     public static final int INTAKE_DEPLOY_ID = 50;
     public static final String INTAKE_DEPLOY_NAME = "Intake Deploy Motor";
     public static final boolean INTAKE_DEPLOY_INVERTED = false;
@@ -34,9 +34,9 @@ public class IntakeConstants {
     public static final double MAX_VELOCITY = 2;// 3
     public static final double MAX_ACCELERATION = 4;// 15
     public static final double MAX_JERK = 35;// 150
-    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-31);
+    public static final double DEPLOY_CLOSED_ANGLE = Math.toRadians(-32);
     public static final double DEPLOY_OPEN_ANGLE = Math.toRadians(90);
-    public static final double DEPLOY_MIDDLE = Math.toRadians(40);
+    public static final double DEPLOY_MIDDLE = Math.toRadians(20);
     public static final double ALLOWED_ERROR = Math.toRadians(7);
     public static final double OPEN_POWER = 0.05;
     public static final double kp = 0.6;

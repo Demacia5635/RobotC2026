@@ -1,5 +1,6 @@
 package frc.robot.led;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +13,7 @@ import frc.demacia.utils.leds.LedStrip;
 
 import frc.robot.RobotCommon;
 import frc.robot.RobotContainer;
+import frc.robot.intake.subsystems.IntakeSubsystem;
 import frc.robot.stateManger.StateManger;
 import frc.robot.stateManger.StateManger.Shifts;
 import frc.robot.stateManger.utils.stateMangerUtils;
@@ -113,10 +115,30 @@ public class RobotCLedStrip extends LedStrip {
     public void periodic() {
         super.periodic();
 
-        setColor(Color.kPurple);
+        // Default color based on current shift
+        switch (StateManger.getCurrenTShifts()) {
+            case Active,Disable,Endgame,Transition:
+                setColor(Color.kPurple); // Our hub is active → Purple
+                break;
+            case Inactive:
+                setColor(Color.kRed); // Their shift → Orange
+                break;
+            default:
+                setColor(Color.kBlack); // Off otherwise
+                break;
+        }
 
+        // Transition blink: purple blink 5 seconds before our shift starts
         if (transitionTimer.isRunning()) {
             setBlink(Color.kPurple);
+        }
+
+        if(RobotState.isDisabled() && IntakeSubsystem.getInstance().isCalibrated()&& !IntakeSubsystem.getInstance().isIntakeDeployClosed()){
+            setBlink(Color.kGreen);
+        }
+        
+        if(RobotState.isDisabled() && IntakeSubsystem.getInstance().isIntakeDeployClosed()){
+            setColor(Color.kGreen);
         }
 
         if (transitionTimer.hasElapsed(TIME_TO_BLINK / 2)) {
@@ -124,8 +146,9 @@ public class RobotCLedStrip extends LedStrip {
             transitionTimer.reset();
         }
 
+        // Our shift starting soon: yellow blink 5 seconds before switching to their shift
         if (ourShiftTimer.isRunning()) {
-            setBlink(Color.kDarkGreen);
+            setBlink(Color.kYellow);
         }
 
         if (ourShiftTimer.hasElapsed(TIME_TO_BLINK / 2)) {
@@ -133,8 +156,9 @@ public class RobotCLedStrip extends LedStrip {
             ourShiftTimer.reset();
         }
 
+        // Their shift starting soon: already handled by default Orange above
         if (theirShiftTimer.isRunning()) {
-            setBlink(Color.kDarkBlue);
+            setBlink(Color.kOrange);
         }
 
         if (theirShiftTimer.hasElapsed(TIME_TO_BLINK / 2)) {
@@ -143,7 +167,7 @@ public class RobotCLedStrip extends LedStrip {
         }
 
         if (endGameTimer.isRunning()) {
-            setBlink(Color.kYellow);
+            setBlink(Color.kWhite);
         }
 
         if (endGameTimer.hasElapsed(TIME_TO_BLINK / 2)) {

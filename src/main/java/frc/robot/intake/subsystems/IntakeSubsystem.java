@@ -51,6 +51,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }).ignoringDisable(true));
 
     SmartDashboard.putData("Intake Calibration Command", new CalibrationCommandIntake(this));
+    SmartDashboard.putData("resetIntack",new InstantCommand(() -> {
+      setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
+      LogManager.log("yes");
+      setCalibrated();
+    }).ignoringDisable(true));
     SmartDashboard.putData(this);
      addNT();
   }

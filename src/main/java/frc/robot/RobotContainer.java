@@ -17,18 +17,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.demacia.utils.leds.LedManager;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon.StartingPlaces;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
+import frc.robot.led.RobotCLedStrip;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.commands.ShinuaCommand;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
@@ -36,6 +41,8 @@ import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.stateManger.StateManger;
+import frc.robot.stateManger.StateManger.Shifts;
+import frc.robot.stateManger.utils.stateMangerUtils;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
@@ -59,70 +66,86 @@ public class RobotContainer implements Sendable {
   public static ShinuaSubsystem shinua;
   public static IntakeSubsystem intake;
   public static IntakeCommand intakeCommand;
-  public static CommandController controller = new CommandController(0, ControllerType.kPS5); 
+  public static CommandController controller = new CommandController(0, ControllerType.kPS5);
   public static Shooter shooter;
   public static Turret turret;
   public static DriveCommand driveCommand;
   public static Timer autoTimer;
   public static Timer timerToClose;
   public static boolean hasAutoClosed;
-
+  public static boolean hasAutoClosed2;
   public static SendableChooser<Command> autoChooser;
-  
-  public static boolean forcedIsReady = false;
-  
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-      SmartDashboard.putData("RC", this);
-      new StateManger();
-      // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
-      Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
-      intake = IntakeSubsystem.getInstance();
-      shooter = Shooter.getInstance();
-      shinua = ShinuaSubsystem.getInstance();
-      // turret = Turret.getInstance();
-      autoChooser = new SendableChooser<>();
-      driveCommand = new DriveCommand(Chassis.getInstance(), controller);
-      SmartDashboard.putData("atou chooser", autoChooser);
-      SmartDashboard.putData("reset Shift", new InstantCommand(() -> StateManger.resetShift()).ignoringDisable(true));
-      autoTimer = new Timer();
-      timerToClose = new Timer();
+  public static LedManager ledManager;
+  private static RobotCLedStrip mainLed;
 
-      // Configure the trigger bindings
-      configureBindings();
-      setUserButton();
-      setDefaultCommands();
-      setController();
-    }
-  
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be
-     * created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-     * an arbitrary
-     * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-     * {@link
-     * CommandXboxController
-     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or
-     * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-     * joysticks}.
-     */
-  
-  
-    private void configureBindings() {
-      // controller.povUp().onTrue(new InstantCommand(()->  shooter.setShooterState(ShooterStates.towPoint)));
-      // controller.povRight().onTrue(new InstantCommand(()-> shooter.setShooterState(ShooterStates.onePoint)));
-      // controller.povLeft().onTrue(new InstantCommand(()-> shooter.setShooterState(ShooterStates.thrrePoint)));
-      
-    } 
-  
-    private void setUserButton(){
-      // new Trigger(()-> !DriverStation.isEnabled() && RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake, shinua, turret, shooter, Chassis.getInstance()));
-    }
+  public static boolean forcedIsReady = false;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  public RobotContainer() {
+    SmartDashboard.putData("RC", this);
+    new StateManger();
+    // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
+    Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
+    intake = IntakeSubsystem.getInstance();
+    shooter = Shooter.getInstance();
+    shinua = ShinuaSubsystem.getInstance();
+    // turret = Turret.getInstance();
+    autoChooser = new SendableChooser<>();
+    driveCommand = new DriveCommand(Chassis.getInstance(), controller);
+    SmartDashboard.putData("atou chooser", autoChooser);
+    SmartDashboard.putData("reset Shift", new InstantCommand(() -> StateManger.resetShift()).ignoringDisable(true));
+    autoTimer = new Timer();
+    timerToClose = new Timer();
+    // Configure the trigger bindings
+
+    ledManager = new LedManager();
+    mainLed = new RobotCLedStrip(ledManager);
+    mainLed.startShift();
+
+    configureBindings();
+    setUserButton();
+    setDefaultCommands();
+    setController();
+  }
+
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
+   * predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
+   */
+
+  private void configureBindings() {
+    SmartDashboard.putData("state defance", new InstantCommand(() -> {
+      intake.setState(IntakeState.CLOSED);
+      intake.setNeutralModeIntakeDeploy(true);
+    }));
+    Shifts[] lastShift = { StateManger.getCurrenTShifts() };
+    new Trigger(() -> {
+      Shifts current = StateManger.getCurrenTShifts();
+      if (current != lastShift[0]) {
+        lastShift[0] = current;
+        return true;
+      }
+      return false;
+    }).onTrue(new InstantCommand(() -> mainLed.startShift()).ignoringDisable(true));
+  }
+
+  private void setUserButton() {
+    // new Trigger(()-> !DriverStation.isEnabled() &&
+    // RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake,
+    // shinua, turret, shooter, Chassis.getInstance()));
+  }
 
   private void setDefaultCommands() {
     Chassis.getInstance().setDefaultCommand(driveCommand);
@@ -131,31 +154,68 @@ public class RobotContainer implements Sendable {
     shooter.setDefaultCommand(new ShooterCommand());
     // turret.setDefaultCommand(new TurretCommand());
 
-    // shinua.setDefaultCommand(new frc.robot.shinua.commands.ControllerCommand(controller));
-    // intake.setDefaultCommand(new frc.robot.intake.commands.ControllerCommand(controller));
-    // shooter.setDefaultCommand(new frc.robot.shooter.commands.commandContorller(controller));
-    // turret.setDefaultCommand(new frc.robot.turret.commands.ControllerCommand(controller));
+    // shinua.setDefaultCommand(new
+    // frc.robot.shinua.commands.ControllerCommand(controller));
+    // intake.setDefaultCommand(new
+    // frc.robot.intake.commands.ControllerCommand(controller));
+    // shooter.setDefaultCommand(new
+    // frc.robot.shooter.commands.commandContorller(controller));
+    // turret.setDefaultCommand(new
+    // frc.robot.turret.commands.ControllerCommand(controller));
   }
 
-  private void setController(){
-  //  controller.downButton().onTrue(new InstantCommand(()->{
-  //       if((RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_RED_X < Chassis.getInstance().getPose().getX()) || (!RobotCommon.isRed() && Field.Zones.ROBOT_STARTING_LINE_BLUE_X > Chassis.getInstance().getPose().getX())) {
-  //         intake.setState(IntakeState.CLOSED); shooter.setShooterState(ShooterStates.SHOOTER); turret.setState(TurretStates.IDLE);
-  //       } else{
-  //         intake.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.DELIVERY); turret.setState(TurretStates.IDLE);
-  //       }
-  
-  //       shinua.setState(ShinuaState.SHINUA_ON);}));
-    controller.rightButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.INTAKING); shooter.setShooterState(ShooterStates.IDLE);})); //
-    controller.leftButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.MIDDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
-    controller.upButton().onTrue(new InstantCommand(()->{intake.setState(IntakeState.EJECTING); shinua.setState(ShinuaState.EJECTING); shooter.setShooterState(ShooterStates.IDLE);}));
-    controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.DEPLOYED);shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
-    controller.povUp().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.onePoint);}));
-    controller.povDown().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.towPoint);}));
-    controller.povRight().onTrue(new InstantCommand(()->{intake.setState(IntakeState.SHOOTING); shinua.setState(ShinuaState.SHINUA_ON); shooter.setShooterState(ShooterStates.thrrePoint);}));
-    controller.povLeft().onTrue(new InstantCommand(()->{forcedIsReady = !forcedIsReady;}));
-    controller.leftBumper().onTrue(new InstantCommand(()-> driveCommand.precisionMode =  !driveCommand.precisionMode));
-    controller.rightBumper().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.getRaedy);}));
+  private void setController() {
+    controller.rightButton().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.INTAKING);
+      shooter.setShooterState(ShooterStates.IDLE);
+      shinua.setState(ShinuaState.NO_INDEXER);
+      intake.setNeutralModeIntakeDeploy(false);
+    })); //
+    controller.leftButton().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.MIDDLE);
+      shinua.setState(ShinuaState.ONLY_ROLLERS);
+      shooter.setShooterState(ShooterStates.IDLE);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.upButton().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.EJECTING);
+      shinua.setState(ShinuaState.EJECTING);
+      shooter.setShooterState(ShooterStates.IDLE);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.downButton().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.INTAKING);
+      shinua.setState(ShinuaState.SHINUA_ON);
+      shooter.setShooterState(ShooterStates.DELIVERY);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.povUp().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.SHOOTING);
+      shinua.setState(ShinuaState.SHINUA_ON);
+      shooter.setShooterState(ShooterStates.onePoint);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.povDown().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.SHOOTING);
+      shinua.setState(ShinuaState.SHINUA_ON);
+      shooter.setShooterState(ShooterStates.towPoint);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.povRight().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.SHOOTING);
+      shinua.setState(ShinuaState.SHINUA_ON);
+      shooter.setShooterState(ShooterStates.thrrePoint);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.leftBumper().onTrue(new InstantCommand(() -> driveCommand.precisionMode = !driveCommand.precisionMode));
+    controller.rightBumper().onTrue(new InstantCommand(() -> {
+      shooter.setShooterState(ShooterStates.GET_READY);
+      intake.setNeutralModeIntakeDeploy(false);
+    }));
+    controller.povLeft().onTrue(new InstantCommand(() -> {
+      intake.setState(IntakeState.CLOSED_SHOOTING);
+      shinua.setState(ShinuaState.ONLY_ROLLERS);
+    }));
   }
 
   public static void setIsRed(boolean isRed) {
@@ -174,75 +234,185 @@ public class RobotContainer implements Sendable {
     }
   }
 
+  public static boolean getIsForcedReady() {
+    return forcedIsReady;
+  }
+
+  public static void setForcedReady(boolean newForcedIsReady) {
+    forcedIsReady = newForcedIsReady;
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("is comp", () -> RobotCommon.isComp, (isComp) -> RobotCommon.isComp = isComp);
     builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
-    builder.addDoubleProperty("Time Left", () -> StateManger.getTheTimeLeft(), null);
+    builder.addBooleanProperty("is force ready", () -> getIsForcedReady(),
+        (forcedIsReady) -> setForcedReady(forcedIsReady));
+    builder.addDoubleProperty("Time Left", () -> StateManger.getTimeLeft(), null);
+    builder.addDoubleProperty("shift time left", () -> StateManger.getTheTimeLeft(), null);
     builder.addBooleanProperty("is our hub", () -> StateManger.isOurHub(), null);
+    builder.addStringProperty("get current shift", () -> StateManger.getCurrenTShifts().toString(), null);
   }
+
+  private void resetPreAuto() {
+    Chassis.getInstance().setYaw(
+        RobotCommon.isRed()
+            ? (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (Rotation2d.kZero)
+                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+                    ? new Rotation2d(Math.toRadians(90))
+                    : new Rotation2d(Math.toRadians(-90))))
+            : (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (Rotation2d.kPi)
+                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+                    ? new Rotation2d(Math.toRadians(-90))
+                    : new Rotation2d(Math.toRadians(90)))));
+    shooter.restHoodMotor();
+  }
+
+  private void resetPreAutoTurret90Deg() {
+    Chassis.getInstance().setYaw(
+        RobotCommon.isRed()
+            ? (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(90)))
+                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+                    ? Rotation2d.kPi
+                    : Rotation2d.kZero))
+            : (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(-90)))
+                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+                    ? Rotation2d.kZero
+                    : Rotation2d.kPi)));
+    shooter.restHoodMotor();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    autoTimer.reset();
-    timerToClose.reset();
-    hasAutoClosed = false;
-    // An example command will be run in autonomouP
-    return new RunCommand(()->{
-      if (autoTimer.hasElapsed(1.05)){
-        LogManager.log("333333");
-        autoTimer.stop();
-        Chassis.getInstance().setVelocities(new ChassisSpeeds());
+    // autoTimer.reset();
+    // timerToClose.reset();
+    // hasAutoClosed = false;
+    // hasAutoClosed2 = false;
 
-        shooter.setShooterState(
-          RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? 
-            ShooterStates.onePoint : 
-            ShooterStates.thrrePoint
-        );  
-
-        if (timerToClose.hasElapsed(3)){
-          timerToClose.stop();
-
-          if (intake.getIntakeDeployAngle() < Math.toRadians(-20)){
-            intake.setState(IntakeState.SHOOTING);
-            shinua.setState(ShinuaState.SHINUA_ON);
-            hasAutoClosed = true;
-          } else if (hasAutoClosed == false){
-            shinua.setState(ShinuaState.SHINUA_OFF);
-            intake.setState(IntakeState.CLOSED_SHOOTING);
-          }
-        } else if (!timerToClose.isRunning()){
-          timerToClose.restart();
-        } else {
-          intake.setState(IntakeState.SHOOTING); 
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> {
+          resetPreAuto();
+        }),
+        new InstantCommand(() -> {
+          shooter.setShooterState(ShooterStates.GET_READY);
+          shinua.setState(ShinuaState.ONLY_ROLLERS);
+        }), new RunCommand(() -> {
+          Chassis.getInstance().setRobotRelVelocities(new ChassisSpeeds(0.5, 0, 0));
+        }, Chassis.getInstance()).withTimeout(1.05),
+        new InstantCommand(() -> Chassis.getInstance().stop()),
+        new InstantCommand(() -> {
+          shooter.setShooterState(ShooterStates.onePoint);
           shinua.setState(ShinuaState.SHINUA_ON);
-        }
-      } else if (!autoTimer.isRunning()) {
-        LogManager.log("11111111 start");
-        Chassis.getInstance().setYaw(
-        RobotCommon.isRed() ? 
-          (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
-            Rotation2d.kZero : 
-            RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
-              new Rotation2d(Math.toRadians(90)) : 
-              new Rotation2d(Math.toRadians(-90))) :
-          (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ?
-            Rotation2d.kPi : 
-            RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT) ? 
-              new Rotation2d(Math.toRadians(-90)) : 
-              new Rotation2d(Math.toRadians(90))));
-        shooter.restHoodMotor();
-      
-        autoTimer.restart();
-      } else {
-        LogManager.log("22222222 move");
-        
-        shooter.setShooterState(ShooterStates.getRaedy);
-        Chassis.getInstance().setVelocities(new ChassisSpeeds(0.5,0,0));
-      }
-    });
+          intake.setState(IntakeState.SHOOTING);
+        }),
+        new WaitCommand(3).andThen(new InstantCommand(() -> {
+          shinua.setState(ShinuaState.ONLY_ROLLERS);
+          intake.setState(IntakeState.CLOSED_SHOOTING);
+        })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
+          shinua.setState(ShinuaState.SHINUA_ON);
+          intake.setState(IntakeState.SHOOTING);
+        })),
+        new WaitCommand(3).andThen(new InstantCommand(() -> {
+          shinua.setState(ShinuaState.ONLY_ROLLERS);
+          intake.setState(IntakeState.CLOSED_SHOOTING);
+        })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
+          shinua.setState(ShinuaState.SHINUA_ON);
+          intake.setState(IntakeState.SHOOTING);
+        })));
+
+
+
+        // return new SequentialCommandGroup(
+        // new InstantCommand(() -> {
+        //   resetPreAutoTurret90Deg();
+        // }),
+        // new InstantCommand(() -> {
+        //   shooter.setShooterState(ShooterStates.GET_READY);
+        //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+        // }), new RunCommand(() -> {
+        //   Chassis.getInstance().setRobotRelVelocities(new ChassisSpeeds(0, 0.5, 0));
+        // }, Chassis.getInstance()).withTimeout(1.05),
+        // new InstantCommand(() -> Chassis.getInstance().stop()),
+        // new InstantCommand(() -> {
+        //   shooter.setShooterState(ShooterStates.onePoint);
+        //   shinua.setState(ShinuaState.SHINUA_ON);
+        //   intake.setState(IntakeState.SHOOTING);
+        // }),
+        // new WaitCommand(3).andThen(new InstantCommand(() -> {
+        //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+        //   intake.setState(IntakeState.CLOSED_SHOOTING);
+        // })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
+        //   shinua.setState(ShinuaState.SHINUA_ON);
+        //   intake.setState(IntakeState.SHOOTING);
+        // })),
+        // new WaitCommand(3).andThen(new InstantCommand(() -> {
+        //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+        //   intake.setState(IntakeState.CLOSED_SHOOTING);
+        // })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
+        //   shinua.setState(ShinuaState.SHINUA_ON);
+        //   intake.setState(IntakeState.SHOOTING);
+        // })));
+
+    // An example command will be run in autonomouP
+    // return new RunCommand(() -> {
+    //   if (autoTimer.hasElapsed(1.05)) {
+    //     autoTimer.stop();
+    //     Chassis.getInstance().setVelocities(new ChassisSpeeds());
+
+    //     shooter.setShooterState(
+    //         RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? ShooterStates.onePoint
+    //             : ShooterStates.thrrePoint);
+
+    //     if (timerToClose.hasElapsed(6)) {
+    //       timerToClose.stop();
+
+    //       if (intake.getIntakeDeployAngle() < Math.toRadians(-24)) {
+    //         intake.setState(IntakeState.SHOOTING);
+    //         shinua.setState(ShinuaState.SHINUA_ON);
+    //         hasAutoClosed2 = true;
+    //       } else if (!hasAutoClosed2) {
+    //         shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //         intake.setState(IntakeState.CLOSED_SHOOTING);
+    //       }
+    //     } else if (timerToClose.hasElapsed(3)) {
+    //       if (intake.getIntakeDeployAngle() < Math.toRadians(-24)) {
+    //         intake.setState(IntakeState.SHOOTING);
+    //         shinua.setState(ShinuaState.SHINUA_ON);
+    //         hasAutoClosed = true;
+    //       } else if (!hasAutoClosed) {
+    //         shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //         intake.setState(IntakeState.CLOSED_SHOOTING);
+    //       }
+    //     } else if (!timerToClose.isRunning()) {
+    //       timerToClose.restart();
+    //     } else {
+    //       intake.setState(IntakeState.SHOOTING);
+    //       shinua.setState(ShinuaState.SHINUA_ON);
+    //     }
+    //   } else if (!autoTimer.isRunning()) {
+    //     Chassis.getInstance().setYaw(
+    //         RobotCommon.isRed()
+    //             ? (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (Rotation2d.kZero)
+    //                 : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+    //                     ? new Rotation2d(Math.toRadians(90))
+    //                     : new Rotation2d(Math.toRadians(-90))))
+    //             : (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (Rotation2d.kPi)
+    //                 : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+    //                     ? new Rotation2d(Math.toRadians(-90))
+    //                     : new Rotation2d(Math.toRadians(90)))));
+    //     shooter.restHoodMotor();
+
+    //     autoTimer.restart();
+    //   } else {
+    //     shooter.setShooterState(ShooterStates.GET_READY);
+    //     shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //     if (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB))
+    //       Chassis.getInstance().setVelocities(new ChassisSpeeds(0.5, 0, 0));
+    //   }
+    // }
   }
 }

@@ -106,10 +106,10 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     switch (shooter.getShooterState()) {
-      case getRaedy:
+      case GET_READY:
         flywheelVelocity = 9.0;
         break;
-      case outoPoint:
+      case AUTO_POINT:
         flywheelVelocity = 8.2;
         hoodPosition = Math.toRadians(12.7);
         feederPower = 0.3;
@@ -151,11 +151,11 @@ public class ShooterCommand extends Command {
         feederPower = testingFeederPower;
         break;
       case DELIVERY:
-        testingFeederPower = FeederConstants.MAX_FEEDER_POWER;
-        shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
-        shooterToTarget = shooterToTarget.minus(RobotCommon.getRobotFucerPose().getTranslation());
-        hoodPosition = Math.toRadians(45);
-        flywheelVelocity = Math.sqrt(shooterToTarget.getNorm()*9.81);
+        // testingFeederPower = FeederConstants.MAX_FEEDER_POWER;
+        // shooterToTarget = RobotCommon.getDelveryPose().getTranslation();
+        // shooterToTarget = shooterToTarget.minus(RobotCommon.getRobotFucerPose().getTranslation());
+        hoodPosition = HoodConstants.MAX_POSITION;
+        flywheelVelocity = 12;
         feederPower = 1;
         break;
       case TRANCH:

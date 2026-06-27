@@ -185,7 +185,7 @@ public class StateManger extends SubsystemBase{
             StateManger.shiftNum = 1;
             StateManger.shiftTimer.reset();
             shiftTimer.start();
-        } else if (RobotCommon.getShift().equals(Shifts.Transition) && StateManger.shiftTimer.hasElapsed(10)) {
+        } else if (RobotCommon.getShift().equals(Shifts.Transition) && StateManger.shiftTimer.hasElapsed(15)) {
             RobotCommon.setShift(isRedWonAuto && RobotCommon.isRed() ? Shifts.Inactive : Shifts.Active);
             StateManger.shiftTimer.reset();
             StateManger.shiftNum = 2;
@@ -229,7 +229,7 @@ public class StateManger extends SubsystemBase{
             case 0:
                 return 20 - StateManger.shiftTimer.get();
             case 1:
-                return 10 - StateManger.shiftTimer.get();
+                return 15 - StateManger.shiftTimer.get();
             case 6:
                 return 30 - StateManger.shiftTimer.get();
 
