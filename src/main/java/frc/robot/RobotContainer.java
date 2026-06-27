@@ -169,7 +169,7 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.INTAKING);
       shooter.setShooterState(ShooterStates.IDLE);
       shinua.setState(ShinuaState.NO_INDEXER);
-      intake.setNeutralModeIntakeDeploy(false);
+      intake.setNeutralModeIntakeDeploy(true);
     })); //
     controller.leftButton().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.MIDDLE);
