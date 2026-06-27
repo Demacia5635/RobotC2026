@@ -63,16 +63,16 @@ public class DriveCommand extends Command {
     
     // Calculate r]otation from trigger axes
     double rot = Math.abs(controller.getRightX()) < 0.01 ? 
-    controller.getRightTrigger() - controller.getLeftTrigger() : 
+    0 : 
     controller.getRightX();
     
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
       velRot = Math.pow(rot, 2) * chassis.getMaxRotationalVelocity() * Math.signum(rot);
     if(precisionMode){
-        velX /= 3;
-        velY /= 3;
-        velRot /= 3;
+        velX /= 4;
+        velY /= 4;
+        velRot /= 4;
     }
 
     speeds = new ChassisSpeeds(velX, velY, velRot);

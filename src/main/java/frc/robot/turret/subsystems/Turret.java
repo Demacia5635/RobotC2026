@@ -3,8 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.turret.subsystems;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
+import frc.robot.RobotContainer;
+import frc.robot.intake.IntakeConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
@@ -26,6 +29,7 @@ public class Turret extends SubsystemBase {
   // private LimitSwitch minLimitSwitch;
   private TurretStates turretStates = TurretStates.IDLE;
   private boolean isCalibrated;
+  private double deliveryAngle;
   /** Creates a new Turret. */
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
@@ -34,6 +38,8 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
     SmartDashboard.putData("turret manual reset - 0", new InstantCommand(()->{setCaliberation(true); setPositionByLimit();}).ignoringDisable(true));
     SmartDashboard.putData("turret",this);
+    turretMotor.setEncoderPosition(Math.toRadians(-180));
+    deliveryAngle = -180;
     addNT();
   }
 
@@ -82,10 +88,8 @@ public class Turret extends SubsystemBase {
   }
 
   public void setTurretMotion(double position){
-    if(getIsCaliberation()){ //if not stop
-      position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
-      turretMotor.setMotion(Math.toRadians(position), 1);
-    }
+    position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
+    turretMotor.setMotion(Math.toRadians(position));
   }
 
   public void setPositionByLimit(){
@@ -121,10 +125,30 @@ public class Turret extends SubsystemBase {
     isCalibrated = true;
   }
 
+  public double getDeliveryAngle() {
+    return deliveryAngle;
+  }
+
+  public void setDeliveryAngle(double deliveryAngle) {
+    this.deliveryAngle = deliveryAngle;
+  }
+
+  public void add90ToDeliveryAngle() {
+    if (getDeliveryAngle() < -90){
+      setDeliveryAngle(getDeliveryAngle() + 90);
+      LogManager.log("-90");
+    }
+  }
+
+  public void subtract90ToDeliveryAngle() {
+    if (getDeliveryAngle() > -270){
+      setDeliveryAngle(getDeliveryAngle() - 90);
+      LogManager.log("-270");
+    }
+  }
+
   @Override
   public void periodic() {// like shooter, may not work couse not neer the other code
-      if (turretMotor.getCurrentCurrent() > TurretConstants.MAX_CURRENT && Math.abs(turretMotor.getCurrentVelocity()) < TurretConstants.MIN_VELOCITY){
-        stopMotor();
-      }
+
   }
 }

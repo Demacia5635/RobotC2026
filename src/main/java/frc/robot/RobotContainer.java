@@ -91,7 +91,7 @@ public class RobotContainer implements Sendable {
     intake = IntakeSubsystem.getInstance();
     shooter = Shooter.getInstance();
     shinua = ShinuaSubsystem.getInstance();
-    // turret = Turret.getInstance();
+    turret = Turret.getInstance();
     autoChooser = new SendableChooser<>();
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     SmartDashboard.putData("atou chooser", autoChooser);
@@ -152,7 +152,7 @@ public class RobotContainer implements Sendable {
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    // turret.setDefaultCommand(new TurretCommand());
+    turret.setDefaultCommand(new TurretCommand());
 
     // shinua.setDefaultCommand(new
     // frc.robot.shinua.commands.ControllerCommand(controller));
@@ -216,6 +216,12 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.CLOSED_SHOOTING);
       shinua.setState(ShinuaState.ONLY_ROLLERS);
     }));
+    controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
+      turret.add90ToDeliveryAngle();
+    }));
+    controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
+      turret.subtract90ToDeliveryAngle();
+    }));
   }
 
   public static void setIsRed(boolean isRed) {
@@ -271,14 +277,14 @@ public class RobotContainer implements Sendable {
   private void resetPreAutoTurret90Deg() {
     Chassis.getInstance().setYaw(
         RobotCommon.isRed()
-            ? (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(90)))
-                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
-                    ? Rotation2d.kPi
-                    : Rotation2d.kZero))
-            : (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(-90)))
+            ? (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(-90)))
                 : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
                     ? Rotation2d.kZero
-                    : Rotation2d.kPi)));
+                    : Rotation2d.kPi))
+            : (RobotCommon.getStartingPlace().equals(StartingPlaces.HUB) ? (new Rotation2d(Math.toRadians(90)))
+                : (RobotCommon.getStartingPlace().equals(StartingPlaces.TRANCH_LEFT)
+                    ? Rotation2d.kPi
+                    : Rotation2d.kZero)));
     shooter.restHoodMotor();
   }
 
@@ -300,28 +306,42 @@ public class RobotContainer implements Sendable {
         new InstantCommand(() -> {
           shooter.setShooterState(ShooterStates.GET_READY);
           shinua.setState(ShinuaState.ONLY_ROLLERS);
-        }), new RunCommand(() -> {
+        }), 
+
+        new RunCommand(() -> {
           Chassis.getInstance().setRobotRelVelocities(new ChassisSpeeds(0.5, 0, 0));
-        }, Chassis.getInstance()).withTimeout(1.05),
+        }, 
+        Chassis.getInstance())
+        .withTimeout(1.05),
+
         new InstantCommand(() -> Chassis.getInstance().stop()),
         new InstantCommand(() -> {
           shooter.setShooterState(ShooterStates.onePoint);
           shinua.setState(ShinuaState.SHINUA_ON);
           intake.setState(IntakeState.SHOOTING);
         }),
-        new WaitCommand(3).andThen(new InstantCommand(() -> {
+
+        new WaitCommand(3).andThen(
+          new InstantCommand(() -> {
           shinua.setState(ShinuaState.ONLY_ROLLERS);
           intake.setState(IntakeState.CLOSED_SHOOTING);
-        })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
-          shinua.setState(ShinuaState.SHINUA_ON);
-          intake.setState(IntakeState.SHOOTING);
         })),
-        new WaitCommand(3).andThen(new InstantCommand(() -> {
-          shinua.setState(ShinuaState.ONLY_ROLLERS);
-          intake.setState(IntakeState.CLOSED_SHOOTING);
-        })), new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(new InstantCommand(()->{
-          shinua.setState(ShinuaState.SHINUA_ON);
-          intake.setState(IntakeState.SHOOTING);
+
+        new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(
+          new InstantCommand(()->{
+            shinua.setState(ShinuaState.SHINUA_ON);
+            intake.setState(IntakeState.SHOOTING);
+        })),
+
+        new WaitCommand(3).andThen(
+          new InstantCommand(() -> {
+            shinua.setState(ShinuaState.ONLY_ROLLERS);
+            intake.setState(IntakeState.CLOSED_SHOOTING);
+        })),
+        new WaitUntilCommand(() -> intake.getIntakeDeployAngle() < Math.toRadians(-25)).andThen(
+          new InstantCommand(()->{
+            shinua.setState(ShinuaState.SHINUA_ON);
+            intake.setState(IntakeState.SHOOTING);
         })));
 
 

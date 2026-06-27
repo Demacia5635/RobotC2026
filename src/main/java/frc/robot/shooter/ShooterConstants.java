@@ -92,7 +92,7 @@ public class ShooterConstants {
         TRANCH,
         onePoint,
         towPoint,
-        thrrePoint
+        thrrePoint,
     }
 
     public static final Translation2d DELIVERY_RED_LEFT = new Translation2d(Field.Zones.ROBOT_STARTING_LINE_RED_X + Field.Zones.CENTER_LINE_X/4, Field.FieldDimensions.Y_CENTER/2);

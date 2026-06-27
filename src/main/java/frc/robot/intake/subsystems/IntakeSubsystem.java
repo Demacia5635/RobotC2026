@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
     instance = this;
     rollerMotor = new TalonFXMotor(IntakeConstants.ROLLER_CONFIG);
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
-    intakeDeployLimitSwitch = new DigitalInput(7);
+    intakeDeployLimitSwitch = new DigitalInput(6);
     state = IntakeState.IDLE;
     SmartDashboard.putData("reset encoder intake deploy",
         new InstantCommand(() -> {resetEncoderIntakeDeploy(); setCalibrated();}).ignoringDisable(true));
@@ -175,7 +175,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     if (!isCalibrated && isIntakeDeployClosed()){
       setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
-      LogManager.log("yes");
+      LogManager.log("intake cal");
       setCalibrated();
     }
     // This method will be called once per scheduler run

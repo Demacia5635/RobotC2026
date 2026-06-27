@@ -37,32 +37,35 @@ public class TurretCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (turret.getTurretState()) {
-      case IDLE:
-        turret.stopMotor();
-      break;
-      case TEST:
-        targetAngle = testAngle;
-        turret.setTurretMotion(targetAngle);
-        break;
-      case SHOOTING:
-        double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
-        targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees();
-        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
-        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
-        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
-        break;
-      case DELIVERY:
-        double shooterToDelivery = RobotCommon.getDeliveryPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
-        targetAngle = shooterToDelivery - Chassis.getInstance().getGyroAngle().getDegrees();
-        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
-        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
-        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
-        break;
-      case ONEPOINT:
-        turret.setTurretMotion(0);
-        break;
-    }
+    LogManager.log(turret.getDeliveryAngle());
+    turret.setTurretMotion(turret.getDeliveryAngle());
+    // switch (turret.getTurretState()) {
+    //   case IDLE:
+    //     turret.stopMotor();
+    //   break;
+    //   case TEST:
+    //     targetAngle = testAngle;
+    //     turret.setTurretMotion(targetAngle);
+    //     break;
+    //   case SHOOTING:
+    //     double shooterToHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
+    //     targetAngle = shooterToHub-Chassis.getInstance().getGyroAngle().getDegrees();
+    //     turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+    //     TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+    //     TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+    //     break;
+    //   case DELIVERY:
+    //     // double shooterToDelivery = RobotCommon.getDeliveryPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle()))).getAngle().getDegrees()-(RobotCommon.isRed()?0:180);
+    //     // targetAngle = shooterToDelivery - Chassis.getInstance().getGyroAngle().getDegrees();
+    //     // turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(targetAngle, TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+    //     // TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+    //     // TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+        
+    //     break;
+    //   case ONEPOINT:
+    //     turret.setTurretMotion(0);
+    //     break;
+    // }
   }
 
   // Called once the command ends or is interrupted.
