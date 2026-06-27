@@ -187,7 +187,7 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.INTAKING);
       shinua.setState(ShinuaState.SHINUA_ON);
       shooter.setShooterState(ShooterStates.DELIVERY);
-      intake.setNeutralModeIntakeDeploy(false);
+      intake.setNeutralModeIntakeDeploy(true);
     }));
     controller.povUp().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.SHOOTING);
