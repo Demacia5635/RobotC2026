@@ -71,7 +71,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getAngleDeg(){
-    return Math.toDegrees(turretMotor.getCurrentAngle()>=0? turretMotor.getCurrentAngle(): turretMotor.getCurrentAngle()+2*Math.PI);
+    return Math.toDegrees(turretMotor.getCurrentAngle());
   }
 
   public void setNatrelMode(boolean isBrake){
