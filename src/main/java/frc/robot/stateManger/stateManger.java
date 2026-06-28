@@ -37,7 +37,8 @@ public class StateManger extends SubsystemBase{
     }
 
     public static double getTimeLeft(){
-        return DriverStation.getMatchTime();
+        double time = DriverStation.getMatchTime();
+        return time;
     }
 
     public static Boolean isRedWonAtou(){
