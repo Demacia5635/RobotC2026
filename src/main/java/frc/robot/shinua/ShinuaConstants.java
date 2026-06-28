@@ -59,7 +59,7 @@ public class ShinuaConstants {
         EJECTING(-1.5, 0.3),
         NO_INDEXER(-1.5 , 0.3),
         TESTING(0, 0), 
-        ONLY_ROLLERS(-0.2, 0);
+        ONLY_ROLLERS(-0.4, 0);
 
         public double velocityRollers;
         public double dutyMecanum;

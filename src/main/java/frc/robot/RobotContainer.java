@@ -142,9 +142,9 @@ public class RobotContainer implements Sendable {
   }
 
   private void setUserButton() {
-    // new Trigger(()-> !DriverStation.isEnabled() &&
-    // RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake,
-    // shinua, turret, shooter, Chassis.getInstance()));
+    new Trigger(()-> !DriverStation.isEnabled() &&
+    RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake,
+    shinua, turret, shooter, Chassis.getInstance()));
   }
 
   private void setDefaultCommands() {

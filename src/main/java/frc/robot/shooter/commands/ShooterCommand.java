@@ -112,12 +112,12 @@ public class ShooterCommand extends Command {
       case AUTO_POINT:
         flywheelVelocity = 8.2;
         hoodPosition = Math.toRadians(12.7);
-        feederPower = 0.3;
+        feederPower = 0.4;
       break;
       case onePoint:
           flywheelVelocity = 9.2;
           hoodPosition = Math.toRadians(26);
-          feederPower = 0.6;
+          feederPower = 0.8;
         break;
       case towPoint:
         flywheelVelocity = 10;
@@ -126,7 +126,7 @@ public class ShooterCommand extends Command {
         //216
         break;
       case thrrePoint:
-        flywheelVelocity = 10.4;
+        flywheelVelocity = 10.6;
         hoodPosition = Math.toRadians(50);
         feederPower = 0.8;
         //243
