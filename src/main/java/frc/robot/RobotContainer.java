@@ -69,7 +69,7 @@ public class RobotContainer implements Sendable {
   public static IntakeCommand intakeCommand;
   public static CommandController controller = new CommandController(0, ControllerType.kPS5);
   public static Shooter shooter;
-  public static Turret turret;
+  // public static Turret turret;
   public static DriveCommand driveCommand;
   public static Timer autoTimer;
   public static Timer timerToClose;
@@ -92,7 +92,7 @@ public class RobotContainer implements Sendable {
     intake = IntakeSubsystem.getInstance();
     shooter = Shooter.getInstance();
     shinua = ShinuaSubsystem.getInstance();
-    turret = Turret.getInstance();
+    // turret = Turret.getInstance();
     autoChooser = new SendableChooser<>();
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     SmartDashboard.putData("atou chooser", autoChooser);
@@ -106,7 +106,7 @@ public class RobotContainer implements Sendable {
     mainLed.startShift();
 
     configureBindings();
-    setUserButton();
+    // setUserButton();
     setDefaultCommands();
     setController();
   }
@@ -142,18 +142,18 @@ public class RobotContainer implements Sendable {
     }).onTrue(new InstantCommand(() -> mainLed.startShift()).ignoringDisable(true));
   }
 
-  private void setUserButton() {
-    new Trigger(()-> !DriverStation.isEnabled() &&
-    RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake,
-    shinua, turret, shooter, Chassis.getInstance()));
-  }
+  // private void setUserButton() {
+  //   new Trigger(()-> !DriverStation.isEnabled() &&
+  //   RobotController.getUserButton()).onTrue(new setRobotNetralMode(intake,
+  //   shinua, /*turret,*/ shooter, Chassis.getInstance()));
+  // }
 
   private void setDefaultCommands() {
     Chassis.getInstance().setDefaultCommand(driveCommand);
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    turret.setDefaultCommand(new TurretCommand());
+    // turret.setDefaultCommand(new TurretCommand());
 
     // shinua.setDefaultCommand(new
     // frc.robot.shinua.commands.ControllerCommand(controller));
@@ -170,42 +170,42 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.INTAKING);
       shooter.setShooterState(ShooterStates.IDLE);
       shinua.setState(ShinuaState.NO_INDEXER);
-      turret.setState(TurretStates.IDLE);
+      // turret.setState(TurretStates.IDLE);
       intake.setNeutralModeIntakeDeploy(true);
     })); //
     controller.leftButton().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.MIDDLE);
       shinua.setState(ShinuaState.ONLY_ROLLERS);
       shooter.setShooterState(ShooterStates.IDLE);
-      turret.setState(TurretStates.IDLE);
+      // turret.setState(TurretStates.IDLE);
       intake.setNeutralModeIntakeDeploy(false);
     }));
     controller.upButton().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.EJECTING);
       shinua.setState(ShinuaState.EJECTING);
       shooter.setShooterState(ShooterStates.IDLE);
-      turret.setState(TurretStates.IDLE);
+      // turret.setState(TurretStates.IDLE);
       intake.setNeutralModeIntakeDeploy(false);
     }));
     controller.downButton().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.INTAKING);
       shinua.setState(ShinuaState.SHINUA_ON);
       shooter.setShooterState(ShooterStates.DELIVERY);
-      turret.setState(TurretStates.DELIVERY);
+      // turret.setState(TurretStates.DELIVERY);
       intake.setNeutralModeIntakeDeploy(true);
     }));
     controller.rightBumper().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.INTAKING);
       shinua.setState(ShinuaState.ONLY_ROLLERS);
       shooter.setShooterState(ShooterStates.DELIVERY);
-      turret.setState(TurretStates.DELIVERY);
+      // turret.setState(TurretStates.DELIVERY);
       intake.setNeutralModeIntakeDeploy(true);
     }));
     controller.povUp().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.SHOOTING);
       shinua.setState(ShinuaState.SHINUA_ON);
       shooter.setShooterState(ShooterStates.onePoint);
-      turret.setState(TurretStates.IDLE);
+      // turret.setState(TurretStates.IDLE);
       intake.setNeutralModeIntakeDeploy(false);
     }));
 
@@ -220,7 +220,7 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.SHOOTING);
       shinua.setState(ShinuaState.SHINUA_ON);
       shooter.setShooterState(ShooterStates.thrrePoint);
-      turret.setState(TurretStates.TRENCH_RIGHT);
+      // turret.setState(TurretStates.TRENCH_RIGHT);
       intake.setNeutralModeIntakeDeploy(false);
     }));
     controller.leftBumper().onTrue(new InstantCommand(() -> driveCommand.precisionMode = !driveCommand.precisionMode));
@@ -228,13 +228,13 @@ public class RobotContainer implements Sendable {
     controller.povDown().onTrue(new InstantCommand(() -> {
       shooter.setShooterState(ShooterStates.GET_READY);
       intake.setNeutralModeIntakeDeploy(false);
-      turret.setState(TurretStates.IDLE);
+      // turret.setState(TurretStates.IDLE);
     }));
     controller.povLeft().onTrue(new InstantCommand(() -> {
       intake.setState(IntakeState.SHOOTING);
       shinua.setState(ShinuaState.SHINUA_ON);
       shooter.setShooterState(ShooterStates.thrrePoint);
-      turret.setState(TurretStates.TRENCH_LEFT);
+      // turret.setState(TurretStates.TRENCH_LEFT);
       intake.setNeutralModeIntakeDeploy(false);
     }));
     // controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
@@ -313,8 +313,8 @@ public class RobotContainer implements Sendable {
                     ? Rotation2d.kPi
                     : Rotation2d.kZero)));
     shooter.restHoodMotor();
-    turret.turretMotor.setEncoderPosition(Math.toRadians(180));
-    turret.setCaliberation(true);
+    // turret.turretMotor.setEncoderPosition(Math.toRadians(180));
+    // turret.setCaliberation(true);
     intake.setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
     intake.setCalibrated();
   }
@@ -333,7 +333,7 @@ public class RobotContainer implements Sendable {
     return new SequentialCommandGroup(
         new InstantCommand(() -> {
           resetPreAuto();
-          turret.setState(TurretStates.IDLE);
+          // turret.setState(TurretStates.IDLE);
         }),
         new InstantCommand(() -> {
           shooter.setShooterState(ShooterStates.GET_READY);
