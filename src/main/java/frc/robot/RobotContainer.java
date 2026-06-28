@@ -235,18 +235,18 @@ public class RobotContainer implements Sendable {
       shinua.setState(ShinuaState.ONLY_ROLLERS);
       turret.setState(TurretStates.IDLE);
     }));
-    controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
-      turret.add90ToDeliveryAngle();
-      shinua.setState(ShinuaState.ONLY_ROLLERS);
-      shooter.setShooterState(ShooterStates.DELIVERY_ONLY_FLYWEEL);
-      turret.setState(TurretStates.IDLE);
-    }));
-    controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
-      turret.subtract90ToDeliveryAngle();
-      shinua.setState(ShinuaState.ONLY_ROLLERS);
-      shooter.setShooterState(ShooterStates.DELIVERY_ONLY_FLYWEEL);
-      turret.setState(TurretStates.IDLE);
-    }));
+    // controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
+    //   turret.add90ToDeliveryAngle();
+    //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //   shooter.setShooterState(ShooterStates.DELIVERY_ONLY_FLYWEEL);
+    //   turret.setState(TurretStates.IDLE);
+    // }));
+    // controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
+    //   turret.subtract90ToDeliveryAngle();
+    //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //   shooter.setShooterState(ShooterStates.DELIVERY_ONLY_FLYWEEL);
+    //   turret.setState(TurretStates.IDLE);
+    // }));
   }
 
   public static void setIsRed(boolean isRed) {
