@@ -225,10 +225,10 @@ public class RobotContainer implements Sendable {
       intake.setState(IntakeState.CLOSED_SHOOTING);
       shinua.setState(ShinuaState.ONLY_ROLLERS);
     }));
-    controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
+    controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
       turret.add90ToDeliveryAngle();
     }));
-    controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
+    controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
       turret.subtract90ToDeliveryAngle();
     }));
   }

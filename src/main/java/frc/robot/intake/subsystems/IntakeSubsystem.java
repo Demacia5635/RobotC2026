@@ -124,7 +124,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void resetEncoderIntakeDeploy() {
-    intakeDeployMotor.setEncoderPosition(0);
+    intakeDeployMotor.setEncoderPosition(IntakeConstants.INTAKE_DEPLOY_OFFSET);
   }
 
   public void stopRoller() {
