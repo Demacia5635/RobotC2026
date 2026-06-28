@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.demacia.utils.LookUpTable;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
-import frc.demacia.utils.sensors.LimitSwitch;
 import frc.demacia.utils.sensors.LimitSwitchConfig;
 import frc.robot.Field;
 
