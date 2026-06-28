@@ -30,6 +30,7 @@ import frc.demacia.utils.leds.LedManager;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon.StartingPlaces;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
+import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeConstants.IntakeState;
 import frc.robot.intake.commands.IntakeCommand;
 import frc.robot.intake.subsystems.IntakeSubsystem;
@@ -227,9 +228,11 @@ public class RobotContainer implements Sendable {
     }));
     controller.getRightTrigger(0.1).onTrue(new InstantCommand(() -> {
       turret.add90ToDeliveryAngle();
+      shinua.setState(ShinuaState.ONLY_ROLLERS);
     }));
     controller.getLeftTrigger(0.1).onTrue(new InstantCommand(() -> {
       turret.subtract90ToDeliveryAngle();
+      shinua.setState(ShinuaState.ONLY_ROLLERS);
     }));
   }
 
@@ -295,6 +298,10 @@ public class RobotContainer implements Sendable {
                     ? Rotation2d.kPi
                     : Rotation2d.kZero)));
     shooter.restHoodMotor();
+    turret.turretMotor.setEncoderPosition(Math.toRadians(180));
+    turret.setCaliberation(true);
+    intake.setEncoderIntakeDeploy(IntakeConstants.INTAKE_DEPLOY_OFFSET);
+    intake.setCalibrated();
   }
 
   /**

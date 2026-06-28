@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Turret extends SubsystemBase {
   private static Turret turret;
-  private TalonFXMotor turretMotor;
+  public TalonFXMotor turretMotor;
   private DigitalInput maxLimitSwitch;
   // private LimitSwitch minLimitSwitch;
   private TurretStates turretStates = TurretStates.IDLE;

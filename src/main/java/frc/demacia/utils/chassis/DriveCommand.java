@@ -72,7 +72,7 @@ public class DriveCommand extends Command {
     if(precisionMode){
         velX /= 4;
         velY /= 4;
-        velRot /= 4;
+        // velRot /= 4;
     }
 
     speeds = new ChassisSpeeds(velX, velY, velRot);

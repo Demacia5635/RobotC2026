@@ -106,6 +106,10 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     switch (shooter.getShooterState()) {
+      case DELIVERY_ONLY_FLYWEEL:
+        flywheelVelocity = 12;
+        hoodPosition = 0;
+        break;
       case GET_READY:
         flywheelVelocity = 9.0;
         break;
