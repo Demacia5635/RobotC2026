@@ -36,13 +36,14 @@ public class Turret extends SubsystemBase {
     maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
     isCalibrated = false;
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
-    SmartDashboard.putData("turret manual reset - 0", new InstantCommand(()->{setCaliberation(true); setPositionByLimit();}).ignoringDisable(true));
+    SmartDashboard.putData("turret manual reset - 180", new InstantCommand(()->{setCaliberation(true); turretMotor.setEncoderPosition(Math.toRadians(-180));}).ignoringDisable(true));
     SmartDashboard.putData("turret",this);
     turretMotor.setEncoderPosition(Math.toRadians(-180));
     deliveryAngle = -180;
     addNT();
   }
 
+  
   private void addNT() {
     SendableChooser<TurretStates> stateChooser = new SendableChooser<>();
     for (TurretStates intakeState : TurretStates.values()) {
