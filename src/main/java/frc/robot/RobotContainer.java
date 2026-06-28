@@ -331,6 +331,7 @@ public class RobotContainer implements Sendable {
     return new SequentialCommandGroup(
         new InstantCommand(() -> {
           resetPreAuto();
+          turret.setState(TurretStates.IDLE);
         }),
         new InstantCommand(() -> {
           shooter.setShooterState(ShooterStates.GET_READY);
