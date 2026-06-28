@@ -121,10 +121,6 @@ public class Turret extends SubsystemBase {
     return turretStates;
   }
 
-  public boolean isReady(){
-    return Math.abs(turretMotor.getCurrentClosedLoopError()) < 6;
-  }
-
   public void setCalibration(){
     isCalibrated = true;
   }
