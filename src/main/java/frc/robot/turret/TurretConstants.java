@@ -55,6 +55,8 @@ public class TurretConstants {
         TEST,
         DELIVERY,
         SHOOTING,
-        ONEPOINT;
+        ONEPOINT,
+        TRENCH_LEFT, 
+        TRENCH_RIGHT;
     }
 }

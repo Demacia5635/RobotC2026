@@ -39,13 +39,34 @@ public class TurretCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (turret.getTurretState().equals(TurretStates.DELIVERY) && turret.isDelivery){
-      turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?0:180), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+    switch (turret.getTurretState()) {
+      case DELIVERY:
+        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?0:180), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
         TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
         TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
-    } else{
-      turret.setTurretMotion(turret.getDeliveryAngle());
+        break;
+      case TRENCH_LEFT:
+        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?90:-90), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+        break;
+      case TRENCH_RIGHT:
+        turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?-90:90), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+        break;
+      default:
+        turret.setTurretMotion(turret.getDeliveryAngle());
+        break;
     }
+
+    // if (turret.getTurretState().equals(TurretStates.DELIVERY) && turret.isDelivery){
+    //   turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?0:180), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+    //     TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+    //     TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+    // } else{
+    //   turret.setTurretMotion(turret.getDeliveryAngle());
+    // }
     
     // switch (turret.getTurretState()) {
     //   case IDLE:
