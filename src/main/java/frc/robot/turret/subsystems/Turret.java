@@ -30,11 +30,13 @@ public class Turret extends SubsystemBase {
   private TurretStates turretStates = TurretStates.IDLE;
   private boolean isCalibrated;
   private double deliveryAngle;
+  public boolean isDelivery;
   /** Creates a new Turret. */
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
     maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
     isCalibrated = false;
+    isDelivery = true;
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
     SmartDashboard.putData("turret manual reset - 180", new InstantCommand(()->{setCaliberation(true); turretMotor.setEncoderPosition(Math.toRadians(-180));}).ignoringDisable(true));
     SmartDashboard.putData("turret",this);
@@ -60,6 +62,7 @@ public class Turret extends SubsystemBase {
       builder.addBooleanProperty("is limet turret", ()-> getMaxLimitSwich(), null);
       builder.addBooleanProperty("is turret cal", ()-> getIsCaliberation(), null);
       builder.addDoubleProperty("turret ang", ()-> getAngleDeg(), null);
+      builder.addBooleanProperty("is delevry", ()-> isDelivery, (x)-> isDelivery = x);
   }
 
   public void setCaliberation(boolean isCalibrated){
@@ -119,7 +122,7 @@ public class Turret extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return Math.abs(turretMotor.getCurrentClosedLoopError()) < 4;
+    return Math.abs(turretMotor.getCurrentClosedLoopError()) < 6;
   }
 
   public void setCalibration(){

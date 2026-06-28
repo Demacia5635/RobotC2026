@@ -17,12 +17,14 @@ import frc.robot.ShootingWhileDriving;
 import frc.robot.Field;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.turret.TurretConstants;
+import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.subsystems.Turret;
 
 public class TurretCommand extends Command {
   private Turret turret;
   private double testAngle;
   private double targetAngle;
+  
 
   public TurretCommand() {
     this.turret = Turret.getInstance();
@@ -37,7 +39,14 @@ public class TurretCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.setTurretMotion(turret.getDeliveryAngle());
+    if (turret.getTurretState().equals(TurretStates.DELIVERY) && turret.isDelivery){
+      turret.setTurretMotion(MathUtil.clamp(MathUtil.inputModulus(-Chassis.getInstance().getGyroAngle().getDegrees() + (RobotCommon.isRed()?0:180), TurretConstants.MIN_TURRET_ANGLE - (360 - TurretConstants.TURRET_ANGLE_RANGE)/2, //(-323) - (-313) will be -313
+        TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
+        TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
+    } else{
+      turret.setTurretMotion(turret.getDeliveryAngle());
+    }
+    
     // switch (turret.getTurretState()) {
     //   case IDLE:
     //     turret.stopMotor();

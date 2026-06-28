@@ -16,6 +16,7 @@ import frc.robot.shinua.ShinuaConstants;
 import frc.robot.shinua.ShinuaConstants.ShinuaState;
 import frc.robot.shinua.subsystems.ShinuaSubsystem;
 import frc.robot.shooter.subsystems.Shooter;
+import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShinuaCommand extends Command {
@@ -51,7 +52,7 @@ public class ShinuaCommand extends Command {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
           shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
-          if (((Shooter.getInstance().isReady()) || RobotContainer.forcedIsReady) && IntakeSubsystem.getInstance().getIntakeDeployAngle() > 10){ // deg
+          if (((Shooter.getInstance().isReady() && Turret.getInstance().isReady()) || RobotContainer.forcedIsReady) && IntakeSubsystem.getInstance().getIntakeDeployAngle() > 10){ // deg
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
           } else {
             shinuaSubsystem.setMecanumDuty(0);
