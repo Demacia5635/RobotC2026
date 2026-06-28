@@ -40,7 +40,7 @@ public class ShooterConstants {
         .withFeedForward(0.00162, 0)
         .withRampTime(0.6);
         public static final double MAX_FLYWHEEL_POWER = 1;
-        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.5;
+        public static final double FLYWHEEL_VELOCITY_OFFSET = 0.8;
         public static double MAX_FLYWHEEL_ACCEL = 8.5; //m/s^2
     }
     

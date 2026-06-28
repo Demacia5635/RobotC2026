@@ -190,7 +190,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return (Math.abs(wantedVel - flywheel.getCurrentVelocity()) < FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET &&
+    return (Math.abs(wantedVel - flywheel.getCurrentVelocity()) < (shooter.getShooterState().equals(ShooterStates.DELIVERY) ?1.5: FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) &&
     Math.abs(wantedAngle - hood.getCurrentAngle()) < HoodConstants.HOOD_POSITION_OFFSET) && 
     (Math.abs(flywheel.getCurrentVelocity()) > FlywheelConstants.FLYWHEEL_VELOCITY_OFFSET) && 
     (Math.abs(hood.getCurrentAngle()) > HoodConstants.HOOD_POSITION_OFFSET);

@@ -138,7 +138,6 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("reset odmetry",
                 new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
                         .resetPose(getPose())).ignoringDisable(true));
-        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -380,6 +379,8 @@ public class Chassis extends SubsystemBase {
         // ── עדכון Pose Estimator בכל לופ ────────────────────────────────────
         poseEstimator.update(getGyroAngle(), getModulePositions());
         // ────────────────────────────────────────────────────────────────────
+
+        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
 
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
