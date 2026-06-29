@@ -52,7 +52,7 @@ public class ShinuaCommand extends Command {
     switch (shinuaSubsystem.getState()) {
       case SHINUA_ON:
           shinuaSubsystem.setVelocityRollers(shinuaSubsystem.getState().velocityRollers);
-          if ((Shooter.getInstance().isReady() || RobotContainer.forcedIsReady) && IntakeSubsystem.getInstance().getIntakeDeployAngle() > 10){ // deg
+          if ((Shooter.getInstance().isReady() || RobotContainer.forcedIsReady) /*&& IntakeSubsystem.getInstance().getIntakeDeployAngle() > 10*/){ // deg
             shinuaSubsystem.setMecanumDuty(shinuaSubsystem.getState().dutyMecanum);
           } else {
             shinuaSubsystem.setMecanumDuty(0);

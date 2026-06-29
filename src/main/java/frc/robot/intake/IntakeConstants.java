@@ -58,7 +58,7 @@ public class IntakeConstants {
 
     public static enum IntakeState {
         TESTING(0, 0),
-        INTAKING(1, DEPLOY_OPEN_ANGLE),
+        INTAKING(0.5, DEPLOY_OPEN_ANGLE),
         EJECTING(-1, DEPLOY_OPEN_ANGLE),
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, DEPLOY_CLOSED_ANGLE),
