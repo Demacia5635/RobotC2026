@@ -39,8 +39,8 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeDeployMotor = new TalonFXMotor(IntakeConstants.INTAKE_DEPLOY_CONFIG);
     intakeDeployLimitSwitch = new DigitalInput(6);
     state = IntakeState.IDLE;
-    SmartDashboard.putData("reset encoder intake deploy",
-        new InstantCommand(() -> {resetEncoderIntakeDeploy(); setCalibrated();}).ignoringDisable(true));
+    SmartDashboard.putData("reset encoder intake deploy",new InstantCommand(() -> {resetEncoderIntakeDeploy(); setCalibrated();}).ignoringDisable(true));
+    SmartDashboard.putData("reset encoder intake open", new InstantCommand(()-> {intakeDeployMotor.setEncoderPosition(IntakeConstants.DEPLOY_OPEN_ANGLE);  setCalibrated();}).ignoringDisable(true));
         
     SmartDashboard.putData("set brake deploy", new InstantCommand(() -> {
       setNeutralModeIntakeDeploy(true);
