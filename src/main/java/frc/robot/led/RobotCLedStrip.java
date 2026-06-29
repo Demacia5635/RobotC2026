@@ -137,9 +137,9 @@ public class RobotCLedStrip extends LedStrip {
         //     setBlink(Color.kGreen);
         // }
         
-        if(RobotState.isDisabled() && IntakeSubsystem.getInstance().isCalibrated()){
-            setColor(Color.kGreen);
-        }
+        // if(RobotState.isDisabled() && IntakeSubsystem.getInstance().isCalibrated()){
+        //     setColor(Color.kGreen);
+        // }
 
         if (transitionTimer.hasElapsed(TIME_TO_BLINK / 2)) {
             transitionTimer.stop();

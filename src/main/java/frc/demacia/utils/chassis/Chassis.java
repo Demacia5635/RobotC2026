@@ -138,6 +138,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("reset odmetry",
                 new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
                         .resetPose(getPose())).ignoringDisable(true));
+        SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -163,6 +164,13 @@ public class Chassis extends SubsystemBase {
         poseEstimator.addVisionMeasurement(visionPose, timestampSeconds, stdDevs);
     }
     // ────────────────────────────────────────────────────────────────────────
+
+
+    public void resetMudolse(){
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].steerMotor.setEncoderPosition(0);
+        }
+    }
 
     /**
      * Returns linear acceleration [ax, ay] in m/s² (field-relative)
@@ -292,6 +300,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public void setVelocities(ChassisSpeeds speeds) {
+        LogManager.log("current speed" + speeds + "current speed" + getVelocityAsVector());
         SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }

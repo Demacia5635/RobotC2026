@@ -115,12 +115,12 @@ public class StateManger extends SubsystemBase{
                 if(isHub()){
                     RobotContainer.shooter.setShooterState(ShooterStates.SHOOTER);
                     // RobotContainer.turret.setState(TurretStates.SHOOTING);
-                    RobotContainer.intake.setState(IntakeState.DEPLOYED);
+                    // RobotContainer.intake.setState(IntakeState.DEPLOYED);
                 }
                 else if(isDeleveryAndIntakeBlue()){
                     RobotContainer.shooter.setShooterState(ShooterStates.DELIVERY);
                     // RobotContainer.turret.setState(TurretStates.DELIVERY);
-                    RobotContainer.intake.setState(IntakeState.INTAKING);
+                    // RobotContainer.intake.setState(IntakeState.INTAKING);
                 }
         }else{
             RobotContainer.shooter.setShooterState(ShooterStates.TRANCH);
@@ -128,7 +128,7 @@ public class StateManger extends SubsystemBase{
     }else{
         RobotContainer.shooter.setShooterState(ShooterStates.IDLE);
         // RobotContainer.turret.setState(TurretStates.IDLE);
-        RobotContainer.intake.setState(IntakeState.IDLE);
+        // RobotContainer.intake.setState(IntakeState.IDLE);
     }
     }
 
