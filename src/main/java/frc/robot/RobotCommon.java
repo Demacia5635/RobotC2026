@@ -22,7 +22,7 @@ public class RobotCommon {
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
     private static Shifts shift = Shifts.Disable;
 
-    private static boolean isRed = false;
+    private static boolean isRed = true;
     private static double futureAngleFromTargetRobotRelative;
     public static boolean isComp = false;
     private static StartingPlaces startingPlace = StartingPlaces.HUB;
