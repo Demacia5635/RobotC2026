@@ -18,7 +18,7 @@ public class RobotCommon {
     private static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
     private static Rotation2d robotAngle = Rotation2d.kZero;
     private static boolean isStuck = false;
-
+    //nafing
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
     private static Shifts shift = Shifts.Disable;
 
