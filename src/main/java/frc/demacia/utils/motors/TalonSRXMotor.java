@@ -186,8 +186,13 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
     }
 
     @Override
-    public int getCurrentControlMode() {
+    public int getCurrentControlModeInteger() {
         return controlMode.ordinal();
+    }
+
+    @Override
+    public ControlMode getCurrentControlMode() {
+      return controlMode;
     }
 
     @Override
@@ -241,7 +246,7 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Talon SRX Motor");
-        builder.addDoubleProperty("ControlMode", this::getCurrentControlMode, null);
+        builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
         builder.addDoubleProperty("Position", this::getCurrentPosition, null);
         builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);
         builder.addDoubleProperty("Voltage", this::getCurrentVoltage, null);

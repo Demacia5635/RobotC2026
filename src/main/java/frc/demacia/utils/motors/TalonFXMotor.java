@@ -259,7 +259,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
         .withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP)
         .withIsMotor().build();
     LogManager.addEntry(name + ": ControlMode",
-        () -> getCurrentControlMode())
+        () -> getCurrentControlModeInteger())
         .withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP).build();
   }
 
@@ -323,7 +323,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setMotion(double position, double feedForward) {
     setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
-    controlMode = ControlMode.MOTION;
+    controlMode = ControlMode.MAGIC_MOTION;
   }
 
   public void setMotionExpo(double position) {
@@ -335,7 +335,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   public void setMotionExpo(double position, double feedForward) {
     setControl(
         motionMagicExpoVoltage.withPosition(position).withFeedForward(feedForward + positionFeedForward(position)));
-    controlMode = ControlMode.MOTION;
+    controlMode = ControlMode.MAGIC_MOTION;
   }
 
 
@@ -378,8 +378,13 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   }
 
   @Override
-  public int getCurrentControlMode() {
+  public int getCurrentControlModeInteger() {
     return controlMode.ordinal();
+  }
+
+  @Override
+  public ControlMode getCurrentControlMode() {
+    return controlMode;
   }
 
   @Override
@@ -444,7 +449,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     if (config.isRadiansMotor) {
       builder.addDoubleProperty("Angle", this::getCurrentAngle, null);
     }
-    builder.addDoubleProperty("ControlMode", this::getCurrentControlMode, null);
+    builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
   }
 
   /**

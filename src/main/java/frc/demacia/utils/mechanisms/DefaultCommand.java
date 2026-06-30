@@ -45,7 +45,7 @@ public class DefaultCommand extends Command {
           final int positionVoltageIndex = i;
           controls[i] = () -> mechanism.setPositionVoltage(positionVoltageIndex, mechanism.getValue(positionVoltageIndex));
           break;
-        case MOTION:
+        case MAGIC_MOTION:
           final int motionIndex = i;
           controls[i] = () -> mechanism.setMotion(motionIndex, mechanism.getValue(motionIndex));
           break;
@@ -69,6 +69,9 @@ public class DefaultCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (mechanism.getState().equals(mechanism.IDLE_STATE)){
+      mechanism.stop();
+    }
     for (int i = 0; i < length; i++) {
       controls[i].run();
     }

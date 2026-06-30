@@ -136,7 +136,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
         () -> getCurrentCurrent(),
         () -> getCurrentClosedLoopError(),
         () -> getCurrentClosedLoopSP(),
-        () -> getCurrentControlMode()
+        () -> getCurrentControlModeInteger()
       ).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
       .withIsMotor()
       .build();
@@ -232,7 +232,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
     }
     getClosedLoopController().setSetpoint(position, ControlType.kMAXMotionPositionControl, closedLoopSlot, feedForward + config.pid[closedLoopSlot.value].kS() + positionFeedForward(position));
     controlType = ControlType.kMAXMotionPositionControl;
-    controlMode = ControlMode.MOTION;
+    controlMode = ControlMode.MAGIC_MOTION;
     setPoint = position;
   } 
 
@@ -261,8 +261,13 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
   }
 
   @Override
-  public int getCurrentControlMode() {
+  public int getCurrentControlModeInteger() {
     return controlMode.ordinal();
+  }
+
+  @Override
+  public ControlMode getCurrentControlMode() {
+    return controlMode;
   }
 
   @Override
@@ -412,7 +417,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Spark Motor");
-    builder.addDoubleProperty("ControlMode", this::getCurrentControlMode, null);
+    builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
     builder.addDoubleProperty("Position", this::getCurrentPosition, null);
     builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);
     builder.addDoubleProperty("Voltage", this::getCurrentVoltage, null);

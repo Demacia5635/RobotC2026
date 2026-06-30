@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import frc.demacia.utils.log.LogManager;
 
 /** Add your docs here. */
 public class DemaciaOdometry{

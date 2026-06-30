@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.demacia.utils.chassis.Chassis;
-import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
-import frc.demacia.utils.log.LogManager;
 import frc.demacia.vision.utils.VisionConstants;
 
 public class TagPose {
@@ -39,10 +37,6 @@ public class TagPose {
   private Camera camera;
   private double confidence;
 
-  private double dist;
-  private double alpha;
-  private double height;
-
   // vector for camera
   private Translation2d cameraToTag;
 
@@ -60,7 +54,6 @@ public class TagPose {
 
   private boolean isUpsidedown = false;
 
-  @SuppressWarnings("unchecked")
   public TagPose(Camera camera) {
     confidence = 0;
     this.camera = camera;
@@ -145,7 +138,6 @@ public class TagPose {
 
     origintoTag = VisionConstants.O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
 
-    height = VisionConstants.TAG_HEIGHT[(int) this.id];
     if (origintoTag != null) {
 
       originToRobot = origintoTag.minus(getRobotToTagFieldRel());

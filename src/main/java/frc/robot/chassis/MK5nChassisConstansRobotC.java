@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.demacia.utils.motors.TalonFXConfig;
 import frc.demacia.utils.chassis.ChassisConfig;
 import frc.demacia.utils.chassis.SwerveModuleConfig;
-import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 import frc.demacia.utils.sensors.CancoderConfig;
 import frc.demacia.utils.sensors.PigeonConfig;
@@ -94,9 +93,6 @@ public class MK5nChassisConstansRobotC {
           new CancoderConfig(i * 3 + 3, CAN_BUS, name + " Cancoder"))
           .withPosion(MODULE_LOCATIONS[i])
           .withSteerOffset(offsets[i]);
-    }
-    for(var a : ans) {
-      // LogManager.log(" module " + a.name + " " + a.position + " " + a.driveConfig.id);
     }
     return ans;
   }

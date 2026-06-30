@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.vision.TagPose;
-import frc.robot.RobotCommon;
 // import frc.robot.RobotCommon.*;
 
 /** Add your docs here. */
@@ -46,26 +46,6 @@ public class Vision {
                 return true;
         }
         return false;
-    }
-
-    // TODO: Remove Incorrect located tags
-    private boolean isTagHub(int tagId) {
-        return tagId == 2
-            || tagId == 3
-            || tagId == 4
-            || tagId == 5
-            || tagId == 8
-            || tagId == 9
-            || tagId == 10
-            || tagId == 11
-            || tagId == 18
-            || tagId == 19
-            || tagId == 20
-            || tagId == 21
-            || tagId == 24
-            || tagId == 25
-            || tagId == 26
-        ;
     }
 
     public boolean isSeeTag() {
@@ -103,7 +83,7 @@ public class Vision {
             y += pose2d.getY() * confidence;
 
         }
-        return new Pose2d(x, y, RobotCommon.getRobotAngle());
+        return new Pose2d(x, y, Chassis.getInstance().getGyroAngle());
     }
 
     public void updateValues() {

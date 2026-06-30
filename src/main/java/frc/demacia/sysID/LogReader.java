@@ -380,7 +380,7 @@ public class LogReader {
             if(flags[1]) pred += kV * p.velocity;
             if(flags[2]) pred += kA * p.acceleration;
             if(flags[3]) pred += kG * 1.0;
-            if(flags[4]) pred += kCos * Math.sin(p.position);
+            if(flags[4]) pred += kCos * Math.cos(p.position);
             if(flags[5]) pred += kV2 * p.velocity * Math.abs(p.velocity);
             
             p.error = Math.abs(p.voltage - pred);

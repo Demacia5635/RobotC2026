@@ -1,31 +1,9 @@
 package frc.robot;
 
-import java.util.Optional;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.demacia.utils.chassis.Chassis;
-import frc.robot.shooter.ShooterConstants;
-import frc.robot.stateManger.StateManger.Shifts;
 public class RobotCommon {
-    public static Pose2d currentRobotPose = Pose2d.kZero;
-    private static Pose2d futureRobotPose = Pose2d.kZero; // 0.04 seconds in advance
-    private static ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
-    private static ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
-    private static Rotation2d robotAngle = Rotation2d.kZero;
-    private static boolean isStuck = false;
-    //nafing
-    private static Optional<Alliance> alliance = DriverStation.getAlliance();
-    private static Shifts shift = Shifts.Disable;
-
     private static boolean isRed = true;
-    private static double futureAngleFromTargetRobotRelative;
     public static boolean isComp = false;
-    private static StartingPlaces startingPlace = StartingPlaces.HUB;
 
     public static boolean isRed(){
         return isRed;
@@ -35,112 +13,16 @@ public class RobotCommon {
         isRed = newIsRed;
     }
 
-    public static StartingPlaces getStartingPlace(){
-        return startingPlace;
-    }
-
-    public static void setStarting(boolean newIsRed){
-        isRed = newIsRed;
-    }
-
-    public static Shifts getShift(){
-        return shift;
-    }
-
-    public static void setShift(Shifts shift){
-        RobotCommon.shift = shift;
-    }
-
     public static Translation2d getHubPose(){
         if(isRed()) return Field.HubRed.CENTER;
         else return Field.HubRed.CENTER; 
-    }
-    
-    public static Translation2d getDeliveryPose(){
-        return 
-            (Chassis.getInstance().getPose().getY() < Field.FieldDimensions.Y_CENTER)?
-                isRed()? ShooterConstants.DELIVERY_RED_LEFT:
-                    ShooterConstants.DELIVERY_BLUE_LEFT:
-                isRed()? ShooterConstants.DELIVERY_RED_RIGHT:
-                    ShooterConstants.DELIVERY_BLUE_RIGHT;        
     }
 
     public static boolean getIsComp(){
         return isComp;
     }
 
-    public static void setFutureAngleFromTargetRobotRelative(double futureAngleFromTargetRobotRelative) {
-        RobotCommon.futureAngleFromTargetRobotRelative = futureAngleFromTargetRobotRelative;
-    }
-
-    public static double getFutureAngleFromTargetRobotRelative(){
-        return futureAngleFromTargetRobotRelative;
-    }
-
     public static void setIsComp(boolean newIsComp){
         isComp = newIsComp;
-    }
-
-    public static Pose2d getDelveryPose(){
-        if(isRed()){
-            if(currentRobotPose.getX() > Field.FieldDimensions.LENGTH /2){
-                return new Pose2d(Field.DELIVERY.DELIVERY_POINT1.getX(), Field.DELIVERY.DELIVERY_POINT1.getY(), Field.DELIVERY.DELIVERY_POINT1.getAngle()); //TODO: update the point
-            }
-            else return new Pose2d(Field.DELIVERY.DELIVERY_POINT2.getX(), Field.DELIVERY.DELIVERY_POINT2.getY(), Field.DELIVERY.DELIVERY_POINT2.getAngle());
-        }else{
-            if(currentRobotPose.getX() > 8.07 /2){
-                    return Pose2d.kZero; //TODO: update the point
-                }
-                else return Pose2d.kZero;
-        }
-    }
-
-    public static Rotation2d getRobotAngle(){
-        return robotAngle;
-    }
-
-    public static void setRobotAngle(Rotation2d newRobotAngle){
-        robotAngle = newRobotAngle;
-    }
-
-    public static Pose2d getRobotFucerPose(){
-        return futureRobotPose;
-    }
-
-    public static void setRobotFuturePose(Pose2d newRobotFucerPose){
-        futureRobotPose = newRobotFucerPose;
-    }
-
-
-    public static ChassisSpeeds getRobotFucerSpeed(double dt){
-        return new ChassisSpeeds(getFieldRelativeSpeeds().vxMetersPerSecond + Chassis.getInstance().getAcceleration()[0] * dt ,getFieldRelativeSpeeds().vyMetersPerSecond + Chassis.getInstance().getAcceleration()[1] * dt,getFieldRelativeSpeeds().omegaRadiansPerSecond + Chassis.getInstance().getAcceleration()[2] * dt);
-    }
-
-    public static ChassisSpeeds getFieldRelativeSpeeds(){
-        return fieldRelativeSpeeds;
-    }
-
-    public static void setFieldRelativeSpeeds(ChassisSpeeds newChassisfieldRelativeSpeeds){
-        fieldRelativeSpeeds = newChassisfieldRelativeSpeeds;
-    }
-
-    public static ChassisSpeeds getrobotRelativeSpeeds(){
-        return robotRelativeSpeeds;
-    }
-
-    public static void setRobotRelativeSpeeds(ChassisSpeeds newRobotRelativeSpeeds){
-        robotRelativeSpeeds = newRobotRelativeSpeeds;
-    }
-    public static boolean IsStuck() {
-        return isStuck;
-    }   
-    public static void setStuck(boolean isStuck) {
-        RobotCommon.isStuck = isStuck;
-    }
-
-    public enum StartingPlaces{
-        HUB,
-        TRANCH_LEFT, 
-        TRANCH_RIGHT
     }
 }
