@@ -12,10 +12,10 @@ import frc.demacia.utils.motors.MotorInterface.ControlMode;
  * </p>
  */
 public class DefaultCommand extends Command {
-  StateBaseMechanism mechanism;
-  MotorInterface[] motors;
-  int length;
-  Runnable[] controls;
+  protected StateBaseMechanism mechanism;
+  protected MotorInterface[] motors;
+  protected int length;
+  protected Runnable[] controls;
 
   /** * Creates a new DefaultCommand.
    * Initializes a set of runnables to control each motor based on the provided control modes.

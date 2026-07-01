@@ -112,6 +112,11 @@ public class BaseMechanism extends SubsystemBase{
         }
     }
 
+    public void withPowerCommand(String motorName, DoubleSupplier powerSupplier) {
+        SmartDashboard.putData(getName() + "/" + motorName + "/set power command " + motorName, 
+            new PowerCommand(this, motorName, powerSupplier));
+    }
+
     /**
      * @return The name of the mechanism
      */
@@ -453,15 +458,10 @@ public class BaseMechanism extends SubsystemBase{
                     return false;
                 }
                 break;
-            case POSITION_VOLTAGE, MAGIC_MOTION:
+            case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
                     if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentPosition()) > allowedError){
                         return false;
                     }
-                break;
-            case ANGLE:
-                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentAngle()) > allowedError){
-                    return false;
-                }
                 break;
             default:
                 break;

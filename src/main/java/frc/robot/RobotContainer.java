@@ -16,6 +16,10 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
+import frc.robot.intack.commands.IntackCommand;
+import frc.robot.intack.subsystems.Intack;
+import frc.robot.shinua.commands.ShinuaCommand;
+import frc.robot.shinua.subsystems.Shinua;
 import frc.robot.shooter.commands.ShooterCommand;
 import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.commands.TurretCommand;
@@ -35,6 +39,8 @@ public class RobotContainer implements Sendable {
   // The robot's subsystems and commands are defined here...
   private Turret turret;
   private Shooter shooter;
+  private Intack intack;
+  private Shinua shinua;
 
   public static CommandController controller = new CommandController(0, ControllerType.kPS5);
   // public static Turret turret;
@@ -49,6 +55,8 @@ public class RobotContainer implements Sendable {
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     turret = Turret.getInstance();
     shooter = Shooter.getInstance();
+    intack = Intack.getInstance();
+    shinua = Shinua.getInstance();
 
     configureBindings();
     setDefaultCommands();
@@ -78,6 +86,8 @@ public class RobotContainer implements Sendable {
     Chassis.getInstance().setDefaultCommand(driveCommand);
     turret.setDefaultCommand(new TurretCommand());
     shooter.setDefaultCommand(new ShooterCommand());
+    intack.setDefaultCommand(new IntackCommand());
+    shinua.setDefaultCommand(new ShinuaCommand());
   }
 
   private void setController() {

@@ -90,6 +90,7 @@ public class StateBaseMechanism extends BaseMechanism {
     private void addNT(Class<? extends MechanismState> enumClass) {
         stateChooser.addOption(TESTING_STATE.name(), TESTING_STATE);
         stateChooser.setDefaultOption(IDLE_STATE.name(), IDLE_STATE);
+        state = IDLE_STATE;
         
         for (MechanismState state : enumClass.getEnumConstants()) {
             stateChooser.addOption(state.name(), state);

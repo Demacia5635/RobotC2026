@@ -16,15 +16,13 @@ public class ShooterConstants {
 
     public class FlywheelConstants {
         public static final double FLYWHEEL_DELIVERY_KP = 2;
-        public static final double FLYWHEEL_MAX_CURRENT = 10;
         public static final double FLYWHEEL_ALLOWED_ERROR = 1;
         public static final double FLYWHEEL_DELIVERY_ALLOWED_ERROR = 1;
-        
 
         public static final String FLYWHEEL_MOTOR_NAME = "flywheel motor";
         public static final int FLYWHEEL_MOTOR_ID = 30;
         public static final Canbus FLYWHEEL_MOTOR_CANBUS = Canbus.Rio;
-        public static final boolean FLYWHEEL_IS_BREAKE = false;
+        public static final boolean FLYWHEEL_IS_BRAKE = false;
         public static final boolean FLYWHEEL_IS_INVERT = true;
         public static final double FLYWHEEL_GEAR_RATIO = 1;
         public static final double FLYWHEEL_DIAMETER = 1;
@@ -38,7 +36,7 @@ public class ShooterConstants {
         public static final double KV2 = 0.00162;
         public static final double FLYWHEEL_RAMP_TIME = 0.6;
         public static final TalonFXConfig FLYWHEEL_MOTOR_CONFIG = new TalonFXConfig(FLYWHEEL_MOTOR_ID, FLYWHEEL_MOTOR_CANBUS, FLYWHEEL_MOTOR_NAME)
-        .withBrake(FLYWHEEL_IS_BREAKE)
+        .withBrake(FLYWHEEL_IS_BRAKE)
         .withInvert(FLYWHEEL_IS_INVERT)
         .withMeterMotor(FLYWHEEL_GEAR_RATIO, FLYWHEEL_DIAMETER)
         .withPID(KP, KI, KD, KS, KV, KA, KG)
@@ -47,21 +45,22 @@ public class ShooterConstants {
 
     }
 
-    public class hoodConstants {
-        public static final double HOOD_MIN_ANGLE = 0;
-        public static final double HOOD_MAX_ANGLE = 60;
+    public class HoodConstants {
+        public static final double HOOD_MIN_ANGLE = Math.toRadians(0);
+        public static final double HOOD_MAX_ANGLE = Math.toRadians(60);
         public static final double HOOD_MAX_LOWERING_TIME = 0.5;
+        public static final double HOOD_MAX_CURRENT = 10;
         public static final double HOOD_CALIBRATION_POWER = -0.2;
         public static final double HOOD_ALLOWED_ERROR = Math.toRadians(4);
 
         public static final String HOOD_MOTOR_NAME = "hood motor";
         public static final int HOOD_MOTOR_ID = 34;
         public static final Canbus HOOD_MOTOR_CANBUS = Canbus.Rio;
-        public static final boolean HOOD_IS_BREAKE = true;
+        public static final boolean HOOD_IS_BRAKE = true;
         public static final boolean HOOD_IS_INVERT = true;
         public static final double HOOD_GEAR_RATIO = 72;
         public static final double KP = 60;
-        public static final double KI = 6;
+        public static final double KI = 0;
         public static final double KD = 0;
         public static final double KS = 0.06;
         public static final double KV = 1.05;
@@ -71,7 +70,7 @@ public class ShooterConstants {
         public static final double HOOD_MAX_ACCELERATION = 30;
         public static final double HOOD_MAX_JERK = 240;
         public static final TalonFXConfig HOOD_MOTOR_CONFIG = new TalonFXConfig(HOOD_MOTOR_ID, HOOD_MOTOR_CANBUS, HOOD_MOTOR_NAME)
-        .withBrake(HOOD_IS_BREAKE)
+        .withBrake(HOOD_IS_BRAKE)
         .withInvert(HOOD_IS_INVERT)
         .withRadiansMotor(HOOD_GEAR_RATIO)
         .withPID(KP, KI, KD, KS, KV, KA, KG)
@@ -80,6 +79,19 @@ public class ShooterConstants {
         public static final String HOOD_LIMIT_SWICH_NAME = "hood limit swich";
         public static final int HOOD_LIMIT_SWICH_CHANNEL = 5;
         public static final LimitSwitchConfig HOOD_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(HOOD_LIMIT_SWICH_CHANNEL, HOOD_LIMIT_SWICH_NAME);  
+    }
+
+    public final static class FeederConstants {
+        public static final double FEEDER_MAX_POWER = 1;
+
+        public static final String FEEDER_NAME = "feeder motor";
+        public static final int  FEEDER_ID = 33;
+        public static final Canbus FEEDER_CANBUS = Canbus.Rio;
+        public static final boolean FEEDER_IS_BRAKE = true;
+        public static final boolean FEEDER_IS_INVERT = true;
+        public static final TalonFXConfig FEEDER_MOTOR_CONFIG = new TalonFXConfig(FEEDER_ID, FEEDER_CANBUS, FEEDER_NAME)
+        .withBrake(FEEDER_IS_BRAKE)
+        .withInvert(FEEDER_IS_INVERT);
     }
 
     public static enum ShooterStates implements MechanismState {

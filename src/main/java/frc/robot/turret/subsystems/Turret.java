@@ -5,6 +5,7 @@ import static frc.robot.turret.TurretConstants.*;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.mechanisms.StateBaseMechanism;
 import frc.demacia.utils.motors.MotorInterface;
 import frc.demacia.utils.motors.TalonFXMotor;
@@ -22,6 +23,7 @@ public class Turret extends StateBaseMechanism{
     private static Turret turret;
     private double wantedTurretAngle;
 
+    @SuppressWarnings("unchecked")
     public Turret() {
         super(TURRET_NAME, 
         new MotorInterface[] {
@@ -33,10 +35,11 @@ public class Turret extends StateBaseMechanism{
         TurretStates.class);
 
         addLimit(TURRET_MOTOR_NAME, TURRET_MIN_ANGLE, TURRET_MAX_ANGLE); 
-        withPowerCommand(() -> RobotContainer.controller.getRightX());
+        withPowerCommand(TURRET_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
         withOutoCalibration(TURRET_MOTOR_NAME, () -> isAtMinLimit(), TURRET_MIN_ANGLE);
 
         SmartDashboard.putData(TURRET_NAME + "/turret Calibration Command", new TurretCalibrationCommand(this));
+        LogManager.addEntry(getName() + "/is turret ready", () -> isReady()).build();
     }
 
     public static Turret getInstance() {
@@ -70,7 +73,7 @@ public class Turret extends StateBaseMechanism{
     }
 
     public boolean isReady() {
-        if (((TurretStates) state).equals(TurretStates.DELIVERY)){
+        if (state == TurretStates.DELIVERY){
             return isReady(TURRET_MOTOR_NAME, TURRET_ALLOWED_ERROR) && !isHubInTheWay(RobotCommon.getDeliveryPose());
         }
         return isReady(TURRET_MOTOR_NAME, TURRET_ALLOWED_ERROR);

@@ -9,7 +9,8 @@ public class ShooterCommand extends DefaultCommand{
     public ShooterCommand() {
         super(Shooter.getInstance(), new ControlMode[] {
             ControlMode.VELOCITY,
-            ControlMode.ANGLE
+            ControlMode.ANGLE,
+            ControlMode.DUTYCYCLE
         });
     }
 }

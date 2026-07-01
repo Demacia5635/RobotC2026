@@ -1,7 +1,7 @@
 package frc.robot.shooter.commands;
 
 import frc.demacia.utils.mechanisms.CalibrationCommand;
-import static frc.robot.shooter.ShooterConstants.hoodConstants.*;
+import static frc.robot.shooter.ShooterConstants.HoodConstants.*;
 import frc.robot.shooter.subsystems.Shooter;
 
 public class HoodCalibrationCommand extends CalibrationCommand{

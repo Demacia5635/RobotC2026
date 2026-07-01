@@ -17,7 +17,7 @@ public class TurretConstants {
     public static final String TURRET_MOTOR_NAME = "turret motor";
     public static final int TURRET_MOTOR_ID = 20;
     public static final Canbus TURRET_MOTOR_CANBUS = Canbus.Rio;
-    public static final boolean TURRET_IS_BREAKE = false;
+    public static final boolean TURRET_IS_BRAKE = false;
     public static final boolean TURRET_IS_INVERT = false;
     public static final double TURRET_GEAR_RATIO = 48.0*112.0/27.0;
     public static final double KP = 40;
@@ -31,7 +31,7 @@ public class TurretConstants {
     public static final double TURRET_MAX_ACCELERATION = 20;
     public static final double TURRET_MAX_JERK = 50;
     public static final TalonFXConfig TURRET_MOTOR_CONFIG = new TalonFXConfig(TURRET_MOTOR_ID, TURRET_MOTOR_CANBUS, TURRET_MOTOR_NAME)
-    .withBrake(TURRET_IS_BREAKE)
+    .withBrake(TURRET_IS_BRAKE)
     .withInvert(TURRET_IS_INVERT)
     .withRadiansMotor(TURRET_GEAR_RATIO)
     .withPID(KP, KI, KD, KS, KV, KA, KG)
