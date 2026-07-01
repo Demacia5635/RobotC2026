@@ -42,7 +42,7 @@ public class RobotContainer implements Sendable {
   private Intack intack;
   private Shinua shinua;
 
-  public static CommandController controller = new CommandController(0, ControllerType.kPS5);
+  public static CommandController controller = new CommandController(0, ControllerType.kXbox);
   // public static Turret turret;
   public static DriveCommand driveCommand;
 

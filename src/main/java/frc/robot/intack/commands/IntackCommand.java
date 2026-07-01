@@ -20,7 +20,7 @@ public class IntackCommand extends DefaultCommand{
     public void execute() {
         if (Intack.getInstance().getState().equals(IntackStates.INTAKING) && Intack.getInstance().isReady(INTACK_DEPLOY_MOTOR_NAME ,INTACK_DEPLOY_ALLOWED_ERROR)){
             Intack.getInstance().setPower(INTACK_DEPLOY_MOTOR_NAME, 
-                Intack.getInstance().distanceFromTarget() * 0.05);
+                0.1 + Intack.getInstance().distanceFromTarget() * 0.02);
             controls[1].run();
         } else if (Intack.getInstance().getState().equals(IntackStates.CLOSED) && Intack.getInstance().isReady(INTACK_DEPLOY_MOTOR_NAME ,INTACK_DEPLOY_ALLOWED_ERROR)) {
             Intack.getInstance().stop(INTACK_DEPLOY_MOTOR_NAME);

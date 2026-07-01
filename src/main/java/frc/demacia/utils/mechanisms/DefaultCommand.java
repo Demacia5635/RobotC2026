@@ -52,9 +52,10 @@ public class DefaultCommand extends Command {
   public void execute() {
     if (mechanism.getState().equals(mechanism.IDLE_STATE)){
       mechanism.stop();
-    }
-    for (int i = 0; i < length; i++) {
-      controls[i].run();
+    } else {
+      for (int i = 0; i < length; i++) {
+        controls[i].run();
+      }
     }
   }
 
