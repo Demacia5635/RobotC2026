@@ -28,35 +28,16 @@ public class DefaultCommand extends Command {
     length = Math.min(motors.length, controlModes.length);
     controls = new Runnable[length];
     for (int i = 0; i < length; i++) {
-      switch (controlModes[i]) {
-        case DUTYCYCLE:
-          final int powerIndex = i;
-          controls[i] = () -> mechanism.setPower(powerIndex, mechanism.getValue(powerIndex));
-          break;
-        case VOLTAGE:
-          final int voltageIndex = i;
-          controls[i] = () -> mechanism.setVoltage(voltageIndex, mechanism.getValue(voltageIndex));
-          break;
-        case VELOCITY:
-          final int velocityIndex = i;
-          controls[i] = () -> mechanism.setVelocity(velocityIndex, mechanism.getValue(velocityIndex));
-          break;
-        case POSITION_VOLTAGE:
-          final int positionVoltageIndex = i;
-          controls[i] = () -> mechanism.setPositionVoltage(positionVoltageIndex, mechanism.getValue(positionVoltageIndex));
-          break;
-        case MAGIC_MOTION:
-          final int motionIndex = i;
-          controls[i] = () -> mechanism.setMotion(motionIndex, mechanism.getValue(motionIndex));
-          break;
-        case ANGLE:
-          final int angleIndex = i;
-          controls[i] = () -> mechanism.setAngle(angleIndex, mechanism.getValue(angleIndex));
-          break;
-        default:
-          controls[i] = () -> {};
-          break;
-      }
+      final int index = i;
+      controls[i] = switch (controlModes[i]) {
+        case DUTYCYCLE -> () -> mechanism.setPower(index, mechanism.getValue(index));
+        case VOLTAGE -> () -> mechanism.setVoltage(index, mechanism.getValue(index));
+        case VELOCITY -> () -> mechanism.setVelocity(index, mechanism.getValue(index));
+        case POSITION_VOLTAGE -> () -> mechanism.setPositionVoltage(index, mechanism.getValue(index));
+        case MAGIC_MOTION -> () -> mechanism.setMotion(index, mechanism.getValue(index));
+        case ANGLE -> () -> mechanism.setAngle(index, mechanism.getValue(index));
+        default -> () -> {};
+      };
   }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(mechanism);

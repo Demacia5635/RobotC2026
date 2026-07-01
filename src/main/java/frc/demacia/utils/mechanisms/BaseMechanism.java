@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
-import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.MotorInterface;
 import frc.demacia.utils.sensors.SensorInterface;
@@ -380,7 +379,7 @@ public class BaseMechanism extends SubsystemBase{
             max);
     }
 
-    public boolean isReady(double allowedArror){
+    public boolean isReady(double allowedError){
         for (MotorInterface motor : motors.values()){
             switch (motor.getCurrentControlMode()) {
                 case DISABLE:
@@ -388,22 +387,22 @@ public class BaseMechanism extends SubsystemBase{
                 case DUTYCYCLE:
                     break;
                 case VOLTAGE:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVoltage()) > allowedArror){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVoltage()) > allowedError){
                         return false;
                     }
                     break;
                 case VELOCITY:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVelocity()) > allowedArror){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVelocity()) > allowedError){
                         return false;
                     }
                     break;
                 case POSITION_VOLTAGE, MAGIC_MOTION:
-                        if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentPosition()) > allowedArror){
+                        if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentPosition()) > allowedError){
                             return false;
                         }
                     break;
                 case ANGLE:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentAngle()) > allowedArror){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentAngle()) > allowedError){
                         return false;
                     }
                     break;
@@ -414,7 +413,7 @@ public class BaseMechanism extends SubsystemBase{
         return true;
     }
     
-    public boolean isReady(String motorName ,double allowedArror){
+    public boolean isReady(String motorName ,double allowedError){
         if (!isValidMotor(motorName)){
             LogManager.log("Invalid motor: " + motorName);
             return false;
@@ -425,22 +424,22 @@ public class BaseMechanism extends SubsystemBase{
             case DUTYCYCLE:
                 break;
             case VOLTAGE:
-                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentVoltage()) > allowedArror){
+                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentVoltage()) > allowedError){
                     return false;
                 }
                 break;
             case VELOCITY:
-                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentVelocity()) > allowedArror){
+                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentVelocity()) > allowedError){
                     return false;
                 }
                 break;
             case POSITION_VOLTAGE, MAGIC_MOTION:
-                    if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentPosition()) > allowedArror){
+                    if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentPosition()) > allowedError){
                         return false;
                     }
                 break;
             case ANGLE:
-                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentAngle()) > allowedArror){
+                if (Math.abs(wantedValues.get(motorName) - motors.get(motorName).getCurrentAngle()) > allowedError){
                     return false;
                 }
                 break;

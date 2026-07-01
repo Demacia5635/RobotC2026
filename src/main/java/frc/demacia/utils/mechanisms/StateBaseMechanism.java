@@ -39,12 +39,9 @@ public class StateBaseMechanism extends BaseMechanism {
      * Sets all motor targets to 0.
      */
     public final MechanismState IDLE_STATE = new MechanismState() {
+        double[] idleValues = new double[motorsAmounts];
         @Override 
         public double[] getValues() { 
-            double[] idleValues = new double[motorsAmounts];
-            for (int i = 0; i < idleValues.length; i++){
-                idleValues[i] = 0;
-            }
             return idleValues; 
         }
         @Override

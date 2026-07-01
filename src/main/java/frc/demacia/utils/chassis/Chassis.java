@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaOdometry;
-import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
 import frc.robot.RobotCommon;
 
