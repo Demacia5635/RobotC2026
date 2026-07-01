@@ -17,7 +17,7 @@ public class RobotCommon {
 
     public static Translation2d getHubPose(){
         if(isRed()) return Field.HubRed.CENTER;
-        else return Field.HubRed.CENTER; 
+        else return Field.HubBlue.CENTER; 
     }
 
     public static Translation2d getDeliveryPose() {

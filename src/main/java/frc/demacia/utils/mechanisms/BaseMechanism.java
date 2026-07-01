@@ -1,6 +1,7 @@
 package frc.demacia.utils.mechanisms;
 
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -35,6 +36,7 @@ public class BaseMechanism extends SubsystemBase{
     /** Map of motors limits belonging to this mechanism, keyed by their name */
     protected HashMap<String, Pair<Double, Double>> motorLimits;
     protected HashMap<String, Double> wantedValues;
+    protected Runnable outoCalibration;
 
     protected String[] motorNames;
     protected String[] sensorNames;
@@ -100,11 +102,12 @@ public class BaseMechanism extends SubsystemBase{
         }
 
         hasCalibrated = true;
+        outoCalibration = () -> {};
     }
 
     public void withPowerCommand(DoubleSupplier powerSupplier) {
         for (int i = 0; i < motorsAmounts; i++){
-            SmartDashboard.putData(getName() + "/" + motorNames[i] + "/set power " + motorNames[i], 
+            SmartDashboard.putData(getName() + "/" + motorNames[i] + "/set power command " + motorNames[i], 
                 new PowerCommand(this, motorNames[i], powerSupplier));
         }
     }
@@ -127,7 +130,7 @@ public class BaseMechanism extends SubsystemBase{
     /**
      * @return true if the mechanism is calibrated and ready for control, false otherwise.
      */
-    public boolean getCalibration(){
+    public boolean getIsCalibration(){
         return hasCalibrated;
     }
 
@@ -177,6 +180,18 @@ public class BaseMechanism extends SubsystemBase{
 
     public void addLimitMin(int motorIndex, double min) {
         addLimitMin(motorNames[motorIndex], min);
+    }
+
+    public void withOutoCalibration(String motorName, BooleanSupplier atLimit, double resetPos) {
+        outoCalibration = () -> {
+            if (!getIsCalibration() && atLimit.getAsBoolean()){
+                getMotor(motorName).setEncoderPosition(resetPos);
+                setCalibration(true);
+            }
+        };
+        SmartDashboard.putData(getName() + "/" +getMotor(motorName).getName() + " menual reset", new InstantCommand(() -> {
+            getMotor(motorName).setEncoderPosition(resetPos);
+            setCalibration(true);}));
     }
 
     /**
@@ -379,30 +394,35 @@ public class BaseMechanism extends SubsystemBase{
             max);
     }
 
-    public boolean isReady(double allowedError){
-        for (MotorInterface motor : motors.values()){
+    public boolean isReady(double[] allowedErrors){
+        if (allowedErrors.length != motorsAmounts){
+            LogManager.log("errors amount is not the motors amounts");
+            return true;
+        }
+        for (int i = 0; i < motorsAmounts; i++){
+            MotorInterface motor = getMotor(i);
             switch (motor.getCurrentControlMode()) {
                 case DISABLE:
                     break;
                 case DUTYCYCLE:
                     break;
                 case VOLTAGE:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVoltage()) > allowedError){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVoltage()) > allowedErrors[i]){
                         return false;
                     }
                     break;
                 case VELOCITY:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVelocity()) > allowedError){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentVelocity()) > allowedErrors[i]){
                         return false;
                     }
                     break;
                 case POSITION_VOLTAGE, MAGIC_MOTION:
-                        if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentPosition()) > allowedError){
+                        if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentPosition()) > allowedErrors[i]){
                             return false;
                         }
                     break;
                 case ANGLE:
-                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentAngle()) > allowedError){
+                    if (Math.abs(wantedValues.get(motor.getName()) - motor.getCurrentAngle()) > allowedErrors[i]){
                         return false;
                     }
                     break;
@@ -634,5 +654,9 @@ public class BaseMechanism extends SubsystemBase{
      */
     protected boolean isValidSensor(int sensorIndex) {
         return isValidSensor(sensorNames[sensorIndex]);
+    }
+
+    public void periodic() {
+        outoCalibration.run();
     }
 }

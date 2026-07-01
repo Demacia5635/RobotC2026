@@ -11,7 +11,7 @@ public class TurretConstants {
     public static final String TURRET_NAME = "turret";
     public static final double TURRET_MIN_ANGLE = Math.toRadians(-207);
     public static final double TURRET_MAX_ANGLE = Math.toRadians(133);
-    public static final double TURRET_CALIBRATION_POWER = 0.2;
+    public static final double TURRET_CALIBRATION_POWER = -0.2;
     public static final double TURRET_ALLOWED_ERROR = Math.toRadians(6);
     
     public static final String TURRET_MOTOR_NAME = "turret motor";
@@ -37,9 +37,9 @@ public class TurretConstants {
     .withPID(KP, KI, KD, KS, KV, KA, KG)
     .withMotionParam(TURRET_MAX_VELOCITY, TURRET_MAX_ACCELERATION, TURRET_MAX_JERK);
         
-    public static final int TURRET_LIMIT_SWICH_CHANNEL = 8;
     public static final String TURRET_LIMIT_SWICH_NAME = "turret limit swich";
-    public static final LimitSwitchConfig TURRET_LIMIT_SWITCH = new LimitSwitchConfig(TURRET_LIMIT_SWICH_CHANNEL, TURRET_LIMIT_SWICH_NAME);
+    public static final int TURRET_LIMIT_SWICH_CHANNEL = 8;
+    public static final LimitSwitchConfig TURRET_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(TURRET_LIMIT_SWICH_CHANNEL, TURRET_LIMIT_SWICH_NAME);
     
     public static enum TurretStates implements MechanismState {
         SHOOTING,

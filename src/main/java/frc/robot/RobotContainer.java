@@ -16,6 +16,8 @@ import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
+import frc.robot.shooter.commands.ShooterCommand;
+import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.commands.TurretCommand;
 import frc.robot.turret.subsystems.Turret;
 
@@ -32,6 +34,7 @@ public class RobotContainer implements Sendable {
 
   // The robot's subsystems and commands are defined here...
   private Turret turret;
+  private Shooter shooter;
 
   public static CommandController controller = new CommandController(0, ControllerType.kPS5);
   // public static Turret turret;
@@ -45,6 +48,7 @@ public class RobotContainer implements Sendable {
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     turret = Turret.getInstance();
+    shooter = Shooter.getInstance();
 
     configureBindings();
     setDefaultCommands();
@@ -73,6 +77,7 @@ public class RobotContainer implements Sendable {
   private void setDefaultCommands() {
     Chassis.getInstance().setDefaultCommand(driveCommand);
     turret.setDefaultCommand(new TurretCommand());
+    shooter.setDefaultCommand(new ShooterCommand());
   }
 
   private void setController() {
@@ -81,7 +86,7 @@ public class RobotContainer implements Sendable {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    // builder.addBooleanProperty("", () -> , () ->  = )
+    builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
   }
 
   /**

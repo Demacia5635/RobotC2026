@@ -13,9 +13,7 @@ import frc.demacia.utils.sensors.SensorInterface;
 import frc.robot.Field;
 import frc.robot.RobotCommon;
 import frc.robot.RobotContainer;
-import frc.robot.Field.DELIVERY;
-import frc.robot.shooter.ShooterConstants;
-import frc.robot.turret.TurretConstants;
+import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCalibrationCommand;
 
@@ -30,14 +28,15 @@ public class Turret extends StateBaseMechanism{
             new TalonFXMotor(TURRET_MOTOR_CONFIG)
         }, 
         new SensorInterface[] {
-            new LimitSwitch(TURRET_LIMIT_SWITCH)
+            new LimitSwitch(TURRET_LIMIT_SWITCH_CONFIG)
         }, 
         TurretStates.class);
 
         addLimit(TURRET_MOTOR_NAME, TURRET_MIN_ANGLE, TURRET_MAX_ANGLE); 
         withPowerCommand(() -> RobotContainer.controller.getRightX());
+        withOutoCalibration(TURRET_MOTOR_NAME, () -> isAtMinLimit(), TURRET_MIN_ANGLE);
 
-        SmartDashboard.putData("turret Calibration Command", new TurretCalibrationCommand(this));
+        SmartDashboard.putData(TURRET_NAME + "/turret Calibration Command", new TurretCalibrationCommand(this));
     }
 
     public static Turret getInstance() {
@@ -50,12 +49,10 @@ public class Turret extends StateBaseMechanism{
     public double[] getTurretAngle() {
         switch ((TurretStates) state) {
             case SHOOTING:
-                double shooterToHubAngle = shooterToPoseAngle(RobotCommon.getHubPose());
-                wantedTurretAngle = shooterToHubAngle - Chassis.getInstance().getGyroAngle().getRadians();
+                wantedTurretAngle = getTurretAngle(RobotCommon.getHubPose());
                 break;
             case DELIVERY:
-                double shooterToDeliveryAngle = shooterToPoseAngle(RobotCommon.getDeliveryPose());
-                wantedTurretAngle = shooterToDeliveryAngle - Chassis.getInstance().getGyroAngle().getRadians();
+                wantedTurretAngle = getTurretAngle(RobotCommon.getDeliveryPose());
                 break;
             default:
                 wantedTurretAngle = 0;
@@ -63,24 +60,24 @@ public class Turret extends StateBaseMechanism{
         }
         return new double[] {wantedTurretAngle};
     }
-
-    private Translation2d shooterToPose(Translation2d point) {
-        return point.minus(Chassis.getInstance().getFuturePose(ShooterConstants.FUTURE_TIME).getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle())));
-    }
     
     private double shooterToPoseAngle(Translation2d point) {
-        return shooterToPose(point).getAngle().getRadians()-(RobotCommon.isRed()?180:0);
-    } // TODO move to shooter
+        return Shooter.getInstance().shooterToPose(point).getAngle().getRadians()-(RobotCommon.isRed()?180:0);
+    }
+
+    private double getTurretAngle(Translation2d point) {
+        return shooterToPoseAngle(point) - Chassis.getInstance().getGyroAngle().getRadians();
+    }
 
     public boolean isReady() {
         if (((TurretStates) state).equals(TurretStates.DELIVERY)){
-            return isReady(TurretConstants.TURRET_ALLOWED_ERROR) && !isHubInTheWay(RobotCommon.getDeliveryPose());
+            return isReady(TURRET_MOTOR_NAME, TURRET_ALLOWED_ERROR) && !isHubInTheWay(RobotCommon.getDeliveryPose());
         }
-        return isReady(TurretConstants.TURRET_ALLOWED_ERROR);
+        return isReady(TURRET_MOTOR_NAME, TURRET_ALLOWED_ERROR);
     }
 
     public boolean isHubInTheWay(Translation2d point) {
-        Translation2d shooterToHub = shooterToPose(RobotCommon.getHubPose());
+        Translation2d shooterToHub = Shooter.getInstance().shooterToPose(RobotCommon.getHubPose());
 
         double hubHalfAngle = Math.asin((Field.HubRed.WIDTH / 2.0) / shooterToHub.getNorm());
 
