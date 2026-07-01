@@ -1,0 +1,819 @@
+{
+    "version": 1.0,
+    "grid_size": 128,
+    "tabs": [
+      {
+        "name": "Teleoperated",
+        "grid_layout": {
+          "layouts": [],
+          "containers": []
+        }
+      },
+      {
+        "name": "Autonomous",
+        "grid_layout": {
+          "layouts": [],
+          "containers": []
+        }
+      },
+      {
+        "name": "Shooter+turret",
+        "grid_layout": {
+          "layouts": [],
+          "containers": [
+            {
+              "title": "flywheel motor targetValue: ",
+              "x": 256.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shooter/flywheel motor/flywheel motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "flywheel motor wanted value: ",
+              "x": 384.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shooter/flywheel motor/flywheel motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "hood motor targetValue: ",
+              "x": 256.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shooter/hood motor/hood motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "hood motor wanted value: ",
+              "x": 384.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shooter/hood motor/hood motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "distence from hub",
+              "x": 256.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shooter/distence from hub",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "turret motor targetValue: ",
+              "x": 768.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/turret/turret motor/turret motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "turret motor wanted value: ",
+              "x": 896.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/turret/turret motor/turret motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "field",
+              "x": 0.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 512.0,
+              "type": "Field",
+              "properties": {
+                "topic": "/SmartDashboard/chassis/field",
+                "period": 0.06,
+                "field_game": "Reefscape",
+                "robot_width": 0.85,
+                "robot_length": 0.85,
+                "show_other_objects": true,
+                "show_trajectories": true,
+                "field_rotation": 90.0,
+                "robot_color": 4294198070,
+                "trajectory_color": 4294967295
+              }
+            },
+            {
+              "title": "set brake flywheel motor",
+              "x": 512.0,
+              "y": 128.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/flywheel motor/set brake flywheel motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set coast flywheel motor",
+              "x": 512.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/flywheel motor/set coast flywheel motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set power command flywheel motor",
+              "x": 512.0,
+              "y": 256.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/flywheel motor/set power command flywheel motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set coast hood motor",
+              "x": 512.0,
+              "y": 384.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/hood motor/set coast hood motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake hood motor",
+              "x": 512.0,
+              "y": 512.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/hood motor/set brake hood motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set power command hood motor",
+              "x": 512.0,
+              "y": 640.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/hood motor/set power command hood motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "shooter State Chooser",
+              "x": 384.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "ComboBox Chooser",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/shooter State Chooser",
+                "period": 0.06,
+                "sort_options": false
+              }
+            },
+            {
+              "title": "shooter State",
+              "x": 256.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/shooter State",
+                "period": 0.06,
+                "data_type": "string",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "shooter Test Values",
+              "x": 384.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/shooter Test Values",
+                "period": 0.06,
+                "data_type": "double[]",
+                "show_submit_button": true
+              }
+            },
+            {
+              "title": "hood Calibration Command",
+              "x": 256.0,
+              "y": 512.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/hood Calibration Command",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "hood motor menual reset",
+              "x": 256.0,
+              "y": 640.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shooter/hood motor menual reset",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "turret Calibration Command",
+              "x": 768.0,
+              "y": 384.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret Calibration Command",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "turret State Chooser",
+              "x": 768.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "ComboBox Chooser",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret State Chooser",
+                "period": 0.06,
+                "sort_options": false
+              }
+            },
+            {
+              "title": "set coast turret motor",
+              "x": 1024.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret motor/set coast turret motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake turret motor",
+              "x": 1024.0,
+              "y": 128.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret motor/set brake turret motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set power command turret motor",
+              "x": 1024.0,
+              "y": 256.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret motor/set power command turret motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "turret motor menual reset",
+              "x": 768.0,
+              "y": 512.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret motor menual reset",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "turret State",
+              "x": 896.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret State",
+                "period": 0.06,
+                "data_type": "string",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "turret Test Values",
+              "x": 768.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/turret/turret Test Values",
+                "period": 0.06,
+                "data_type": "double[]",
+                "show_submit_button": true
+              }
+            },
+            {
+              "title": "is red",
+              "x": 0.0,
+              "y": 512.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Toggle Switch",
+              "properties": {
+                "topic": "/SmartDashboard/RC/is red",
+                "period": 0.06,
+                "data_type": "boolean"
+              }
+            },
+            {
+              "title": "is shooter ready",
+              "x": 256.0,
+              "y": 768.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/Log/shooter/is shooter ready",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "is turret ready",
+              "x": 768.0,
+              "y": 640.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/Log/turret/is turret ready",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Intack+shinua",
+        "grid_layout": {
+          "layouts": [],
+          "containers": [
+            {
+              "title": "intack deploy motor targetValue: ",
+              "x": 0.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/intack/intack deploy motor/intack deploy motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "intack deploy motor wanted value: ",
+              "x": 128.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/intack/intack deploy motor/intack deploy motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "rollers motor targetValue: ",
+              "x": 0.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/intack/rollers motor/rollers motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "rollers motor wanted value: ",
+              "x": 128.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/intack/rollers motor/rollers motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "is intack ready",
+              "x": 0.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/Log/intack/is intack ready",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "IntackDeploy Calibration Command",
+              "x": 0.0,
+              "y": 512.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/IntackDeploy Calibration Command",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "intack State Chooser",
+              "x": 0.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "ComboBox Chooser",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack State Chooser",
+                "period": 0.06,
+                "sort_options": false
+              }
+            },
+            {
+              "title": "set coast intack deploy motor",
+              "x": 256.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack deploy motor/set coast intack deploy motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake intack deploy motor",
+              "x": 256.0,
+              "y": 128.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack deploy motor/set brake intack deploy motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set power command intack deploy motor",
+              "x": 256.0,
+              "y": 256.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack deploy motor/set power command intack deploy motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "intack deploy motor menual reset",
+              "x": 0.0,
+              "y": 640.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack deploy motor menual reset",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set coast rollers motor",
+              "x": 256.0,
+              "y": 384.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/rollers motor/set coast rollers motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake rollers motor",
+              "x": 256.0,
+              "y": 512.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/rollers motor/set brake rollers motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set power command rollers motor",
+              "x": 256.0,
+              "y": 640.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/intack/rollers motor/set power command rollers motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "intack State",
+              "x": 128.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack State",
+                "period": 0.06,
+                "data_type": "string",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "intack Test Values",
+              "x": 128.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/intack/intack Test Values",
+                "period": 0.06,
+                "data_type": "double[]",
+                "show_submit_button": true
+              }
+            },
+            {
+              "title": "mechanom motor targetValue: ",
+              "x": 512.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shinua/mechanom motor/mechanom motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "mechanom motor wanted value: ",
+              "x": 640.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shinua/mechanom motor/mechanom motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "shinua rollers motor targetValue: ",
+              "x": 512.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shinua/shinua rollers motor/shinua rollers motor targetValue: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "shinua rollers motor wanted value: ",
+              "x": 640.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/Log/shinua/shinua rollers motor/shinua rollers motor wanted value: ",
+                "period": 0.06,
+                "data_type": "float",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "set coast mechanom motor",
+              "x": 768.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/mechanom motor/set coast mechanom motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake mechanom motor",
+              "x": 768.0,
+              "y": 128.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/mechanom motor/set brake mechanom motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set coast shinua rollers motor",
+              "x": 768.0,
+              "y": 256.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/shinua rollers motor/set coast shinua rollers motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "set brake shinua rollers motor",
+              "x": 768.0,
+              "y": 384.0,
+              "width": 256.0,
+              "height": 128.0,
+              "type": "Command",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/shinua rollers motor/set brake shinua rollers motor",
+                "period": 0.06,
+                "show_type": true
+              }
+            },
+            {
+              "title": "shinua State",
+              "x": 640.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/shinua State",
+                "period": 0.06,
+                "data_type": "string",
+                "show_submit_button": false
+              }
+            },
+            {
+              "title": "shinua Test Values",
+              "x": 512.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Text Display",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/shinua Test Values",
+                "period": 0.06,
+                "data_type": "double[]",
+                "show_submit_button": true
+              }
+            },
+            {
+              "title": "shinua State Chooser",
+              "x": 512.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "ComboBox Chooser",
+              "properties": {
+                "topic": "/SmartDashboard/shinua/shinua State Chooser",
+                "period": 0.06,
+                "sort_options": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
