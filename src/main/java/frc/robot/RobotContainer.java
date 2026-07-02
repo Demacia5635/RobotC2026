@@ -55,6 +55,7 @@ public class RobotContainer implements Sendable {
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
     ledManager = new LedManager();
+    StateManger.getInstance();
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     turret = Turret.getInstance();
@@ -87,11 +88,11 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(driveCommand);
-    turret.setDefaultCommand(new TurretCommand());
-    shooter.setDefaultCommand(new ShooterCommand());
-    intack.setDefaultCommand(new IntackCommand());
-    shinua.setDefaultCommand(new ShinuaCommand());
+    // Chassis.getInstance().setDefaultCommand(driveCommand);
+    // turret.setDefaultCommand(new TurretCommand());
+    // shooter.setDefaultCommand(new ShooterCommand());
+    // intack.setDefaultCommand(new IntackCommand());
+    // shinua.setDefaultCommand(new ShinuaCommand());
   }
 
   private void setController() {

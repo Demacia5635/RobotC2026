@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotCommon.Shifts;
 import frc.robot.intack.IntackConstants.IntackStates;
@@ -24,7 +26,7 @@ public class StateManger extends SubsystemBase{
     private boolean wasInAllianceZone = false;
 
     private StateManger() {
-        
+        SmartDashboard.putData("State Manager", this);
     }
 
     public static StateManger getInstance() {
@@ -206,7 +208,29 @@ public class StateManger extends SubsystemBase{
         }
     }
 
-    public static double getTimeLeft(){
+    public Boolean isRedHub() {
+        double time = DriverStation.getMatchTime();
+
+        if (time < 0) {
+            return false;
+        }
+
+        boolean autoWinnerIsRed = isRedWonAuto; 
+
+        if (time > 105) {
+            return !autoWinnerIsRed; 
+        } else if (time > 80) {
+            return autoWinnerIsRed; 
+        } else if (time > 55) {
+            return !autoWinnerIsRed;
+        } else if (time > 30) {
+            return autoWinnerIsRed; 
+        } else {
+            return true; 
+        }
+    }
+
+    public double getTimeLeft(){
         double time = DriverStation.getMatchTime();
         return time;
     }
@@ -218,5 +242,8 @@ public class StateManger extends SubsystemBase{
         if (RobotState.isTeleop()){
             updateShift();
         }
+        SmartDashboard.putNumber("Time Left", getTimeLeft());
+        SmartDashboard.putNumber("shift time left", getShiftTimeLeft());
+        SmartDashboard.putData("reset Shift", new InstantCommand(() -> resetShift()).ignoringDisable(true));
     }
 }

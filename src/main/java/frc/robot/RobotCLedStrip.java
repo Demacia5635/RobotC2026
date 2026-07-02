@@ -12,7 +12,7 @@ import frc.robot.shooter.subsystems.Shooter;
 import frc.robot.turret.subsystems.Turret;
 
 public class RobotCLedStrip extends LedStrip{
-    private final double TIME_TO_BLINK = 5;
+    private final double TIME_TO_BLINK = 7;
     
     public RobotCLedStrip(LedManager ledManager) {
         super("Robot C Strip",  LedConstants.LENGTH, ledManager);
@@ -38,14 +38,16 @@ public class RobotCLedStrip extends LedStrip{
 
         double clampedTime = Math.max(0, Math.min(timeLeft, shiftMaxTime));
 
-        int activeLeds = (int) ((clampedTime / shiftMaxTime) * size);
+        int activeLeds = (int) Math.ceil(((clampedTime / shiftMaxTime) * (size-2)));
 
         Color[] ledBuffer = new Color[size];
-        for (int i = 0; i < size; i++) {
-            if (i < activeLeds) {
+        ledBuffer[0] = Color.kPurple;
+        ledBuffer[size-1] = Color.kPurple;
+        for (int i = 1; i < size-1; i++) {
+            if (i-1 < activeLeds) {
                 ledBuffer[i] = currentColor;
             } else {
-                ledBuffer[i] = Color.kBlack;
+                ledBuffer[i] = Color.kWhite;
             }
         }
 
@@ -63,14 +65,7 @@ public class RobotCLedStrip extends LedStrip{
             return Color.kPurple;
         }
         
-        boolean isOurHub = StateManger.getInstance().isOurHub();
-        boolean areWeRed = RobotCommon.getIsRed();
-        
-        if (isOurHub) {
-            return areWeRed ? Color.kRed : Color.kBlue;
-        } else {
-            return areWeRed ? Color.kBlue : Color.kRed;
-        }
+        return StateManger.getInstance().isRedHub() ? Color.kRed : Color.kBlue;
     }
 
     private double shiftMaxTime() {
