@@ -33,7 +33,7 @@ public class Intack extends StateBaseMechanism{
 
         addLimit(INTACK_DEPLOY_MOTOR_NAME, INTACK_DEPLOY_MIN_ANGLE, INTACK_DEPLOY_MAX_ANGLE); 
         withPowerCommand(INTACK_DEPLOY_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
-        withOutoCalibration(INTACK_DEPLOY_MOTOR_NAME, () -> isAtMinLimit(), INTACK_DEPLOY_MIN_ANGLE);
+        withAutoCalibration(INTACK_DEPLOY_MOTOR_NAME, () -> isAtMinLimit(), INTACK_DEPLOY_MIN_ANGLE);
 
         SmartDashboard.putData(INTACK_NAME + "/IntackDeploy Calibration Command", new IntackDeployCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is intack ready", () -> isReady()).build();
@@ -47,7 +47,7 @@ public class Intack extends StateBaseMechanism{
     }
 
     public double distanceFromTarget() {
-        return Math.abs(wantedValues.get(INTACK_DEPLOY_MOTOR_NAME) - motors.get(INTACK_DEPLOY_MOTOR_NAME).getCurrentPosition());
+        return Math.abs(motors.get(INTACK_DEPLOY_MOTOR_NAME).wantedValue - motors.get(INTACK_DEPLOY_MOTOR_NAME).motor.getCurrentPosition());
     }
 
     public boolean isReady() {

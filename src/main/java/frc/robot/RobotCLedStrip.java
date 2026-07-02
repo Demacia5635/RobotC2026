@@ -23,9 +23,9 @@ public class RobotCLedStrip extends LedStrip{
     @Override
     public void periodic() {
         if (RobotState.isDisabled()) {
-            boolean isCalibrated = Shooter.getInstance().getIsCalibration() &&
-                Turret.getInstance().getIsCalibration() &&
-                Intack.getInstance().getIsCalibration(); 
+            boolean isCalibrated = Shooter.getInstance().getIsCalibrationAll() &&
+                Turret.getInstance().getIsCalibrationAll() &&
+                Intack.getInstance().getIsCalibrationAll(); 
             setColor(isCalibrated ? Color.kGreen : Color.kWhite);
             return;
         }

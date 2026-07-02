@@ -25,6 +25,7 @@ public class Shooter extends StateBaseMechanism{
     private double wantedFlywheelVelocity;
     private double wantedHoodAngle;
     private double wantedFeederPower;
+    private double[] vals;
 
     @SuppressWarnings("unchecked")
     public Shooter() {
@@ -41,11 +42,12 @@ public class Shooter extends StateBaseMechanism{
 
         addLimit(HOOD_MOTOR_NAME, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
         withPowerCommand(() -> RobotContainer.controller.getRightX());
-        withOutoCalibration(HOOD_MOTOR_NAME, () -> isAtMinLimit(), HOOD_MIN_ANGLE);
+        withAutoCalibration(HOOD_MOTOR_NAME, () -> isAtMinLimit(), HOOD_MIN_ANGLE);
 
         SmartDashboard.putData(SHOOTER_NAME + "/hood Calibration Command", new HoodCalibrationCommand(this));
         LogManager.addEntry(getName() + "/distence from hub", () -> getHubDistacse()).build();
         LogManager.addEntry(getName() + "/is shooter ready", () -> isReady()).build();
+        vals = new double[3];
     }
 
     public static Shooter getInstance() {
@@ -101,7 +103,10 @@ public class Shooter extends StateBaseMechanism{
         if (shuoldLowerHood()) {
             wantedHoodAngle = 0;
         }
-        return new double[] {wantedFlywheelVelocity, wantedHoodAngle, wantedFeederPower};
+        vals[0] = wantedFlywheelVelocity;
+        vals[1] = wantedHoodAngle;
+        vals[2] = wantedFeederPower;
+        return vals;
     }
 
     public boolean isReady() {
@@ -114,6 +119,6 @@ public class Shooter extends StateBaseMechanism{
     }
 
     public boolean isAtMinLimit() {
-        return ((LimitSwitch) getSensor(HOOD_LIMIT_SWICH_NAME)).get() || (getMotor(HOOD_MOTOR_NAME).getCurrentCurrent() > HOOD_MAX_CURRENT && !getIsCalibration());
+        return ((LimitSwitch) getSensor(HOOD_LIMIT_SWICH_NAME)).get() || (getMotor(HOOD_MOTOR_NAME).getCurrentCurrent() > HOOD_MAX_CURRENT && !getIsCalibration(HOOD_MOTOR_NAME));
     }
 }

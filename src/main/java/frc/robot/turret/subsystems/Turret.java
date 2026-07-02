@@ -21,7 +21,7 @@ import frc.robot.turret.commands.TurretCalibrationCommand;
 
 public class Turret extends StateBaseMechanism{
     private static Turret turret;
-    private double wantedTurretAngle;
+    private double[] wantedTurretAngle;
 
     @SuppressWarnings("unchecked")
     public Turret() {
@@ -36,10 +36,11 @@ public class Turret extends StateBaseMechanism{
 
         addLimit(TURRET_MOTOR_NAME, TURRET_MIN_ANGLE, TURRET_MAX_ANGLE); 
         withPowerCommand(TURRET_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
-        withOutoCalibration(TURRET_MOTOR_NAME, () -> isAtMinLimit(), TURRET_MIN_ANGLE);
+        withAutoCalibration(TURRET_MOTOR_NAME, () -> isAtMinLimit(), TURRET_MIN_ANGLE);
 
         SmartDashboard.putData(TURRET_NAME + "/turret Calibration Command", new TurretCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is turret ready", () -> isReady()).build();
+        wantedTurretAngle = new double[1];
     }
 
     public static Turret getInstance() {
@@ -52,16 +53,16 @@ public class Turret extends StateBaseMechanism{
     public double[] getTurretAngle() {
         switch ((TurretStates) state) {
             case SHOOTING:
-                wantedTurretAngle = getTurretAngle(RobotCommon.getHubPose());
+                wantedTurretAngle[0] = getTurretAngle(RobotCommon.getHubPose());
                 break;
             case DELIVERY:
-                wantedTurretAngle = getTurretAngle(RobotCommon.getDeliveryPose());
+                wantedTurretAngle[0] = getTurretAngle(RobotCommon.getDeliveryPose());
                 break;
             default:
-                wantedTurretAngle = 0;
+                wantedTurretAngle[0] = 0;
                 break;
         }
-        return new double[] {wantedTurretAngle};
+        return wantedTurretAngle;
     }
     
     private double shooterToPoseAngle(Translation2d point) {
