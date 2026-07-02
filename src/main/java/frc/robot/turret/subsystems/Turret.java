@@ -65,7 +65,7 @@ public class Turret extends StateBaseMechanism{
     }
     
     private double shooterToPoseAngle(Translation2d point) {
-        return Shooter.getInstance().shooterToPose(point).getAngle().getRadians()-(RobotCommon.isRed()?180:0);
+        return Shooter.getInstance().shooterToPose(point).getAngle().getRadians()-(RobotCommon.getIsRed()?180:0);
     }
 
     private double getTurretAngle(Translation2d point) {

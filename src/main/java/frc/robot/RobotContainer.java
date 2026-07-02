@@ -9,12 +9,14 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
+import frc.demacia.utils.leds.LedManager;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intack.commands.IntackCommand;
 import frc.robot.intack.subsystems.Intack;
@@ -37,13 +39,14 @@ import frc.robot.turret.subsystems.Turret;
 public class RobotContainer implements Sendable {
 
   // The robot's subsystems and commands are defined here...
+  public static CommandController controller = new CommandController(0, ControllerType.kPS5);
+  public static LedManager ledManager;
+  
   private Turret turret;
   private Shooter shooter;
   private Intack intack;
   private Shinua shinua;
-
-  public static CommandController controller = new CommandController(0, ControllerType.kXbox);
-  // public static Turret turret;
+  
   public static DriveCommand driveCommand;
 
   /**
@@ -51,13 +54,14 @@ public class RobotContainer implements Sendable {
    */
   public RobotContainer() {
     SmartDashboard.putData("RC", this);
+    ledManager = new LedManager();
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     turret = Turret.getInstance();
     shooter = Shooter.getInstance();
     intack = Intack.getInstance();
     shinua = Shinua.getInstance();
-
+    new RobotCLedStrip(ledManager);
     configureBindings();
     setDefaultCommands();
     setController();
@@ -91,12 +95,12 @@ public class RobotContainer implements Sendable {
   }
 
   private void setController() {
-    
+    controller.downButton().onTrue(new InstantCommand(() -> StateManger.getInstance().toggleAction()));
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addBooleanProperty("is red", () -> RobotCommon.isRed(), (isRed) -> RobotCommon.setIsRed(isRed));
+    builder.addBooleanProperty("is red", () -> RobotCommon.getIsRed(), (isRed) -> RobotCommon.setIsRed(isRed));
   }
 
   /**

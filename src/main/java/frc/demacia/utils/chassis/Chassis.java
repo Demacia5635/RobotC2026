@@ -188,12 +188,12 @@ public class Chassis extends SubsystemBase {
     }
 
     public void restGyro() {
-        double gyroAngle = !RobotCommon.isRed() ? 0 : 180;
+        double gyroAngle = !RobotCommon.getIsRed() ? 0 : 180;
         gyro.setYaw(gyroAngle);
     }
 
     public void resrtGyro180() {
-        double gyroAngle = !RobotCommon.isRed() ? 180 : 0;
+        double gyroAngle = !RobotCommon.getIsRed() ? 180 : 0;
         gyro.setYaw(gyroAngle);
     }
 

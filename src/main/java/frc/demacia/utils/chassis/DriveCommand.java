@@ -24,7 +24,7 @@ public class DriveCommand extends Command {
   public DriveCommand(Chassis chassis, CommandController controller) {
     this.chassis = chassis;
     this.controller = controller;
-    precisionMode = true;
+    precisionMode = false;
     addRequirements(Chassis.getInstance());
   }
 
@@ -56,14 +56,14 @@ public class DriveCommand extends Command {
       return;
     }
 
-    direction = RobotCommon.isRed() ? 1 : -1;
+    direction = RobotCommon.getIsRed() ? 1 : -1;
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
     
     // Calculate r]otation from trigger axes
     double rot = Math.abs(controller.getRightX()) < 0.01 ? 
     controller.getRightTrigger() - controller.getLeftTrigger() : 
-    controller.getRightY();
+    controller.getRightX();
     // double rot = controller.getRightTrigger() - controller.getLeftTrigger();
     
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);

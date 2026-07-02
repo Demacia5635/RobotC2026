@@ -139,6 +139,14 @@ public class StateBaseMechanism extends BaseMechanism {
         this.state = state;
     }
 
+    public void setStateIdle() {
+        state = IDLE_STATE;
+    }
+
+    public void setStateTesting() {
+        state = TESTING_STATE;
+    }
+
     /**
      * @return The current state of the mechanism
      */

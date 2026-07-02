@@ -194,6 +194,7 @@ public class BaseMechanism extends SubsystemBase{
                 setCalibration(true);
             }
         };
+        hasCalibrated = false;
         SmartDashboard.putData(getName() + "/" +getMotor(motorName).getName() + " menual reset", new InstantCommand(() -> {
             getMotor(motorName).setEncoderPosition(resetPos);
             setCalibration(true);}));

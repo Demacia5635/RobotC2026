@@ -30,10 +30,10 @@ public class ShinuaConstants {
     }
 
     public static enum ShinuaStates implements MechanismState {
-        SHINUA_ON(-0.1, 1),
-        EJECTING(-0.3, 0.1),
-        ONLY_ROLLERS(-0.2, 0),
-        INTACKING(-0.6, 0.3);
+        SHINUA_ON(-0.05, 1),
+        EJECTING(-0.15, 0.2),
+        ONLY_ROLLERS(-0.1, 0),
+        INTACKING(-0.3, 0.3);
 
         public double[] values;
 
