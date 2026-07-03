@@ -133,6 +133,8 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
         LogManager.addEntry(name + ": abs Position",
                 () -> getCurrentAbsPosition()).withLogLevel(LogLevel.LOG_AND_NT)
                 .withIsSeparated(false).build();
+        LogManager.addEntry(name + ": is Connected", () -> isConnected())
+            .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
     }
 
     /**
@@ -209,6 +211,7 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("CANcoder");
+        builder.addBooleanProperty("is Connected", this::isConnected, null);
         builder.addDoubleProperty("Abs Position", this::getCurrentAbsPosition, null);
         builder.addDoubleProperty("Position", this::getCurrentPosition, null);
         builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);

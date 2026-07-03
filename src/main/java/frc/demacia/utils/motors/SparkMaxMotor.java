@@ -339,6 +339,25 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     return getOutputCurrent();
   }
 
+  public double getCurrentValue() {
+    switch (controlMode) {
+      case DISABLE:
+        return 0;
+      case DUTYCYCLE:
+        return 0;
+      case VOLTAGE:
+        return getCurrentVoltage();
+      case VELOCITY:
+        return getCurrentVelocity();
+      case POSITION_VOLTAGE, MAGIC_MOTION:
+        return getCurrentPosition();
+      case ANGLE:
+        return getCurrentAngle();
+      default:
+        return 0;
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Spark Motor");

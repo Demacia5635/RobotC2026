@@ -31,6 +31,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaOdometry;
+import frc.demacia.utils.dashboard.ElasticGenerator;
+import frc.demacia.utils.sensors.Cancoder;
 import frc.demacia.utils.sensors.Pigeon;
 import frc.robot.RobotCommon;
 
@@ -104,17 +106,13 @@ public class Chassis extends SubsystemBase {
         demaciaKinematics = new DemaciaKinematics(modulePositions);
         wpilibKinematics = new SwerveDriveKinematics(modulePositions);
 
-        // ── אתחול SwerveDrivePoseEstimator ──────────────────────────────────
-        // stateStdDevs   = רמת אמון באודומטרי    (קטן יותר = סומכים יותר)
-        // visionStdDevs  = רמת אמון בוויז'ן      (גדול יותר = סומכים פחות)
         poseEstimator = new SwerveDrivePoseEstimator(
                 wpilibKinematics,
                 getGyroAngle(),
                 getModulePositions(),
-                new Pose2d(),                          // מיקום התחלתי
-                VecBuilder.fill(0.03, 0.03, 0.01),    // stateStdDevs: x, y, theta
-                VecBuilder.fill(0.9, 0.9, 0.9));       // visionStdDevs: x, y, theta
-        // ────────────────────────────────────────────────────────────────────
+                new Pose2d(),
+                VecBuilder.fill(0.03, 0.03, 0.01),
+                VecBuilder.fill(0.9, 0.9, 0.9));
 
         field = new Field2d();
         fieldTesting = new Field2d();
@@ -136,30 +134,24 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("chassis/reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+        Cancoder[] cancoders = new Cancoder[4];
+        for (int i = 0; i < 4; i++) {
+            cancoders[i] = modules[i].cancoder;
+        }
+        ElasticGenerator.getInstance().registerChassisGyro(gyro);
+        ElasticGenerator.getInstance().registerChassisCancoders(cancoders);
     }
 
-    // ── Vision: קריאה חיצונית להוספת מדידת מצלמה ──────────────────────────
-    /**
-     * קוראים לפונקציה הזו מה-Vision subsystem / כל מקום שמקבל Pose מהקמרה.
-     *
-     * @param visionPose  ה-Pose שהחישוב הוויזואלי קיבל
-     * @param timestampSeconds  חותמת זמן של המדידה (Timer.getFPGATimestamp())
-     */
     public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
         poseEstimator.addVisionMeasurement(visionPose, timestampSeconds);
     }
 
-    /**
-     * גרסה עם סטיות תקן מותאמות אישית – שימושי כשרוצים לשנות אמון
-     * לפי מרחק מה-AprilTag.
-     */
     public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds,
                                      edu.wpi.first.math.Matrix<edu.wpi.first.math.numbers.N3,
                                              edu.wpi.first.math.numbers.N1> stdDevs) {
         poseEstimator.addVisionMeasurement(visionPose, timestampSeconds, stdDevs);
     }
-    // ────────────────────────────────────────────────────────────────────────
-
 
     public void resetMudolse(){
         for (int i = 0; i < modules.length; i++) {
@@ -379,16 +371,13 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // ── עדכון Pose Estimator בכל לופ ────────────────────────────────────
         poseEstimator.update(getGyroAngle(), getModulePositions());
-        // ────────────────────────────────────────────────────────────────────
 
         SmartDashboard.putNumber("chassis/gyro angle", getGyroAngle().getDegrees());
 
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
 
-        // DemaciaOdometry נשמר להשוואה בלבד
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
     }
 

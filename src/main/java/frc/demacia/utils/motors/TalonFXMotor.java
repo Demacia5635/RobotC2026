@@ -31,7 +31,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.demacia.utils.Data;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
@@ -67,8 +69,10 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   Data<Voltage> voltageSignal;
   Data<Current> currentSignal;
 
-  double wantedValue = 0.0;
+  double wantedValue;
   ControlMode controlMode = ControlMode.DISABLE;
+
+  double testPower;
   // Motor Stalling
   private final Timer stallTimer = new Timer();
   private boolean conditionActive = false;
@@ -91,6 +95,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     setName(name);
     SmartDashboard.putData("motors/" + name,this);
     LogManager.log(name + " motor initialized");
+    ElasticGenerator.getInstance().registerMotor(this);
   }
 
   public TalonFXConfig getConfig() {
@@ -264,8 +269,15 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
         () -> getCurrentControlModeInteger())
         .withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
         .withIsSeparated(false).build();
-    LogManager.addEntry(name + ": wanted value", () -> getWantedValue())
+    LogManager.addEntry(name + ": wanted value", () -> getWantedValue(), 
+      () -> getCurrentValue())
         .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
+    LogManager.addEntry(name + ": is Connected", () -> isConnected())
+        .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
+    
+    SmartDashboard.putData("motors/" + name + "/test power command", new StartEndCommand(
+      () -> setDuty(testPower),
+      () -> stop()));
   }
 
   @Override
@@ -460,9 +472,29 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     return value != null ? value : 0.0;
   }
 
+  public double getCurrentValue() {
+    switch (controlMode) {
+      case DISABLE:
+        return 0;
+      case DUTYCYCLE:
+        return getDutyCycle().getValueAsDouble();
+      case VOLTAGE:
+        return getCurrentVoltage();
+      case VELOCITY:
+        return getCurrentVelocity();
+      case POSITION_VOLTAGE, MAGIC_MOTION:
+        return getCurrentPosition();
+      case ANGLE:
+        return getCurrentAngle();
+      default:
+        return 0;
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Talon Motor");
+    builder.addBooleanProperty("Is" + name + "Connected", this::isConnected, null);
     builder.addDoubleProperty("CloseLoopError", this::getCurrentClosedLoopError, null);
     builder.addDoubleProperty("Position", this::getCurrentPosition, null);
     builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);
@@ -472,8 +504,10 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     if (config.isRadiansMotor) {
       builder.addDoubleProperty("Angle", this::getCurrentAngle, null);
     }
+    builder.addDoubleProperty("Value", this::getCurrentValue, null);
     builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
-    builder.addDoubleProperty("Wanted Value", this::getWantedValue, null);
+    builder.addDoubleProperty(" Wanted Value", this::getWantedValue, null);
+    builder.addDoubleProperty("test Power", () -> testPower, (testPower) -> this.testPower = testPower);
   }
 
   /**

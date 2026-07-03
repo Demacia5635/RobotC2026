@@ -243,6 +243,25 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
         return getStatorCurrent();
     }
 
+    public double getCurrentValue() {
+      switch (controlMode) {
+        case DISABLE:
+          return 0;
+        case DUTYCYCLE:
+          return 0;
+        case VOLTAGE:
+          return getCurrentVoltage();
+        case VELOCITY:
+          return getCurrentVelocity();
+        case POSITION_VOLTAGE, MAGIC_MOTION:
+          return getCurrentPosition();
+        case ANGLE:
+          return getCurrentAngle();
+        default:
+          return 0;
+      }
+    }
+
     @Override
     public void setEncoderPosition(double position) {
         setSelectedSensorPosition(position * config.motorRatio);

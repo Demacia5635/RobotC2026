@@ -332,6 +332,25 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
   public double getCurrentCurrent() {
     return getOutputCurrent();
   }
+
+  public double getCurrentValue() {
+    switch (controlMode) {
+      case DISABLE:
+        return 0;
+      case DUTYCYCLE:
+        return 0;
+      case VOLTAGE:
+        return getCurrentVoltage();
+      case VELOCITY:
+        return getCurrentVelocity();
+      case POSITION_VOLTAGE, MAGIC_MOTION:
+        return getCurrentPosition();
+      case ANGLE:
+        return getCurrentAngle();
+      default:
+        return 0;
+    }
+  }
     
   /**
    * Creates a command to configure PID and FeedForward parameters via the Dashboard.

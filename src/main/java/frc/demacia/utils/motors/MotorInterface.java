@@ -141,6 +141,8 @@ public interface MotorInterface extends Sendable {
 
     /** @return The current stator current (Amps) */
     double getCurrentCurrent();
+    
+    double getCurrentValue();
 
     /**
      * Checks for hardware faults and logs them.

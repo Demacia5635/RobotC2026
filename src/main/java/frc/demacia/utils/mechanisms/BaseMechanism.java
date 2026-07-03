@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.MotorInterface;
 import frc.demacia.utils.sensors.SensorInterface;
@@ -102,6 +103,7 @@ public class BaseMechanism extends SubsystemBase{
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
         
         SmartDashboard.putData(name, this);
+        ElasticGenerator.getInstance().registerMechanism(this);
     }
 
     /**
@@ -764,6 +766,8 @@ public class BaseMechanism extends SubsystemBase{
 
         for (int i = 0; i < motorsAmount; i++){
             SmartDashboard.putBoolean(getName() + "/" + motorNames[i] + "/" + motorNames[i] + " has Calibrated", getIsCalibration(i));
+            SmartDashboard.putNumber(getName() + "/" + motorNames[i] + "/" + motorNames[i] + " wanted value", motors.get(motorNames[i]).motor.getWantedValue());
+            SmartDashboard.putNumber(getName() + "/" + motorNames[i] + "/" + motorNames[i] + " current Value", motors.get(motorNames[i]).motor.getCurrentVoltage());
         }
     }
 }
