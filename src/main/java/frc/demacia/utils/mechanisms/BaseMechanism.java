@@ -8,7 +8,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.MotorInterface;
 import frc.demacia.utils.sensors.SensorInterface;
@@ -34,7 +33,6 @@ public class BaseMechanism extends SubsystemBase{
         public MotorInterface motor;
         public double minLimit = Double.NEGATIVE_INFINITY;
         public double maxLimit = Double.POSITIVE_INFINITY;
-        public double wantedValue = 0.0;
         
         public boolean hasCalibrated = true;
         public Runnable autoCalibration = () -> {};
@@ -56,8 +54,8 @@ public class BaseMechanism extends SubsystemBase{
     protected String[] motorNames;
     protected String[] sensorNames;
 
-    protected int motorsAmounts;
-    protected int sensorsAmounts;
+    protected int motorsAmount;
+    protected int sensorsAmount;
 
     /**
      * Constructs a new BaseMechanism.
@@ -66,26 +64,25 @@ public class BaseMechanism extends SubsystemBase{
      * @param motors Array of motors to register
      * @param sensors Array of sensors to register
      */
-    @SuppressWarnings("unchecked")
     public BaseMechanism(String name, MotorInterface[] motors, SensorInterface[] sensors) {
         this.name = name;
         setName(name);
-        motorsAmounts =  motors == null ? 0 : motors.length;
-        sensorsAmounts = sensors == null ? 0 : sensors.length;
+        motorsAmount =  motors == null ? 0 : motors.length;
+        sensorsAmount = sensors == null ? 0 : sensors.length;
         
         // Initialize motors
-        motorNames = new String[motorsAmounts];
+        motorNames = new String[motorsAmount];
         this.motors = new HashMap<>();
         
-        for (int i = 0; i < motorsAmounts; i++){
+        for (int i = 0; i < motorsAmount; i++){
             motorNames[i] = motors[i].getName();
             this.motors.put(motors[i].getName(), new MotorNode(motors[i]));
         }
 
         // Initialize sensors map
-        sensorNames = new String[sensorsAmounts];
+        sensorNames = new String[sensorsAmount];
         this.sensors = new HashMap<>();
-        for (int i = 0; i < sensorsAmounts; i++){
+        for (int i = 0; i < sensorsAmount; i++){
             sensorNames[i] = sensors[i].getName();
             this.sensors.put(sensors[i].getName(), sensors[i]);
         }
@@ -105,12 +102,6 @@ public class BaseMechanism extends SubsystemBase{
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
         
         SmartDashboard.putData(name, this);
-
-        for (int i = 0; i < motorsAmounts; i++){
-            final int index = i;
-            LogManager.addEntry(getName() + "/" + motorNames[i] + "/" + motorNames[i] + " wanted value: ", () -> this.motors.get(motorNames[index]).wantedValue)
-            .withIsSeparated(true).withLogLevel(LogLevel.LOG_AND_NT).build();
-        }
     }
 
     /**
@@ -118,7 +109,7 @@ public class BaseMechanism extends SubsystemBase{
      * * @param powerSupplier The supplier for the power value
      */
     public void withPowerCommand(DoubleSupplier powerSupplier) {
-        for (int i = 0; i < motorsAmounts; i++){
+        for (int i = 0; i < motorsAmount; i++){
             SmartDashboard.putData(getName() + "/" + motorNames[i] + "/set power command " + motorNames[i], 
                 new PowerCommand(this, motorNames[i], powerSupplier));
         }
@@ -307,10 +298,11 @@ public class BaseMechanism extends SubsystemBase{
         };
         node.hasCalibrated = false;
         
-        SmartDashboard.putData(getName() + "/" + node.motor.getName() + " manual reset", new InstantCommand(() -> {
+        SmartDashboard.putData(getName() + "/" + motorName + "/" + motorName + " manual reset", new InstantCommand(() -> {
             node.motor.setEncoderPosition(resetPos);
             node.hasCalibrated = true;
-        }));
+            LogManager.log(node.hasCalibrated);
+        }).ignoringDisable(true));
     }
 
     /**
@@ -320,7 +312,6 @@ public class BaseMechanism extends SubsystemBase{
         if (motors == null) return;
         for (MotorNode node : motors.values()){
             node.motor.stop();
-            node.wantedValue = 0.0;
         }
     }
 
@@ -332,7 +323,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null) {
             node.motor.stop();
-            node.wantedValue = 0.0;
         } else {
             LogManager.log("Invalid motor: " + motorName);
         }
@@ -354,7 +344,6 @@ public class BaseMechanism extends SubsystemBase{
         if (motors == null) return;
         for (MotorNode node : motors.values()){
             node.motor.setDuty(power);
-            node.wantedValue = power;
         }
     }
 
@@ -367,7 +356,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null) {
             node.motor.setDuty(power);
-            node.wantedValue = power;
         }
     }
 
@@ -389,7 +377,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null) {
             node.motor.setVoltage(voltage);
-            node.wantedValue = voltage;
         }
     }
 
@@ -411,7 +398,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null) {
             node.motor.setVelocity(velocity);
-            node.wantedValue = velocity;
         }
     }
 
@@ -434,7 +420,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null && node.hasCalibrated) {
             node.motor.setPositionVoltage(clampInLimits(node, position));
-            node.wantedValue = position;
         }
     }
 
@@ -458,7 +443,6 @@ public class BaseMechanism extends SubsystemBase{
         MotorNode node = motors.get(motorName);
         if (node != null && node.hasCalibrated) {
             node.motor.setMotion(clampInLimits(node, position));
-            node.wantedValue = position;
         }
     }
 
@@ -483,7 +467,6 @@ public class BaseMechanism extends SubsystemBase{
         if (node != null && node.hasCalibrated) {
             double targetAngle = clampAngleInLimits(node, angle);
             node.motor.setMotion(targetAngle);
-            node.wantedValue = targetAngle;
         }
     }
 
@@ -537,36 +520,15 @@ public class BaseMechanism extends SubsystemBase{
      * @return true if all motors are within their allowed error, false otherwise
      */
     public boolean isReady(double[] allowedErrors){
-        if (allowedErrors.length != motorsAmounts){
+        if (allowedErrors.length != motorsAmount){
             LogManager.log("errors amount is not the motors amounts");
             return true;
         }
-        for (int i = 0; i < motorsAmounts; i++){
+        for (int i = 0; i < motorsAmount; i++){
             MotorNode node = motors.get(motorNames[i]);
             MotorInterface motor = node.motor;
-            switch (motor.getCurrentControlMode()) {
-                case DISABLE:
-                    break;
-                case DUTYCYCLE:
-                    break;
-                case VOLTAGE:
-                    if (Math.abs(node.wantedValue - motor.getCurrentVoltage()) > allowedErrors[i]){
-                        return false;
-                    }
-                    break;
-                case VELOCITY:
-                    if (Math.abs(node.wantedValue - motor.getCurrentVelocity()) > allowedErrors[i]){
-                        return false;
-                    }
-                    break;
-                case POSITION_VOLTAGE:
-                case MAGIC_MOTION, ANGLE:
-                        if (Math.abs(node.wantedValue - motor.getCurrentPosition()) > allowedErrors[i]){
-                            return false;
-                        }
-                    break;
-                default:
-                    break;
+            if (!motor.isReady(allowedErrors[i])){
+                return false;
             }
         }
         return true;
@@ -587,32 +549,7 @@ public class BaseMechanism extends SubsystemBase{
         
         MotorInterface motor = node.motor;
 
-        switch (motor.getCurrentControlMode()) {
-            case DISABLE:
-                break;
-            case DUTYCYCLE:
-                break;
-            case VOLTAGE:
-                if (Math.abs(node.wantedValue - motor.getCurrentVoltage()) > allowedError){
-                    return false;
-                }
-                break;
-            case VELOCITY:
-                if (Math.abs(node.wantedValue - motor.getCurrentVelocity()) > allowedError){
-                    return false;
-                }
-                break;
-            case POSITION_VOLTAGE:
-            case MAGIC_MOTION:
-            case ANGLE:
-                    if (Math.abs(node.wantedValue - motor.getCurrentPosition()) > allowedError){
-                        return false;
-                    }
-                break;
-            default:
-                break;
-        }
-        return true;
+        return motor.isReady(allowedError);
     }
 
     /**
@@ -741,8 +678,8 @@ public class BaseMechanism extends SubsystemBase{
      * * @return An array of MotorInterface objects
      */
     public MotorInterface[] getMotors() {
-        MotorInterface[] motorArray = new MotorInterface[motorsAmounts];
-        for (int i = 0; i < motorsAmounts; i++){
+        MotorInterface[] motorArray = new MotorInterface[motorsAmount];
+        for (int i = 0; i < motorsAmount; i++){
             motorArray[i] = motors.get(motorNames[i]).motor;
         }
         return motorArray;
@@ -776,8 +713,8 @@ public class BaseMechanism extends SubsystemBase{
      * * @return An array of SensorInterface objects
      */
     public SensorInterface[] getSensors() {
-        SensorInterface[] sensorArray = new SensorInterface[sensorsAmounts];
-        for (int i = 0; i < sensorsAmounts; i++){
+        SensorInterface[] sensorArray = new SensorInterface[sensorsAmount];
+        for (int i = 0; i < sensorsAmount; i++){
             sensorArray[i] = sensors.get(sensorNames[i]);
         }
         return sensorArray;
@@ -823,6 +760,10 @@ public class BaseMechanism extends SubsystemBase{
     public void periodic() {
         for (MotorNode node : motors.values()) {
             node.autoCalibration.run();
+        }
+
+        for (int i = 0; i < motorsAmount; i++){
+            SmartDashboard.putBoolean(getName() + "/" + motorNames[i] + "/" + motorNames[i] + " has Calibrated", getIsCalibration(i));
         }
     }
 }

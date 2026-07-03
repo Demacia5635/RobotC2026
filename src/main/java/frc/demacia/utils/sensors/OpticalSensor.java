@@ -1,6 +1,7 @@
 package frc.demacia.utils.sensors;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 
@@ -37,6 +38,7 @@ public class OpticalSensor extends AnalogInput implements SensorInterface {
 		name = config.name;
         setName(name);
         addLog();
+        SmartDashboard.putData("sensors/" + config.name, this);
 		LogManager.log(name + " Optical Sensor initialized");
     }
     

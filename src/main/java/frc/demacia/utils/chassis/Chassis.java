@@ -119,7 +119,7 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         fieldTesting = new Field2d();
 
-        SmartDashboard.putData("field odometry", fieldOdmetry);
+        SmartDashboard.putData("chassis/field odometry", fieldOdmetry);
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
@@ -130,10 +130,10 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-        SmartDashboard.putData("reset odmetry",
+        SmartDashboard.putData("chassis/reset odmetry",
                 new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
                         .resetPose(getPose())).ignoringDisable(true));
-        SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
+        SmartDashboard.putData("chassis/reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -383,23 +383,13 @@ public class Chassis extends SubsystemBase {
         poseEstimator.update(getGyroAngle(), getModulePositions());
         // ────────────────────────────────────────────────────────────────────
 
-        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
+        SmartDashboard.putNumber("chassis/gyro angle", getGyroAngle().getDegrees());
 
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
 
         // DemaciaOdometry נשמר להשוואה בלבד
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
-
-        double[] accel = getAcceleration();
-        SmartDashboard.putNumber("accel/ax", accel[0]);
-        SmartDashboard.putNumber("accel/ay", accel[1]);
-        SmartDashboard.putNumber("accel/alpha (from kinematics)", accel[2]);
-        SmartDashboard.putNumber("accel/alpha (from gyro)", getAngularAcceleration());
-
-        SmartDashboard.putNumber("pose/x", getPose().getX());
-        SmartDashboard.putNumber("pose/y", getPose().getY());
-        SmartDashboard.putNumber("pose/heading", getPose().getRotation().getDegrees());
     }
 
     public Pose2d getFuturePose(double dtSeconds) {

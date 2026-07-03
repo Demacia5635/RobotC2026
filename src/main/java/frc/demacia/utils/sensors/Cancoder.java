@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.Data;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
@@ -80,6 +81,7 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
         configCancoder();
         setStatusSignals();
         addLog();
+        SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " cancoder initialized");
     }
 
@@ -129,8 +131,8 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
     private void addLog() {
         Data.addSignals(config.canbus.equals(Canbus.Rio), absPositionSignal);
         LogManager.addEntry(name + ": abs Position",
-                () -> absPositionSignal.getValueAsDouble() * 2 * Math.PI).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
-                .build();
+                () -> getCurrentAbsPosition()).withLogLevel(LogLevel.LOG_AND_NT)
+                .withIsSeparated(false).build();
     }
 
     /**

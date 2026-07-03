@@ -2,6 +2,7 @@ package frc.demacia.utils.sensors;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
@@ -50,6 +51,7 @@ public class ColorSensor extends ColorSensorV3 implements ColorSensorInterface {
         addDefaultColors();
         addLog();
 
+        SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " color sensor initialized");
      
     }

@@ -1,6 +1,7 @@
 package frc.demacia.utils.sensors;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 
@@ -46,6 +47,7 @@ public class AnalogEncoder extends edu.wpi.first.wpilibj.AnalogEncoder implement
         setName(config.name);
         configEncoder();
         addLog();
+        SmartDashboard.putData("sensors/" + config.name, this);
         LogManager.log(getName() + " analog encoder initialized");
     }
 

@@ -105,7 +105,7 @@ public class MK5nChassisConstansRobotC {
         /* Back Right Offset: */  0.316895 * 2 * Math.PI
       });
 
-  public static final PigeonConfig PIGEON_CONFIG = new PigeonConfig(PIGEON_ID, PIGEON_CAN_BUS, NAME + "/pigeon");
+  public static final PigeonConfig PIGEON_CONFIG = new PigeonConfig(PIGEON_ID, PIGEON_CAN_BUS, NAME + " pigeon");
 
   public static final ChassisConfig CHASSIS_CONFIG = new ChassisConfig(
       NAME,

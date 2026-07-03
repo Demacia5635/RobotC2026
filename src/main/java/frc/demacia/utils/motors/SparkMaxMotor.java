@@ -36,6 +36,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   private ClosedLoopSlot closedLoopSlot = ClosedLoopSlot.kSlot0;
   private ControlType controlType = ControlType.kDutyCycle;
 
+  double wantedValue = 0.0;
   private ControlMode controlMode = ControlMode.DISABLE;
   
   // Variables for manual velocity/acceleration calculation
@@ -177,16 +178,20 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     return super.clearFaults();
   }
 
+  public double getWantedValue() {
+    return wantedValue;
+  }
+
   @Override
   public void setDuty(double power) {
     super.set(power);
     controlType = ControlType.kDutyCycle;
     if (power == 0){
       controlMode = ControlMode.DISABLE;
-  } else {
+    } else {
       controlMode = ControlMode.DUTYCYCLE;
-  }
-  }
+    }
+    }
 
   @Override
   public void setVoltage(double voltage) {
@@ -368,7 +373,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
       configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/PID+FF config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");
@@ -479,5 +484,38 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void stop(){
       stopMotor();
       controlMode = ControlMode.DISABLE;
+  }
+    
+  /**
+   * Checks if a specific motor has reached its target value within a specified tolerance.
+   * * @param motorName The name of the motor
+   * @param allowedError The allowable tolerance
+   * @return true if the motor is within tolerance, false otherwise
+   */
+  public boolean isReady(double allowedError){
+    switch (getCurrentControlMode()) {
+      case DISABLE:
+        break;
+      case DUTYCYCLE:
+        break;
+      case VOLTAGE:
+        if (Math.abs(getWantedValue() - getCurrentVoltage()) > allowedError){
+          return false;
+        }
+          break;
+      case VELOCITY:
+        if (Math.abs(getWantedValue() - getCurrentVelocity()) > allowedError){
+          return false;
+        }
+        break;
+      case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
+        if (Math.abs(getWantedValue() - getCurrentPosition()) > allowedError){
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+    return true;
   }
 }

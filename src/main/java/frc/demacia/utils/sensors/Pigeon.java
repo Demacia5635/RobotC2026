@@ -7,6 +7,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.Data;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
@@ -89,6 +90,7 @@ public class Pigeon extends Pigeon2 implements SensorInterface{
         configPigeon();
         setStatusSignals();
         addLog();
+        SmartDashboard.putData("sensors/" + config.name, this);
 		LogManager.log(name + " pigeon initialized");
     }
 
@@ -151,7 +153,8 @@ public class Pigeon extends Pigeon2 implements SensorInterface{
             () -> yawSignal.getValueAsDouble() * 2 * Math.PI,
             () -> pitchSignal.getValueAsDouble() * 2 * Math.PI,
             () -> rollSignal.getValueAsDouble() * 2 * Math.PI
-        ).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP).build();
+        ).withLogLevel(LogLevel.LOG_AND_NT)
+        .withIsSeparated(false).build();
     }
 
     /**

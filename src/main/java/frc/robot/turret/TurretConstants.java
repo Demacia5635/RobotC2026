@@ -39,7 +39,9 @@ public class TurretConstants {
         
     public static final String TURRET_LIMIT_SWICH_NAME = "turret limit swich";
     public static final int TURRET_LIMIT_SWICH_CHANNEL = 8;
-    public static final LimitSwitchConfig TURRET_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(TURRET_LIMIT_SWICH_CHANNEL, TURRET_LIMIT_SWICH_NAME);
+    public static final boolean TURRET_LIMIT_SWICH_IS_INVERT = true;
+    public static final LimitSwitchConfig TURRET_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(TURRET_LIMIT_SWICH_CHANNEL, TURRET_LIMIT_SWICH_NAME)
+    .withInvert(TURRET_LIMIT_SWICH_IS_INVERT);
     
     public static enum TurretStates implements MechanismState {
         SHOOTING,

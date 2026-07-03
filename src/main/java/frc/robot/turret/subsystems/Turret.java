@@ -40,6 +40,7 @@ public class Turret extends StateBaseMechanism{
 
         SmartDashboard.putData(TURRET_NAME + "/turret Calibration Command", new TurretCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is turret ready", () -> isReady()).build();
+        LogManager.addEntry(getName() + "/is turret at min", () -> isAtMinLimit()).build();
         wantedTurretAngle = new double[1];
     }
 

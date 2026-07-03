@@ -67,6 +67,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   Data<Voltage> voltageSignal;
   Data<Current> currentSignal;
 
+  double wantedValue = 0.0;
   ControlMode controlMode = ControlMode.DISABLE;
   // Motor Stalling
   private final Timer stallTimer = new Timer();
@@ -88,7 +89,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     setSignals();
     addLog();
     setName(name);
-    // SmartDashboard.putData(name,this);
+    SmartDashboard.putData("motors/" + name,this);
     LogManager.log(name + " motor initialized");
   }
 
@@ -263,6 +264,8 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
         () -> getCurrentControlModeInteger())
         .withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
         .withIsSeparated(false).build();
+    LogManager.addEntry(name + ": wanted value", () -> getWantedValue())
+        .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
   }
 
   @Override
@@ -291,9 +294,21 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     getConfigurator().apply(cfg.MotorOutput);
   }
 
+  public double getWantedValue() {
+    return wantedValue;
+  }
+
+  @Override
+  public void stop() {
+    stopMotor();
+    wantedValue = 0;
+    controlMode = ControlMode.DISABLE;
+  }
+
   @Override
   public void setDuty(double power) {
     setControl(dutyCycle.withOutput(power));
+    wantedValue = power;
     if (power == 0) {
       controlMode = ControlMode.DISABLE;
     } else {
@@ -303,12 +318,14 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
 
   public void setVolt(double voltage) {
     setVoltage(voltage);
+    wantedValue = voltage;
     controlMode = ControlMode.VOLTAGE;
   }
 
   @Override
   public void setVelocity(double velocity, double feedForward) {
     setControl(velocityVoltage.withVelocity(velocity).withFeedForward(feedForward + velocityFeedForward(velocity)));
+    wantedValue = velocity;
     controlMode = ControlMode.VELOCITY;
   }
 
@@ -325,6 +342,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setMotion(double position, double feedForward) {
     setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
+    wantedValue = position;
     controlMode = ControlMode.MAGIC_MOTION;
   }
 
@@ -337,7 +355,8 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   public void setMotionExpo(double position, double feedForward) {
     setControl(
         motionMagicExpoVoltage.withPosition(position).withFeedForward(feedForward + positionFeedForward(position)));
-    controlMode = ControlMode.MAGIC_MOTION;
+        wantedValue = position;
+        controlMode = ControlMode.MAGIC_MOTION;
   }
 
 
@@ -352,6 +371,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setAngle(double angle, double feedForward) {
     setMotion(getCurrentPosition() + MathUtil.angleModulus(angle - getCurrentAngle()), feedForward);
+    wantedValue = angle;
     controlMode = ControlMode.ANGLE;
   }
 
@@ -363,6 +383,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setPositionVoltage(double position, double feedForward) {
     setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
+    wantedValue = position;
     controlMode = ControlMode.POSITION_VOLTAGE;
   }
 
@@ -452,6 +473,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
       builder.addDoubleProperty("Angle", this::getCurrentAngle, null);
     }
     builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
+    builder.addDoubleProperty("Wanted Value", this::getWantedValue, null);
   }
 
   /**
@@ -510,7 +532,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
       getConfigurator().apply(cfg);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/PID+FF config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");
@@ -619,10 +641,37 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   public Data<Current> getCurrentSignal() {
     return currentSignal;
   }
-
-  @Override
-  public void stop() {
-    stopMotor();
-    controlMode = ControlMode.DISABLE;
-  }
+    
+    /**
+     * Checks if a specific motor has reached its target value within a specified tolerance.
+     * * @param motorName The name of the motor
+     * @param allowedError The allowable tolerance
+     * @return true if the motor is within tolerance, false otherwise
+     */
+    public boolean isReady(double allowedError){
+      switch (getCurrentControlMode()) {
+        case DISABLE:
+          break;
+        case DUTYCYCLE:
+          break;
+        case VOLTAGE:
+          if (Math.abs(getWantedValue() - getCurrentVoltage()) > allowedError){
+            return false;
+          }
+            break;
+        case VELOCITY:
+          if (Math.abs(getWantedValue() - getCurrentVelocity()) > allowedError){
+            return false;
+          }
+          break;
+        case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
+          if (Math.abs(getWantedValue() - getCurrentPosition()) > allowedError){
+            return false;
+          }
+          break;
+        default:
+          break;
+      }
+      return true;
+    }
 }

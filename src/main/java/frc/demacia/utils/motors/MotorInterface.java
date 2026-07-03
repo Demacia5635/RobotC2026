@@ -162,6 +162,10 @@ public interface MotorInterface extends Sendable {
      * @return true if stall detection is enabled, false otherwise
      */
     boolean getStallDetection();
+
+    double getWantedValue();
+
+    boolean isReady(double allowedError);
     /**
      * Stops the motor immediately and disables control.
      */
