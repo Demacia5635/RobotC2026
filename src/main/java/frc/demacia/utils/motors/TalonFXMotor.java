@@ -522,46 +522,22 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     Command configPidFf = new InstantCommand(() -> {
       SlotConfigs cfg = new SlotConfigs();
       cfg.SlotNumber = slot;
-      switch (slot) {
-        case 0:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        case 1:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        case 2:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        default:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
+      if (slot <= 2 && slot >= 0) {
+        cfg.kP = config.pid[slot].kP();
+        cfg.kI = config.pid[slot].kI();
+        cfg.kD = config.pid[slot].kD();
+        cfg.kS = config.pid[slot].kS();
+        cfg.kV = config.pid[slot].kV();
+        cfg.kA = config.pid[slot].kA();
+        cfg.kG = config.pid[slot].kG();
+      } else {
+        cfg.kP = config.pid[0].kP();
+        cfg.kI = config.pid[0].kI();
+        cfg.kD = config.pid[0].kD();
+        cfg.kS = config.pid[0].kS();
+        cfg.kV = config.pid[0].kV();
+        cfg.kA = config.pid[0].kA();
+        cfg.kG = config.pid[0].kG();
       }
       getConfigurator().apply(cfg);
     }).ignoringDisable(true);
@@ -600,8 +576,6 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
    */
   public void configMotionMagic() {
     Command configMotionMagic = new InstantCommand(() -> {
-      cfg = new TalonFXConfiguration();
-
       cfg.MotionMagic.MotionMagicAcceleration = config.maxAcceleration;
       cfg.MotionMagic.MotionMagicCruiseVelocity = config.maxVelocity;
       cfg.MotionMagic.MotionMagicJerk = config.maxJerk;

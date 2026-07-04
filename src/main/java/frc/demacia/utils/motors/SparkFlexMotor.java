@@ -169,7 +169,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
   @Override
   public void setNeutralMode(boolean isBrake) {
     cfg.idleMode(isBrake ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
-    configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+    configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
   public double getWantedValue() {
@@ -360,7 +360,6 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
   public void configPidFf(int slot) {
 
     Command configPidFf = new InstantCommand(()-> {
-      cfg = new SparkFlexConfig();
       closedLoopSlot = slot == 0 ? ClosedLoopSlot.kSlot0 : slot == 1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot2;
       cfg.closedLoop.pid(config.pid[slot].kP(), config.pid[slot].kI(), config.pid[slot].kD(), 
         closedLoopSlot);
@@ -368,7 +367,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
         .kA(config.pid[slot].kA(), closedLoopSlot)
         .kS(config.pid[slot].kS(), closedLoopSlot)
         .kG(config.pid[slot].kG(), closedLoopSlot);
-      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
 
     SmartDashboard.putData("motors/" + name + "/PID+FF config", new Sendable() {
@@ -406,11 +405,9 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
    */
   public void configMotionMagic() {
     Command configMotionMagic = new InstantCommand(()-> {
-      cfg = new SparkFlexConfig();
-      
       cfg.closedLoop.maxMotion.cruiseVelocity(config.maxVelocity).maxAcceleration(config.maxAcceleration);
       
-      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
     
     SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
