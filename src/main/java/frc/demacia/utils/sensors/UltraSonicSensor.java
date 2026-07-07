@@ -4,6 +4,7 @@ import java.util.Queue;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 
@@ -65,6 +66,7 @@ public class UltraSonicSensor extends Ultrasonic implements AnalogSensorInterfac
         setName(name);
         setAutomaticMode(true);
         addLog();
+        SmartDashboard.putData("sensors/" + config.name, this);
 		LogManager.log(name + " UltraSonicSensor initialized");
     }
 

@@ -47,6 +47,7 @@ public class Shooter extends StateBaseMechanism{
         SmartDashboard.putData(SHOOTER_NAME + "/hood Calibration Command", new HoodCalibrationCommand(this));
         LogManager.addEntry(getName() + "/distence from hub", () -> getHubDistacse()).build();
         LogManager.addEntry(getName() + "/is shooter ready", () -> isReady()).build();
+        LogManager.addEntry(getName() + "/is shooter at min", () -> isAtMinLimit()).build();
         vals = new double[3];
     }
 

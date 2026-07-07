@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Digital duty-cycle encoder wrapper (e.g., REV Through Bore in digital mode).
@@ -49,6 +50,7 @@ public class DigitalEncoder extends DutyCycleEncoder implements AnalogSensorInte
         setName(name);
         configEncoder();
         addLog();
+        SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " digital encoder initialized");
     }
     

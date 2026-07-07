@@ -141,6 +141,8 @@ public interface MotorInterface extends Sendable {
 
     /** @return The current stator current (Amps) */
     double getCurrentCurrent();
+    
+    double getCurrentValue();
 
     /**
      * Checks for hardware faults and logs them.
@@ -162,6 +164,10 @@ public interface MotorInterface extends Sendable {
      * @return true if stall detection is enabled, false otherwise
      */
     boolean getStallDetection();
+
+    double getWantedValue();
+
+    boolean isReady(double allowedError);
     /**
      * Stops the motor immediately and disables control.
      */

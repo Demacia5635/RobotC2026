@@ -37,6 +37,7 @@ public class Intack extends StateBaseMechanism{
 
         SmartDashboard.putData(INTACK_NAME + "/IntackDeploy Calibration Command", new IntackDeployCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is intack ready", () -> isReady()).build();
+        LogManager.addEntry(getName() + "/is intack at min", () -> isAtMinLimit()).build();
     }
 
     public static Intack getInstance() {
@@ -47,7 +48,7 @@ public class Intack extends StateBaseMechanism{
     }
 
     public double distanceFromTarget() {
-        return Math.abs(motors.get(INTACK_DEPLOY_MOTOR_NAME).wantedValue - motors.get(INTACK_DEPLOY_MOTOR_NAME).motor.getCurrentPosition());
+        return Math.abs(motors.get(INTACK_DEPLOY_MOTOR_NAME).motor.getWantedValue() - motors.get(INTACK_DEPLOY_MOTOR_NAME).motor.getCurrentPosition());
     }
 
     public boolean isReady() {

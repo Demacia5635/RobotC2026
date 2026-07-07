@@ -31,7 +31,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.demacia.utils.Data;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
@@ -67,7 +69,10 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   Data<Voltage> voltageSignal;
   Data<Current> currentSignal;
 
+  double wantedValue;
   ControlMode controlMode = ControlMode.DISABLE;
+
+  double testPower;
   // Motor Stalling
   private final Timer stallTimer = new Timer();
   private boolean conditionActive = false;
@@ -88,8 +93,9 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     setSignals();
     addLog();
     setName(name);
-    // SmartDashboard.putData(name,this);
+    SmartDashboard.putData("motors/" + name,this);
     LogManager.log(name + " motor initialized");
+    ElasticGenerator.getInstance().registerMotor(this);
   }
 
   public TalonFXConfig getConfig() {
@@ -263,6 +269,15 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
         () -> getCurrentControlModeInteger())
         .withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
         .withIsSeparated(false).build();
+    LogManager.addEntry(name + ": wanted value", () -> getWantedValue(), 
+      () -> getCurrentValue())
+        .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
+    LogManager.addEntry(name + ": is Connected", () -> isConnected())
+        .withIsSeparated(false).withLogLevel(LogLevel.LOG_AND_NT).build();
+    
+    SmartDashboard.putData("motors/" + name + "/test power command", new StartEndCommand(
+      () -> setDuty(testPower),
+      () -> stop()));
   }
 
   @Override
@@ -291,9 +306,21 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     getConfigurator().apply(cfg.MotorOutput);
   }
 
+  public double getWantedValue() {
+    return wantedValue;
+  }
+
+  @Override
+  public void stop() {
+    stopMotor();
+    wantedValue = 0;
+    controlMode = ControlMode.DISABLE;
+  }
+
   @Override
   public void setDuty(double power) {
     setControl(dutyCycle.withOutput(power));
+    wantedValue = power;
     if (power == 0) {
       controlMode = ControlMode.DISABLE;
     } else {
@@ -303,12 +330,14 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
 
   public void setVolt(double voltage) {
     setVoltage(voltage);
+    wantedValue = voltage;
     controlMode = ControlMode.VOLTAGE;
   }
 
   @Override
   public void setVelocity(double velocity, double feedForward) {
     setControl(velocityVoltage.withVelocity(velocity).withFeedForward(feedForward + velocityFeedForward(velocity)));
+    wantedValue = velocity;
     controlMode = ControlMode.VELOCITY;
   }
 
@@ -325,6 +354,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setMotion(double position, double feedForward) {
     setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
+    wantedValue = position;
     controlMode = ControlMode.MAGIC_MOTION;
   }
 
@@ -337,7 +367,8 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   public void setMotionExpo(double position, double feedForward) {
     setControl(
         motionMagicExpoVoltage.withPosition(position).withFeedForward(feedForward + positionFeedForward(position)));
-    controlMode = ControlMode.MAGIC_MOTION;
+        wantedValue = position;
+        controlMode = ControlMode.MAGIC_MOTION;
   }
 
 
@@ -352,6 +383,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setAngle(double angle, double feedForward) {
     setMotion(getCurrentPosition() + MathUtil.angleModulus(angle - getCurrentAngle()), feedForward);
+    wantedValue = angle;
     controlMode = ControlMode.ANGLE;
   }
 
@@ -363,6 +395,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   @Override
   public void setPositionVoltage(double position, double feedForward) {
     setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
+    wantedValue = position;
     controlMode = ControlMode.POSITION_VOLTAGE;
   }
 
@@ -439,9 +472,29 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     return value != null ? value : 0.0;
   }
 
+  public double getCurrentValue() {
+    switch (controlMode) {
+      case DISABLE:
+        return 0;
+      case DUTYCYCLE:
+        return getDutyCycle().getValueAsDouble();
+      case VOLTAGE:
+        return getCurrentVoltage();
+      case VELOCITY:
+        return getCurrentVelocity();
+      case POSITION_VOLTAGE, MAGIC_MOTION:
+        return getCurrentPosition();
+      case ANGLE:
+        return getCurrentAngle();
+      default:
+        return 0;
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Talon Motor");
+    builder.addBooleanProperty("Is" + name + "Connected", this::isConnected, null);
     builder.addDoubleProperty("CloseLoopError", this::getCurrentClosedLoopError, null);
     builder.addDoubleProperty("Position", this::getCurrentPosition, null);
     builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);
@@ -451,7 +504,10 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     if (config.isRadiansMotor) {
       builder.addDoubleProperty("Angle", this::getCurrentAngle, null);
     }
+    builder.addDoubleProperty("Value", this::getCurrentValue, null);
     builder.addDoubleProperty("ControlMode", this::getCurrentControlModeInteger, null);
+    builder.addDoubleProperty(" Wanted Value", this::getWantedValue, null);
+    builder.addDoubleProperty("test Power", () -> testPower, (testPower) -> this.testPower = testPower);
   }
 
   /**
@@ -466,51 +522,27 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     Command configPidFf = new InstantCommand(() -> {
       SlotConfigs cfg = new SlotConfigs();
       cfg.SlotNumber = slot;
-      switch (slot) {
-        case 0:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        case 1:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        case 2:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
-
-        default:
-          cfg.kP = config.pid[0].kP();
-          cfg.kI = config.pid[0].kI();
-          cfg.kD = config.pid[0].kD();
-          cfg.kS = config.pid[0].kS();
-          cfg.kV = config.pid[0].kV();
-          cfg.kA = config.pid[0].kA();
-          cfg.kG = config.pid[0].kG();
-          break;
+      if (slot <= 2 && slot >= 0) {
+        cfg.kP = config.pid[slot].kP();
+        cfg.kI = config.pid[slot].kI();
+        cfg.kD = config.pid[slot].kD();
+        cfg.kS = config.pid[slot].kS();
+        cfg.kV = config.pid[slot].kV();
+        cfg.kA = config.pid[slot].kA();
+        cfg.kG = config.pid[slot].kG();
+      } else {
+        cfg.kP = config.pid[0].kP();
+        cfg.kI = config.pid[0].kI();
+        cfg.kD = config.pid[0].kD();
+        cfg.kS = config.pid[0].kS();
+        cfg.kV = config.pid[0].kV();
+        cfg.kA = config.pid[0].kA();
+        cfg.kG = config.pid[0].kG();
       }
       getConfigurator().apply(cfg);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/PID+FF config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");
@@ -544,8 +576,6 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
    */
   public void configMotionMagic() {
     Command configMotionMagic = new InstantCommand(() -> {
-      cfg = new TalonFXConfiguration();
-
       cfg.MotionMagic.MotionMagicAcceleration = config.maxAcceleration;
       cfg.MotionMagic.MotionMagicCruiseVelocity = config.maxVelocity;
       cfg.MotionMagic.MotionMagicJerk = config.maxJerk;
@@ -619,10 +649,37 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
   public Data<Current> getCurrentSignal() {
     return currentSignal;
   }
-
-  @Override
-  public void stop() {
-    stopMotor();
-    controlMode = ControlMode.DISABLE;
-  }
+    
+    /**
+     * Checks if a specific motor has reached its target value within a specified tolerance.
+     * * @param motorName The name of the motor
+     * @param allowedError The allowable tolerance
+     * @return true if the motor is within tolerance, false otherwise
+     */
+    public boolean isReady(double allowedError){
+      switch (getCurrentControlMode()) {
+        case DISABLE:
+          break;
+        case DUTYCYCLE:
+          break;
+        case VOLTAGE:
+          if (Math.abs(getWantedValue() - getCurrentVoltage()) > allowedError){
+            return false;
+          }
+            break;
+        case VELOCITY:
+          if (Math.abs(getWantedValue() - getCurrentVelocity()) > allowedError){
+            return false;
+          }
+          break;
+        case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
+          if (Math.abs(getWantedValue() - getCurrentPosition()) > allowedError){
+            return false;
+          }
+          break;
+        default:
+          break;
+      }
+      return true;
+    }
 }

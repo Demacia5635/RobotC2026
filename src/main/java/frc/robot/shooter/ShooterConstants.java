@@ -78,7 +78,9 @@ public class ShooterConstants {
 
         public static final String HOOD_LIMIT_SWICH_NAME = "hood limit swich";
         public static final int HOOD_LIMIT_SWICH_CHANNEL = 5;
-        public static final LimitSwitchConfig HOOD_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(HOOD_LIMIT_SWICH_CHANNEL, HOOD_LIMIT_SWICH_NAME);  
+        public static final boolean HOOD_LIMIT_SWITCH_IS_INVERT = true;
+        public static final LimitSwitchConfig HOOD_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(HOOD_LIMIT_SWICH_CHANNEL, HOOD_LIMIT_SWICH_NAME)
+        .withInvert(HOOD_LIMIT_SWITCH_IS_INVERT);
     }
 
     public final static class FeederConstants {

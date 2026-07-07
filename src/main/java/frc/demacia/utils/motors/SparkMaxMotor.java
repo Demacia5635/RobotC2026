@@ -36,6 +36,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   private ClosedLoopSlot closedLoopSlot = ClosedLoopSlot.kSlot0;
   private ControlType controlType = ControlType.kDutyCycle;
 
+  double wantedValue = 0.0;
   private ControlMode controlMode = ControlMode.DISABLE;
   
   // Variables for manual velocity/acceleration calculation
@@ -169,12 +170,16 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   @Override
   public void setNeutralMode(boolean isBrake) {
     cfg.idleMode(isBrake ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
-    configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+    configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
   @Override
   public REVLibError clearFaults() {
     return super.clearFaults();
+  }
+
+  public double getWantedValue() {
+    return wantedValue;
   }
 
   @Override
@@ -183,10 +188,10 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     controlType = ControlType.kDutyCycle;
     if (power == 0){
       controlMode = ControlMode.DISABLE;
-  } else {
+    } else {
       controlMode = ControlMode.DUTYCYCLE;
-  }
-  }
+    }
+    }
 
   @Override
   public void setVoltage(double voltage) {
@@ -334,6 +339,25 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     return getOutputCurrent();
   }
 
+  public double getCurrentValue() {
+    switch (controlMode) {
+      case DISABLE:
+        return 0;
+      case DUTYCYCLE:
+        return 0;
+      case VOLTAGE:
+        return getCurrentVoltage();
+      case VELOCITY:
+        return getCurrentVelocity();
+      case POSITION_VOLTAGE, MAGIC_MOTION:
+        return getCurrentPosition();
+      case ANGLE:
+        return getCurrentAngle();
+      default:
+        return 0;
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Spark Motor");
@@ -357,7 +381,6 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void configPidFf(int slot) {
 
     Command configPidFf = new InstantCommand(()-> {
-      cfg = new SparkMaxConfig();
       closedLoopSlot = slot == 0 ? ClosedLoopSlot.kSlot0 : slot == 1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot2;
       cfg.closedLoop.pid(config.pid[slot].kP(), config.pid[slot].kI(), config.pid[slot].kD(), 
         closedLoopSlot);
@@ -365,10 +388,10 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
         .kA(config.pid[slot].kA(), closedLoopSlot)
         .kS(config.pid[slot].kS(), closedLoopSlot)
         .kG(config.pid[slot].kG(), closedLoopSlot);
-      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/PID+FF config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");
@@ -403,11 +426,9 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
    */
   public void configMotionMagic() {
     Command configMotionMagic = new InstantCommand(()-> {
-      cfg = new SparkMaxConfig();
-      
       cfg.closedLoop.maxMotion.cruiseVelocity(config.maxVelocity).maxAcceleration(config.maxAcceleration);
       
-      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
     
     SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
@@ -479,5 +500,38 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void stop(){
       stopMotor();
       controlMode = ControlMode.DISABLE;
+  }
+    
+  /**
+   * Checks if a specific motor has reached its target value within a specified tolerance.
+   * * @param motorName The name of the motor
+   * @param allowedError The allowable tolerance
+   * @return true if the motor is within tolerance, false otherwise
+   */
+  public boolean isReady(double allowedError){
+    switch (getCurrentControlMode()) {
+      case DISABLE:
+        break;
+      case DUTYCYCLE:
+        break;
+      case VOLTAGE:
+        if (Math.abs(getWantedValue() - getCurrentVoltage()) > allowedError){
+          return false;
+        }
+          break;
+      case VELOCITY:
+        if (Math.abs(getWantedValue() - getCurrentVelocity()) > allowedError){
+          return false;
+        }
+        break;
+      case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
+        if (Math.abs(getWantedValue() - getCurrentPosition()) > allowedError){
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+    return true;
   }
 }

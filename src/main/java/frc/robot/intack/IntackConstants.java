@@ -40,7 +40,9 @@ public class IntackConstants {
 
         public static final String INTACK_DEPLOY_LIMIT_SWICH_NAME = "intack diploy limit swich";
         public static final int INTACK_DEPLOY_LIMIT_SWICH_CHANNEL = 6;
-        public static final LimitSwitchConfig INTACK_DEPLOY_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(INTACK_DEPLOY_LIMIT_SWICH_CHANNEL, INTACK_DEPLOY_LIMIT_SWICH_NAME);  
+        public static final boolean INTACK_DEPLOY_LIMIT_SWITCH_INVERT = true;
+        public static final LimitSwitchConfig INTACK_DEPLOY_LIMIT_SWITCH_CONFIG = new LimitSwitchConfig(INTACK_DEPLOY_LIMIT_SWICH_CHANNEL, INTACK_DEPLOY_LIMIT_SWICH_NAME)
+        .withInvert(INTACK_DEPLOY_LIMIT_SWITCH_INVERT);  
     }
 
     public final static class RollersConstants {

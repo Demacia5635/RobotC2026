@@ -26,6 +26,7 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
 
     int slot = 0;
 
+    double wantedValue = 0.0;
     ControlMode controlMode = ControlMode.DISABLE;
     // Motor Stalling
     private final Timer stallTimer = new Timer();
@@ -111,6 +112,10 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
     @Override
     public void setNeutralMode(boolean isBrake) {
         setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
+    }
+
+    public double getWantedValue() {
+      return wantedValue;
     }
 
     @Override
@@ -238,6 +243,25 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
         return getStatorCurrent();
     }
 
+    public double getCurrentValue() {
+      switch (controlMode) {
+        case DISABLE:
+          return 0;
+        case DUTYCYCLE:
+          return 0;
+        case VOLTAGE:
+          return getCurrentVoltage();
+        case VELOCITY:
+          return getCurrentVelocity();
+        case POSITION_VOLTAGE, MAGIC_MOTION:
+          return getCurrentPosition();
+        case ANGLE:
+          return getCurrentAngle();
+        default:
+          return 0;
+      }
+    }
+
     @Override
     public void setEncoderPosition(double position) {
         setSelectedSensorPosition(position * config.motorRatio);
@@ -290,11 +314,45 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
             isStalled = false;
         }
     }
-public boolean getStallDetection() {
-  return isStalled;
-}
+
+    public boolean getStallDetection() {
+        return isStalled;
+    }
 
     public void stop() {
         setDuty(0);
+    }
+    
+    /**
+     * Checks if a specific motor has reached its target value within a specified tolerance.
+     * * @param motorName The name of the motor
+     * @param allowedError The allowable tolerance
+     * @return true if the motor is within tolerance, false otherwise
+     */
+    public boolean isReady(double allowedError){
+      switch (getCurrentControlMode()) {
+        case DISABLE:
+          break;
+        case DUTYCYCLE:
+          break;
+        case VOLTAGE:
+          if (Math.abs(getWantedValue() - getCurrentVoltage()) > allowedError){
+            return false;
+          }
+            break;
+        case VELOCITY:
+          if (Math.abs(getWantedValue() - getCurrentVelocity()) > allowedError){
+            return false;
+          }
+          break;
+        case POSITION_VOLTAGE, MAGIC_MOTION, ANGLE:
+          if (Math.abs(getWantedValue() - getCurrentPosition()) > allowedError){
+            return false;
+          }
+          break;
+        default:
+          break;
+      }
+      return true;
     }
 }
