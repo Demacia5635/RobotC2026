@@ -7,7 +7,6 @@ import frc.demacia.utils.chassis.SwerveModuleConfig;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
 import frc.demacia.utils.sensors.CancoderConfig;
 import frc.demacia.utils.sensors.PigeonConfig;
-import frc.demacia.vision.TagPose;
 
 
 
@@ -110,6 +109,5 @@ public class MK5nChassisConstansRobotC {
   public static final ChassisConfig CHASSIS_CONFIG = new ChassisConfig(
       NAME,
       modules,
-      PIGEON_CONFIG,
-      new TagPose[] {});
+      PIGEON_CONFIG);
 }
