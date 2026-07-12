@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +31,12 @@ public class ElasticGenerator {
 
     private ElasticGenerator() {
         SmartDashboard.putData("Elastic/Generate Layout", new InstantCommand(this::generateAndPublishLayout).ignoringDisable(true));
+        
+        try {
+            WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+        } catch (Exception e) {
+            frc.demacia.utils.log.LogManager.log("Failed to start WebServer for Elastic: " + e.getMessage());
+        }
     }
 
     public static ElasticGenerator getInstance() {
@@ -82,26 +88,23 @@ public class ElasticGenerator {
         json.append("\n  ]\n");
         json.append("}\n");
 
-        File file;
-        if (RobotBase.isSimulation()) {
-            file = new File("C:\\Users\\Public\\RobotC2026\\src\\main\\deploy\\elastic", "Generated_Elastic_Layout.json");
-            file.getParentFile().mkdirs(); 
-        } else {
-            File dir = new File(Filesystem.getDeployDirectory(), "elastic");
-            dir.mkdirs();
-            file = new File(dir, "Generated_Elastic_Layout.json");
-        }
+        File dir = Filesystem.getDeployDirectory();
+        dir.mkdirs(); 
+        File file = new File(dir, "Generated_Elastic_Layout.json");
 
         try {
             FileWriter writer = new FileWriter(file);
             writer.write(json.toString());
             writer.close();
             
-            SmartDashboard.putString("Elastic/Status", "Saved at: " + Timer.getFPGATimestamp());
+            SmartDashboard.putString("Elastic/Raw_JSON_Output", json.toString());
+            
+            SmartDashboard.putString("Elastic/Status", "Saved at: " + Timer.getFPGATimestamp() + " in " + file.getAbsolutePath());
             LogManager.log("Elastic layout saved to " + file.getAbsolutePath());
             
         } catch (IOException e) {
             LogManager.log("Failed to save Elastic layout: " + e.getMessage());
+            SmartDashboard.putString("Elastic/Status", "Failed to save: " + e.getMessage());
         }
     }
 
