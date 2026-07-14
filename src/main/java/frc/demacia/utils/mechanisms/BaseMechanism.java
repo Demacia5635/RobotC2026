@@ -125,6 +125,7 @@ public class BaseMechanism extends SubsystemBase{
     public void withPowerCommand(String motorName, DoubleSupplier powerSupplier) {
         SmartDashboard.putData(getName() + "/" + motorName + "/set power command " + motorName, 
             new PowerCommand(this, motorName, powerSupplier));
+        ElasticGenerator.getInstance().registerPowerCommand(this, motors.get(motorName).motor);
     }
 
     /**
@@ -305,6 +306,8 @@ public class BaseMechanism extends SubsystemBase{
             node.hasCalibrated = true;
             LogManager.log(node.hasCalibrated);
         }).ignoringDisable(true));
+
+        ElasticGenerator.getInstance().registerAutoCalibration(this, motors.get(motorName).motor);
     }
 
     /**

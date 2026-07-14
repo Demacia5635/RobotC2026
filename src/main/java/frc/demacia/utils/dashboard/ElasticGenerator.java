@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,6 +26,8 @@ public class ElasticGenerator {
     private List<MotorInterface> allMotors = new ArrayList<>();
     private List<SensorInterface> allSensors = new ArrayList<>();
     private List<BaseMechanism> mechanisms = new ArrayList<>();
+    private List<Pair<BaseMechanism, MotorInterface>> powerCmds = new ArrayList<>();
+    private List<Pair<BaseMechanism, MotorInterface>> autoCalibration = new ArrayList<>();
 
     private Pigeon chassisGyro;
     private Cancoder[] chassisCancoders = new Cancoder[4];
@@ -72,6 +75,14 @@ public class ElasticGenerator {
         this.chassisCancoders = cancoders;
     }
 
+    public void registerPowerCommand(BaseMechanism mech, MotorInterface motor) {
+        powerCmds.add(new Pair<>(mech, motor));
+    }
+
+    public void registerAutoCalibration(BaseMechanism mech, MotorInterface motor) {
+        autoCalibration.add(new Pair<>(mech, motor));
+    }
+
     public void generateAndPublishLayout() {
         StringBuilder json = new StringBuilder();
         
@@ -110,7 +121,7 @@ public class ElasticGenerator {
 
     private String buildTunerTabs() {
         StringBuilder sb = new StringBuilder();
-        int maxMotorsPerTab = 12; 
+        int maxMotorsPerTab = 10; 
         int tabCount = (int) Math.ceil((double) allMotors.size() / maxMotorsPerTab);
         if (tabCount == 0) tabCount = 1;
 
@@ -216,52 +227,63 @@ public class ElasticGenerator {
     private String buildMechanismTabs() {
         if (mechanisms.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
-        
+
+        double yMax = 5;
+
         for (int i = 0; i < mechanisms.size(); i++) {
             BaseMechanism mech = mechanisms.get(i);
             sb.append(",\n");
-            
+
             sb.append("    {\n");
             sb.append("      \"name\": \"").append(mech.getName()).append("\",\n");
             sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
-            
+        
             String mechPath = "/SmartDashboard/" + mech.getName();
+
             List<String> widgets = new ArrayList<>();
             int xOffset = 0;
-            int yBase = 0;
+            int yOffset = 0;
             
             boolean isStateMech = mech instanceof StateBaseMechanism;
             
             if (isStateMech) {
-                widgets.add(createWidget("ComboBox Chooser", mech.getName() + " State Chooser", xOffset, yBase, 1, 1, mechPath + "/" + mech.getName() + " State Chooser", "\"sort_options\": false"));
-                widgets.add(createWidget("Text Display", "State", xOffset + 1, yBase, 1, 1, mechPath + "/" + mech.getName() + " State", "\"data_type\": \"string\", \"show_submit_button\": false"));
-                widgets.add(createWidget("Text Display", "Test Values", xOffset, yBase + 1, 2, 1, mechPath + "/" + mech.getName() + " Test Values", "\"data_type\": \"double[]\", \"show_submit_button\": true"));
+                widgets.add(createWidget("ComboBox Chooser", mech.getName() + " State Chooser", xOffset, yOffset, 1, 1, mechPath + "/" + mech.getName() + " State Chooser", "\"sort_options\": false"));
+                widgets.add(createWidget("Text Display", "State", xOffset + 1, yOffset, 1, 1, mechPath + "/" + mech.getName() + " State", "\"data_type\": \"string\", \"show_submit_button\": false"));
+                widgets.add(createWidget("Text Display", "Test Values", xOffset, yOffset + 1, 2, 1, mechPath + "/" + mech.getName() + " Test Values", "\"data_type\": \"double[]\", \"show_submit_button\": true"));
                 xOffset += 2;
             }
-            
-            MotorInterface[] motors = mech.getMotors();
-            int startXForMotors = xOffset;
-            
-            for (MotorInterface motor : motors) {
+
+            for (MotorInterface motor : mech.getMotors()) {
                 String motorName = motor.getName();
                 String baseTopic = mechPath + "/" + motorName + "/";
-                
-                widgets.add(createWidget("Text Display", motorName + " wanted", xOffset, yBase, 1, 1, baseTopic + motorName + " wanted value", "\"data_type\": \"double\", \"show_submit_button\": false"));
-                widgets.add(createWidget("Text Display", motorName + " current", xOffset + 1, yBase, 1, 1, baseTopic + motorName + " currnte Value", "\"data_type\": \"double\", \"show_submit_button\": false"));
-                widgets.add(createWidget("Command", "Coast " + motorName, xOffset, yBase + 1, 2, 1, baseTopic + "set coast " + motorName, "\"show_type\": true"));
-                widgets.add(createWidget("Command", "Brake " + motorName, xOffset, yBase + 2, 2, 1, baseTopic + "set brake " + motorName, "\"show_type\": true"));
-                widgets.add(createWidget("Command", "Power " + motorName, xOffset, yBase + 3, 2, 1, baseTopic + "set power command " + motorName, "\"show_type\": true"));
-                widgets.add(createWidget("Command", "Reset " + motorName, xOffset, yBase + 4, 2, 1, baseTopic + motorName + " manual reset", "\"show_type\": true"));
-                widgets.add(createWidget("Boolean Box", "Calibrated", xOffset, yBase + 5, 2, 1, baseTopic + motorName + " has Calibrated", "\"data_type\": \"boolean\", \"true_color\": 4283215696, \"false_color\": 4294198070"));
-                
-                xOffset += 2;
-                
-                if (xOffset >= 24) {
-                    xOffset = startXForMotors;
-                    yBase += 6;
+
+                widgets.add(createWidget("Text Display", motorName + " wanted", xOffset, yOffset, 1, 1, baseTopic + motorName + " wanted value", "\"data_type\": \"double\", \"show_submit_button\": false"));
+                yOffset++;
+                widgets.add(createWidget("Text Display", motorName + " current", xOffset + 1, yOffset, 1, 1, baseTopic + motorName + " current Value", "\"data_type\": \"double\", \"show_submit_button\": false"));
+                yOffset++;
+                widgets.add(createWidget("Command", "Coast " + motorName, xOffset, yOffset + 1, 2, 1, baseTopic + "set coast " + motorName, "\"show_type\": true"));
+                yOffset++;
+                widgets.add(createWidget("Command", "Brake " + motorName, xOffset, yOffset + 2, 2, 1, baseTopic + "set brake " + motorName, "\"show_type\": true"));
+                yOffset++;
+                if (powerCmds.contains(new Pair<>(mech, motor))) {
+                    widgets.add(createWidget("Command", "Power " + motorName, xOffset, yOffset + 3, 2, 1, baseTopic + "set power command " + motorName, "\"show_type\": true"));
+                    yOffset++;
                 }
+                if (yOffset >= yMax) {
+                    yOffset = 0;
+                    xOffset += 2;
+                }
+                if (autoCalibration.contains(new Pair<>(mech, motor))) {
+                    widgets.add(createWidget("Command", "Reset " + motorName, xOffset, yOffset + 3, 2, 1, baseTopic + motorName + " manual reset", "\"show_type\": true"));
+                    yOffset++;
+                }
+                if (yOffset >= yMax) {
+                    yOffset = 0;
+                    xOffset += 2;
+                }
+                widgets.add(createWidget("Boolean Box", "Calibrated", xOffset, yOffset, 2, 1, baseTopic + motorName + " has Calibrated", "\"data_type\": \"boolean\", \"true_color\": 4283215696, \"false_color\": 4294198070"));
+                xOffset += 2;
             }
-            
             sb.append(String.join(",\n", widgets));
             sb.append("\n        ]\n      }\n    }");
         }
