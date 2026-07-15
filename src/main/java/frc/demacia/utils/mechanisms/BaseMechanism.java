@@ -107,25 +107,15 @@ public class BaseMechanism extends SubsystemBase{
     }
 
     /**
-     * Creates dashboard commands to control all motors dynamically with a DoubleSupplier.
-     * * @param powerSupplier The supplier for the power value
-     */
-    public void withPowerCommand(DoubleSupplier powerSupplier) {
-        for (int i = 0; i < motorsAmount; i++){
-            SmartDashboard.putData(getName() + "/" + motorNames[i] + "/set power command " + motorNames[i], 
-                new PowerCommand(this, motorNames[i], powerSupplier));
-        }
-    }
-
-    /**
      * Creates a dashboard command to control a specific motor dynamically with a DoubleSupplier.
      * * @param motorName The name of the motor
      * @param powerSupplier The supplier for the power value
      */
     public void withPowerCommand(String motorName, DoubleSupplier powerSupplier) {
+        ElasticGenerator.getInstance().registerPowerCommand(this, motors.get(motorName).motor);
+
         SmartDashboard.putData(getName() + "/" + motorName + "/set power command " + motorName, 
             new PowerCommand(this, motorName, powerSupplier));
-        ElasticGenerator.getInstance().registerPowerCommand(this, motors.get(motorName).motor);
     }
 
     /**
@@ -301,14 +291,14 @@ public class BaseMechanism extends SubsystemBase{
         };
         node.hasCalibrated = false;
         
+        ElasticGenerator.getInstance().registerAutoCalibration(this, motors.get(motorName).motor);
+    
         SmartDashboard.putData(getName() + "/" + motorName + "/" + motorName + " manual reset", new InstantCommand(() -> {
             node.motor.setEncoderPosition(resetPos);
             node.hasCalibrated = true;
             LogManager.log(node.hasCalibrated);
         }).ignoringDisable(true));
-
-        ElasticGenerator.getInstance().registerAutoCalibration(this, motors.get(motorName).motor);
-    }
+        }
 
     /**
      * Stops all motors in this mechanism and resets their wanted values.

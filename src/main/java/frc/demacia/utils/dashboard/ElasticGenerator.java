@@ -8,6 +8,7 @@ import java.util.List;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -92,7 +93,6 @@ public class ElasticGenerator {
         json.append("  \"tabs\": [\n");
 
         json.append(buildTunerTabs());
-        json.append(",\n");
         json.append(buildChassisTab());
         json.append(buildMechanismTabs());
 
@@ -108,10 +108,7 @@ public class ElasticGenerator {
             writer.write(json.toString());
             writer.close();
             
-            SmartDashboard.putString("Elastic/Raw_JSON_Output", json.toString());
-            
-            SmartDashboard.putString("Elastic/Status", "Saved at: " + Timer.getFPGATimestamp() + " in " + file.getAbsolutePath());
-            LogManager.log("Elastic layout saved to " + file.getAbsolutePath());
+            SmartDashboard.putString("Elastic/Status", "Saved at: " + file.getAbsolutePath());
             
         } catch (IOException e) {
             LogManager.log("Failed to save Elastic layout: " + e.getMessage());
@@ -121,62 +118,85 @@ public class ElasticGenerator {
 
     private String buildTunerTabs() {
         StringBuilder sb = new StringBuilder();
-        int maxMotorsPerTab = 10; 
-        int tabCount = (int) Math.ceil((double) allMotors.size() / maxMotorsPerTab);
-        if (tabCount == 0) tabCount = 1;
+        int tabIndex = 1;
+        boolean firstTab = true;
+        int xMax = 10;
+        int yMax = 5;
+        int motorX = 5;
+        int sensorX = 1;
+        int motorsPerRow = xMax/motorX;
+        int sensorsPerRow = xMax/sensorX;
 
-        for (int t = 0; t < tabCount; t++) {
-            if (t > 0) sb.append(",\n");
+        int motorIndex = 0;
+        int sensorIndex = 0;
+
+        while (motorIndex < allMotors.size() || sensorIndex < allSensors.size() || (allMotors.isEmpty() && allSensors.isEmpty())) {
+            if (!firstTab) sb.append(",\n");
             
-            String tabName = tabCount == 1 ? "Tuner" : "Tuner " + (t + 1);
+            String tabName = "Tuner" + (tabIndex > 1 ? " " + tabIndex : "");
             sb.append("    {\n");
             sb.append("      \"name\": \"").append(tabName).append("\",\n");
             sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
             
+            List<String> widgets = new ArrayList<>();
             int row = 0;
             int col = 0;
-            boolean first = true;
-            
-            int startIndex = t * maxMotorsPerTab;
-            int endIndex = Math.min(startIndex + maxMotorsPerTab, allMotors.size());
-            
-            for (int i = startIndex; i < endIndex; i++) {
-                MotorInterface motor = allMotors.get(i);
-                if (!first) sb.append(",\n");
-                first = false;
-                
+
+            while (motorIndex < allMotors.size() && row < yMax) {
+                MotorInterface motor = allMotors.get(motorIndex);
                 String motorPath = "/SmartDashboard/motors/" + motor.getName();
-                double xOffset = col * 5.0;
+                double xOff = col * motorX;
                 
-                sb.append(createWidget("Boolean Box", motor.getName(), xOffset, row, 1, 1, 
-                    motorPath + "/Is" + motor.getName() + "Connected", "\"data_type\": \"boolean\""));
-                sb.append(",\n");
-                
-                sb.append(createWidget("Number Slider", "Power", xOffset + 1, row, 2, 1, 
-                    motorPath + "/test Power", "\"data_type\": \"double\""));
-                sb.append(",\n");
-                
-                sb.append(createWidget("Command", "Run", xOffset + 3.0, row, 2, 1, 
-                    motorPath + "/test power command", "\"show_type\": true"));
+                widgets.add(createWidget("Boolean Box", motor.getName(), xOff, row, 1, 1, motorPath + "/Is" + motor.getName() + "Connected", "\"data_type\": \"boolean\""));
+                xOff++;
+                widgets.add(createWidget("Number Slider", "Power", xOff, row, 2, 1, motorPath + "/test Power", "\"data_type\": \"double\""));
+                xOff += 2;
+                widgets.add(createWidget("Command", "Run", xOff, row, 2, 1, motorPath + "/test power command", "\"show_type\": true"));
                 
                 col++;
-                if (col >= 2) { 
+                if (col >= motorsPerRow) { 
                     col = 0;
                     row++;
                 }
+                motorIndex++;
+            }
+
+            while (sensorIndex < allSensors.size() && row < yMax) {
+                SensorInterface sensor = allSensors.get(sensorIndex);
+                double xOff = col * sensorX; 
+                String sensorTopic = "/SmartDashboard/sensors/" + sensor.getName() + "/is Connected";
+                
+                if (SmartDashboard.containsKey("sensors/" + sensor.getName() + "/is Connected")) {
+                    widgets.add(createWidget("Boolean Box", sensor.getName(), xOff, row, 1, 1, sensorTopic, "\"data_type\": \"boolean\""));
+                }
+                
+                col++;
+                if (col >= sensorsPerRow) { 
+                    col = 0;
+                    row++;
+                }
+                sensorIndex++;
             }
             
-            if (allMotors.isEmpty()) {
-                sb.append(createWidget("Text Display", "Status", 0, 0, 4, 1, "", "\"data_type\": \"string\""));
+            if (allMotors.isEmpty() && allSensors.isEmpty()) {
+                widgets.add(createWidget("Text Display", "Status", 0, 0, 4, 1, "", "\"data_type\": \"string\""));
+                sb.append(String.join(",\n", widgets));
+                sb.append("\n        ]\n      }\n    }");
+                break;
             }
-            
+
+            sb.append(String.join(",\n", widgets));
             sb.append("\n        ]\n      }\n    }");
+            
+            tabIndex++;
+            firstTab = false;
         }
         return sb.toString();
     }
 
     private String buildChassisTab() {
         StringBuilder sb = new StringBuilder();
+        sb.append(",\n");
         sb.append("    {\n");
         sb.append("      \"name\": \"Chassis Base\",\n");
         sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
@@ -228,64 +248,127 @@ public class ElasticGenerator {
         if (mechanisms.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
 
-        double yMax = 5;
+        final int MAX_ROWS = 5;
+        final int MAX_COLS = 10;
+        final int WIDGET_WIDTH = 2;
 
         for (int i = 0; i < mechanisms.size(); i++) {
-            BaseMechanism mech = mechanisms.get(i);
             sb.append(",\n");
-
-            sb.append("    {\n");
-            sb.append("      \"name\": \"").append(mech.getName()).append("\",\n");
-            sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
-        
+            BaseMechanism mech = mechanisms.get(i);
+            
+            int tabIndex = 1;
             String mechPath = "/SmartDashboard/" + mech.getName();
-
-            List<String> widgets = new ArrayList<>();
-            int xOffset = 0;
-            int yOffset = 0;
+            int motorIndex = 0;
+            int sensorIndex = 0;
+            boolean firstTab = true;
             
-            boolean isStateMech = mech instanceof StateBaseMechanism;
+            while (motorIndex < mech.getMotors().length || sensorIndex < mech.getSensors().length) {
+                if (!firstTab) sb.append(",\n");
             
-            if (isStateMech) {
-                widgets.add(createWidget("ComboBox Chooser", mech.getName() + " State Chooser", xOffset, yOffset, 1, 1, mechPath + "/" + mech.getName() + " State Chooser", "\"sort_options\": false"));
-                widgets.add(createWidget("Text Display", "State", xOffset + 1, yOffset, 1, 1, mechPath + "/" + mech.getName() + " State", "\"data_type\": \"string\", \"show_submit_button\": false"));
-                widgets.add(createWidget("Text Display", "Test Values", xOffset, yOffset + 1, 2, 1, mechPath + "/" + mech.getName() + " Test Values", "\"data_type\": \"double[]\", \"show_submit_button\": true"));
-                xOffset += 2;
-            }
+                String tabName = mech.getName() + (tabIndex > 1 ? " " + tabIndex : "");
+                sb.append("    {\n");
+                sb.append("      \"name\": \"").append(tabName).append("\",\n");
+                sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
+            
+                List<String> widgets = new ArrayList<>();
+                int xOffset = 0;
+                int yOffset = 0;
 
-            for (MotorInterface motor : mech.getMotors()) {
-                String motorName = motor.getName();
-                String baseTopic = mechPath + "/" + motorName + "/";
+                if (tabIndex == 1 && mech instanceof StateBaseMechanism) {
+                    widgets.add(createWidget("ComboBox Chooser", mech.getName() + " State Chooser", xOffset, 0, 1, 1, mechPath + "/" + mech.getName() + " State Chooser", "\"sort_options\": false"));
+                    widgets.add(createWidget("Text Display", "State", xOffset + 1, 0, 1, 1, mechPath + "/" + mech.getName() + " State", "\"data_type\": \"string\", \"show_submit_button\": false"));
+                    widgets.add(createWidget("Text Display", "Test Values", xOffset, 1, WIDGET_WIDTH, 1, mechPath + "/" + mech.getName() + " Test Values", "\"data_type\": \"double[]\", \"show_submit_button\": true"));
+                    xOffset += WIDGET_WIDTH;
+                }
 
-                widgets.add(createWidget("Text Display", motorName + " wanted", xOffset, yOffset, 1, 1, baseTopic + motorName + " wanted value", "\"data_type\": \"double\", \"show_submit_button\": false"));
-                yOffset++;
-                widgets.add(createWidget("Text Display", motorName + " current", xOffset + 1, yOffset, 1, 1, baseTopic + motorName + " current Value", "\"data_type\": \"double\", \"show_submit_button\": false"));
-                yOffset++;
-                widgets.add(createWidget("Command", "Coast " + motorName, xOffset, yOffset + 1, 2, 1, baseTopic + "set coast " + motorName, "\"show_type\": true"));
-                yOffset++;
-                widgets.add(createWidget("Command", "Brake " + motorName, xOffset, yOffset + 2, 2, 1, baseTopic + "set brake " + motorName, "\"show_type\": true"));
-                yOffset++;
-                if (powerCmds.contains(new Pair<>(mech, motor))) {
-                    widgets.add(createWidget("Command", "Power " + motorName, xOffset, yOffset + 3, 2, 1, baseTopic + "set power command " + motorName, "\"show_type\": true"));
+                while (motorIndex < mech.getMotors().length) {
+                    MotorInterface motor = mech.getMotor(motorIndex);
+
+                    String motorName = motor.getName();
+                    
+                    int requiredRows = 4;
+                    if (powerCmds.contains(new Pair<>(mech, motor))) requiredRows++;
+                    if (autoCalibration.contains(new Pair<>(mech, motor))) requiredRows++;
+                    if (NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable(mech.getName()).containsSubTable(motorName + " Calibration Command")) requiredRows++;
+                    
+                    boolean needsExtraCol = requiredRows > MAX_ROWS;
+                    
+                    if ((!needsExtraCol && xOffset >= MAX_COLS) || (needsExtraCol && xOffset > MAX_COLS - (WIDGET_WIDTH * 2))) {
+                        break;
+                    }
+                    
+                    String baseTopic = mechPath + "/" + motorName + "/";
+                    
+                    widgets.add(createWidget("Text Display", motorName + " wanted", xOffset, yOffset, 1, 1, baseTopic + motorName + " wanted value", "\"data_type\": \"double\", \"show_submit_button\": false"));
+                    widgets.add(createWidget("Text Display", motorName + " current", xOffset + 1, yOffset, 1, 1, baseTopic + motorName + " current Value", "\"data_type\": \"double\", \"show_submit_button\": false"));
                     yOffset++;
-                }
-                if (yOffset >= yMax) {
-                    yOffset = 0;
-                    xOffset += 2;
-                }
-                if (autoCalibration.contains(new Pair<>(mech, motor))) {
-                    widgets.add(createWidget("Command", "Reset " + motorName, xOffset, yOffset + 3, 2, 1, baseTopic + motorName + " manual reset", "\"show_type\": true"));
+                    
+                    if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                    widgets.add(createWidget("Command", "Coast " + motorName, xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + "set coast " + motorName, "\"show_type\": true"));
                     yOffset++;
-                }
-                if (yOffset >= yMax) {
+                    
+                    if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                    widgets.add(createWidget("Command", "Brake " + motorName, xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + "set brake " + motorName, "\"show_type\": true"));
+                    yOffset++;
+                    
+                    if (powerCmds.contains(new Pair<>(mech, motor))) {
+                        if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                        widgets.add(createWidget("Command", "Power " + motorName, xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + "set power command " + motorName, "\"show_type\": true"));
+                        yOffset++;
+                    }
+
+                    if (NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable(mech.getName()).containsSubTable(motorName + " Calibration Command")) {
+                        if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                        widgets.add(createWidget("Command", "Calibration Command " + motorName, xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + motorName + " Calibration Command", "\"show_type\": true"));
+                        yOffset++;
+                    }
+                    
+                    if (autoCalibration.contains(new Pair<>(mech, motor))) {
+                        if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                        widgets.add(createWidget("Command", "Reset " + motorName, xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + motorName + " manual reset", "\"show_type\": true"));
+                        yOffset++;
+                    }
+                    
+                    if (yOffset >= MAX_ROWS) { yOffset = 0; xOffset += WIDGET_WIDTH; }
+                    widgets.add(createWidget("Boolean Box", "Calibrated", xOffset, yOffset, WIDGET_WIDTH, 1, baseTopic + motorName + " has Calibrated", "\"data_type\": \"boolean\", \"true_color\": 4283215696, \"false_color\": 4294198070"));
+                    yOffset++;
+                    
+                    xOffset += WIDGET_WIDTH;
                     yOffset = 0;
-                    xOffset += 2;
+                    motorIndex++;
                 }
-                widgets.add(createWidget("Boolean Box", "Calibrated", xOffset, yOffset, 2, 1, baseTopic + motorName + " has Calibrated", "\"data_type\": \"boolean\", \"true_color\": 4283215696, \"false_color\": 4294198070"));
-                xOffset += 2;
+
+                if (motorIndex >= mech.getMotors().length) {
+                    while (sensorIndex < mech.getSensors().length) {
+                        if (yOffset >= MAX_ROWS) {
+                            yOffset = 0;
+                            xOffset += WIDGET_WIDTH;
+                        }
+                        
+                        if (xOffset >= MAX_COLS) {
+                            break; 
+                        }
+                        
+                        SensorInterface sensor = mech.getSensor(sensorIndex);
+                        String sensorTopic = "/SmartDashboard/sensors/" + sensor.getName() + "/value";
+                        
+                        if (sensor instanceof frc.demacia.utils.sensors.DigitalSensorInterface) {
+                            widgets.add(createWidget("Boolean Box", sensor.getName(), xOffset, yOffset, WIDGET_WIDTH, 1, sensorTopic, "\"data_type\": \"boolean\""));
+                        } else {
+                            widgets.add(createWidget("Text Display", sensor.getName(), xOffset, yOffset, WIDGET_WIDTH, 1, sensorTopic, "\"data_type\": \"double\", \"show_submit_button\": false"));
+                        }
+                        
+                        yOffset++;
+                        sensorIndex++;
+                    }
+                }
+
+                sb.append(String.join(",\n", widgets));
+                sb.append("\n        ]\n      }\n    }");
+                
+                tabIndex++;
+                firstTab = false;
             }
-            sb.append(String.join(",\n", widgets));
-            sb.append("\n        ]\n      }\n    }");
         }
         return sb.toString();
     }

@@ -3,7 +3,7 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Tuner 1",
+      "name": "Tuner",
       "grid_layout": {
         "layouts": [],
         "containers": [
@@ -396,12 +396,20 @@
               "period": 0.06,
               "show_type": true
             }
-          },
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tuner 2",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
           {
             "type": "Boolean Box",
             "title": "hood motor",
             "x": 0.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -414,7 +422,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 128.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -427,7 +435,7 @@
             "type": "Command",
             "title": "Run",
             "x": 384.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -440,7 +448,7 @@
             "type": "Boolean Box",
             "title": "feeder motor",
             "x": 640.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -453,7 +461,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 768.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -466,7 +474,7 @@
             "type": "Command",
             "title": "Run",
             "x": 1024.0,
-            "y": 640.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -474,20 +482,12 @@
               "period": 0.06,
               "show_type": true
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Tuner 2",
-      "grid_layout": {
-        "layouts": [],
-        "containers": [
+          },
           {
             "type": "Boolean Box",
             "title": "intack deploy motor",
             "x": 0.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -500,7 +500,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 128.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -513,7 +513,7 @@
             "type": "Command",
             "title": "Run",
             "x": 384.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -526,7 +526,7 @@
             "type": "Boolean Box",
             "title": "rollers motor",
             "x": 640.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -539,7 +539,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 768.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -552,7 +552,7 @@
             "type": "Command",
             "title": "Run",
             "x": 1024.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -565,7 +565,7 @@
             "type": "Boolean Box",
             "title": "shinua rollers motor",
             "x": 0.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -578,7 +578,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 128.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -591,7 +591,7 @@
             "type": "Command",
             "title": "Run",
             "x": 384.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -604,7 +604,7 @@
             "type": "Boolean Box",
             "title": "mechanom motor",
             "x": 640.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
@@ -617,7 +617,7 @@
             "type": "Number Slider",
             "title": "Power",
             "x": 768.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -630,13 +630,78 @@
             "type": "Command",
             "title": "Run",
             "x": 1024.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
               "topic": "/SmartDashboard/motors/mechanom motor/test power command",
               "period": 0.06,
               "show_type": true
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "Front Left Cancoder",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/Front Left Cancoder/is Connected",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "Front Right Cancoder",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/Front Right Cancoder/is Connected",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "Back Left Cancoder",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/Back Left Cancoder/is Connected",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "Back Right Cancoder",
+            "x": 384.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/Back Right Cancoder/is Connected",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "robot c Chassis pigeon",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/robot c Chassis pigeon/is Connected",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -858,7 +923,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/turret/turret motor/turret motor currnte Value",
+              "topic": "/SmartDashboard/turret/turret motor/turret motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -904,9 +969,22 @@
           },
           {
             "type": "Command",
-            "title": "Reset turret motor",
+            "title": "Calibration Command turret motor",
             "x": 256.0,
             "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/turret/turret motor/turret motor Calibration Command",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "type": "Command",
+            "title": "Reset turret motor",
+            "x": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -918,14 +996,27 @@
           {
             "type": "Boolean Box",
             "title": "Calibrated",
-            "x": 256.0,
-            "y": 640.0,
+            "x": 512.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
               "topic": "/SmartDashboard/turret/turret motor/turret motor has Calibrated",
               "period": 0.06,
               "data_type": "boolean", "true_color": 4283215696, "false_color": 4294198070
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "turret limit swich",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/turret limit swich/value",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -996,7 +1087,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/shooter/flywheel motor/flywheel motor currnte Value",
+              "topic": "/SmartDashboard/shooter/flywheel motor/flywheel motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1041,23 +1132,10 @@
             }
           },
           {
-            "type": "Command",
-            "title": "Reset flywheel motor",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shooter/flywheel motor/flywheel motor manual reset",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "type": "Boolean Box",
             "title": "Calibrated",
             "x": 256.0,
-            "y": 640.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1087,7 +1165,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/shooter/hood motor/hood motor currnte Value",
+              "topic": "/SmartDashboard/shooter/hood motor/hood motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1133,9 +1211,22 @@
           },
           {
             "type": "Command",
-            "title": "Reset hood motor",
+            "title": "Calibration Command hood motor",
             "x": 512.0,
             "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/shooter/hood motor/hood motor Calibration Command",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "type": "Command",
+            "title": "Reset hood motor",
+            "x": 768.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1147,8 +1238,8 @@
           {
             "type": "Boolean Box",
             "title": "Calibrated",
-            "x": 512.0,
-            "y": 640.0,
+            "x": 768.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1160,7 +1251,7 @@
           {
             "type": "Text Display",
             "title": "feeder motor wanted",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -1173,12 +1264,12 @@
           {
             "type": "Text Display",
             "title": "feeder motor current",
-            "x": 896.0,
+            "x": 1152.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/shooter/feeder motor/feeder motor currnte Value",
+              "topic": "/SmartDashboard/shooter/feeder motor/feeder motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1186,7 +1277,7 @@
           {
             "type": "Command",
             "title": "Coast feeder motor",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 128.0,
             "width": 256.0,
             "height": 128.0,
@@ -1199,7 +1290,7 @@
           {
             "type": "Command",
             "title": "Brake feeder motor",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 256.0,
             "width": 256.0,
             "height": 128.0,
@@ -1210,42 +1301,37 @@
             }
           },
           {
-            "type": "Command",
-            "title": "Power feeder motor",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shooter/feeder motor/set power command feeder motor",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
-            "type": "Command",
-            "title": "Reset feeder motor",
-            "x": 768.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shooter/feeder motor/feeder motor manual reset",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "type": "Boolean Box",
             "title": "Calibrated",
-            "x": 768.0,
-            "y": 640.0,
+            "x": 1024.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
               "topic": "/SmartDashboard/shooter/feeder motor/feeder motor has Calibrated",
               "period": 0.06,
               "data_type": "boolean", "true_color": 4283215696, "false_color": 4294198070
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "shooter 2",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "type": "Boolean Box",
+            "title": "hood limit swich",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/hood limit swich/value",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -1316,7 +1402,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/intack/intack deploy motor/intack deploy motor currnte Value",
+              "topic": "/SmartDashboard/intack/intack deploy motor/intack deploy motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1362,9 +1448,22 @@
           },
           {
             "type": "Command",
-            "title": "Reset intack deploy motor",
+            "title": "Calibration Command intack deploy motor",
             "x": 256.0,
             "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/intack/intack deploy motor/intack deploy motor Calibration Command",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "type": "Command",
+            "title": "Reset intack deploy motor",
+            "x": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1376,8 +1475,8 @@
           {
             "type": "Boolean Box",
             "title": "Calibrated",
-            "x": 256.0,
-            "y": 640.0,
+            "x": 512.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1389,7 +1488,7 @@
           {
             "type": "Text Display",
             "title": "rollers motor wanted",
-            "x": 512.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -1402,12 +1501,12 @@
           {
             "type": "Text Display",
             "title": "rollers motor current",
-            "x": 640.0,
+            "x": 896.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/intack/rollers motor/rollers motor currnte Value",
+              "topic": "/SmartDashboard/intack/rollers motor/rollers motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1415,7 +1514,7 @@
           {
             "type": "Command",
             "title": "Coast rollers motor",
-            "x": 512.0,
+            "x": 768.0,
             "y": 128.0,
             "width": 256.0,
             "height": 128.0,
@@ -1428,7 +1527,7 @@
           {
             "type": "Command",
             "title": "Brake rollers motor",
-            "x": 512.0,
+            "x": 768.0,
             "y": 256.0,
             "width": 256.0,
             "height": 128.0,
@@ -1439,42 +1538,29 @@
             }
           },
           {
-            "type": "Command",
-            "title": "Power rollers motor",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/intack/rollers motor/set power command rollers motor",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
-            "type": "Command",
-            "title": "Reset rollers motor",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/intack/rollers motor/rollers motor manual reset",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "type": "Boolean Box",
             "title": "Calibrated",
-            "x": 512.0,
-            "y": 640.0,
+            "x": 768.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
               "topic": "/SmartDashboard/intack/rollers motor/rollers motor has Calibrated",
               "period": 0.06,
               "data_type": "boolean", "true_color": 4283215696, "false_color": 4294198070
+            }
+          },
+          {
+            "type": "Boolean Box",
+            "title": "intack diploy limit swich",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "properties": {
+              "topic": "/SmartDashboard/sensors/intack diploy limit swich/value",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -1545,7 +1631,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/shinua/shinua rollers motor/shinua rollers motor currnte Value",
+              "topic": "/SmartDashboard/shinua/shinua rollers motor/shinua rollers motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1577,36 +1663,10 @@
             }
           },
           {
-            "type": "Command",
-            "title": "Power shinua rollers motor",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shinua/shinua rollers motor/set power command shinua rollers motor",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
-            "type": "Command",
-            "title": "Reset shinua rollers motor",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shinua/shinua rollers motor/shinua rollers motor manual reset",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "type": "Boolean Box",
             "title": "Calibrated",
             "x": 256.0,
-            "y": 640.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {
@@ -1636,7 +1696,7 @@
             "width": 128.0,
             "height": 128.0,
             "properties": {
-              "topic": "/SmartDashboard/shinua/mechanom motor/mechanom motor currnte Value",
+              "topic": "/SmartDashboard/shinua/mechanom motor/mechanom motor current Value",
               "period": 0.06,
               "data_type": "double", "show_submit_button": false
             }
@@ -1668,36 +1728,10 @@
             }
           },
           {
-            "type": "Command",
-            "title": "Power mechanom motor",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shinua/mechanom motor/set power command mechanom motor",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
-            "type": "Command",
-            "title": "Reset mechanom motor",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "properties": {
-              "topic": "/SmartDashboard/shinua/mechanom motor/mechanom motor manual reset",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "type": "Boolean Box",
             "title": "Calibrated",
             "x": 512.0,
-            "y": 640.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "properties": {

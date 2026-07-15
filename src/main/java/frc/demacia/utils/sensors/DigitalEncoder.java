@@ -3,6 +3,7 @@ package frc.demacia.utils.sensors;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,6 +53,7 @@ public class DigitalEncoder extends DutyCycleEncoder implements AnalogSensorInte
         addLog();
         SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " digital encoder initialized");
+        ElasticGenerator.getInstance().registerSensor(this);
     }
     
     private void configEncoder() {
@@ -107,6 +109,7 @@ public class DigitalEncoder extends DutyCycleEncoder implements AnalogSensorInte
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("AbsoluteEncoder");
         builder.addDoubleProperty("Position", this::get, null);
+        builder.addDoubleProperty("value", this::get, null);
         builder.addBooleanProperty("Is Connected", this::isConnected, null);
     }
 }

@@ -4,6 +4,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 
 /**
@@ -47,6 +48,7 @@ public class LimitSwitch extends DigitalInput implements DigitalSensorInterface{
         addLog();
         SmartDashboard.putData("sensors/" + config.name, this);
 		LogManager.log(name + " limit switch initialized");
+        ElasticGenerator.getInstance().registerSensor(this);
     }
 
     private void configLimitSwitch() {

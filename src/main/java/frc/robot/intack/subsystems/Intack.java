@@ -35,7 +35,7 @@ public class Intack extends StateBaseMechanism{
         withPowerCommand(INTACK_DEPLOY_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
         withAutoCalibration(INTACK_DEPLOY_MOTOR_NAME, () -> isAtMinLimit(), INTACK_DEPLOY_MIN_ANGLE);
 
-        SmartDashboard.putData(INTACK_NAME + "/IntackDeploy Calibration Command", new IntackDeployCalibrationCommand(this));
+        SmartDashboard.putData(INTACK_NAME + "/" + INTACK_DEPLOY_MOTOR_NAME + " Calibration Command", new IntackDeployCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is intack ready", () -> isReady()).build();
         LogManager.addEntry(getName() + "/is intack at min", () -> isAtMinLimit()).build();
     }

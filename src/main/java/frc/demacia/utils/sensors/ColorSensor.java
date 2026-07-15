@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 
 import com.revrobotics.ColorSensorV3;
@@ -53,7 +54,7 @@ public class ColorSensor extends ColorSensorV3 implements ColorSensorInterface {
 
         SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " color sensor initialized");
-     
+        ElasticGenerator.getInstance().registerSensor(this);
     }
 
     @Override
@@ -194,7 +195,9 @@ public class ColorSensor extends ColorSensorV3 implements ColorSensorInterface {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Color Sensor");
+        builder.addDoubleProperty("value", this::getProximity, null);
         builder.addDoubleProperty("Proximity", this::getProximity, null);
         builder.addStringProperty("Matched Color", this::getMatchedColorName, null);
+        builder.addBooleanProperty("is Connected", this::isConnected, null);
     }
 }

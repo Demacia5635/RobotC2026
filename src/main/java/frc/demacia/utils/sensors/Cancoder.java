@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.Data;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
@@ -83,6 +84,7 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
         addLog();
         SmartDashboard.putData("sensors/" + name, this);
         LogManager.log(name + " cancoder initialized");
+        ElasticGenerator.getInstance().registerSensor(this);
     }
 
     private void configCancoder() {
@@ -207,11 +209,12 @@ public class Cancoder extends CANcoder implements AnalogSensorInterface {
         }
         return 0;
     }
-
+    
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("CANcoder");
         builder.addBooleanProperty("is Connected", this::isConnected, null);
+        builder.addDoubleProperty("value", this::getCurrentAbsPosition, null);
         builder.addDoubleProperty("Abs Position", this::getCurrentAbsPosition, null);
         builder.addDoubleProperty("Position", this::getCurrentPosition, null);
         builder.addDoubleProperty("Velocity", this::getCurrentVelocity, null);

@@ -41,10 +41,11 @@ public class Shooter extends StateBaseMechanism{
         ShooterStates.class);
 
         addLimit(HOOD_MOTOR_NAME, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
-        withPowerCommand(() -> RobotContainer.controller.getRightX());
+        withPowerCommand(FLYWHEEL_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
+        withPowerCommand(HOOD_MOTOR_NAME, () -> RobotContainer.controller.getRightY());
         withAutoCalibration(HOOD_MOTOR_NAME, () -> isAtMinLimit(), HOOD_MIN_ANGLE);
 
-        SmartDashboard.putData(SHOOTER_NAME + "/hood Calibration Command", new HoodCalibrationCommand(this));
+        SmartDashboard.putData(SHOOTER_NAME + "/" + HOOD_MOTOR_NAME + " Calibration Command", new HoodCalibrationCommand(this));
         LogManager.addEntry(getName() + "/distence from hub", () -> getHubDistacse()).build();
         LogManager.addEntry(getName() + "/is shooter ready", () -> isReady()).build();
         LogManager.addEntry(getName() + "/is shooter at min", () -> isAtMinLimit()).build();

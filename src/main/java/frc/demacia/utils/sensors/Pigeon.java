@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.demacia.utils.Data;
+import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
@@ -92,6 +93,7 @@ public class Pigeon extends Pigeon2 implements SensorInterface{
         addLog();
         SmartDashboard.putData("sensors/" + config.name, this);
 		LogManager.log(name + " pigeon initialized");
+        ElasticGenerator.getInstance().registerSensor(this);
     }
 
     private void configPigeon() {
@@ -330,6 +332,7 @@ public class Pigeon extends Pigeon2 implements SensorInterface{
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Gyro");
         builder.addBooleanProperty("is Connected", this::isConnected, null);
+        builder.addDoubleProperty("value", this::getCurrentYaw, null);
         builder.addDoubleProperty("yaw", this::getCurrentYaw, null);
         builder.addDoubleProperty("yaw Degree", this::getCurrentYawDegree, null);
         builder.addDoubleProperty("pitch", this::getCurrentPitch, null);

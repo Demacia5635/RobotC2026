@@ -38,7 +38,7 @@ public class Turret extends StateBaseMechanism{
         withPowerCommand(TURRET_MOTOR_NAME, () -> RobotContainer.controller.getRightX());
         withAutoCalibration(TURRET_MOTOR_NAME, () -> isAtMinLimit(), TURRET_MIN_ANGLE);
 
-        SmartDashboard.putData(TURRET_NAME + "/turret Calibration Command", new TurretCalibrationCommand(this));
+        SmartDashboard.putData(TURRET_NAME + "/" + TURRET_MOTOR_NAME + " Calibration Command", new TurretCalibrationCommand(this));
         LogManager.addEntry(getName() + "/is turret ready", () -> isReady()).build();
         LogManager.addEntry(getName() + "/is turret at min", () -> isAtMinLimit()).build();
         wantedTurretAngle = new double[1];
