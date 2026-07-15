@@ -144,6 +144,8 @@ public interface MotorInterface extends Sendable {
     
     double getCurrentValue();
 
+    void updatePid(CloseLoopParam newParams, int slot);
+
     /**
      * Checks for hardware faults and logs them.
      */

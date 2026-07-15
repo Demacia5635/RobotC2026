@@ -23,7 +23,7 @@ public class SysidApp {
 }
 
 class SysidMain implements Consumer<File> {
-    JFrame frame = new JFrame("SysID");
+    JFrame frame = new JFrame("SysID - Pro Version");
     
     FileChooserPanel fileChooser = new FileChooserPanel(this);
     DefaultListModel<MotorData> listModel = new DefaultListModel<>();

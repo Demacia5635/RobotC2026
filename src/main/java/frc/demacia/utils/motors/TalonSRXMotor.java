@@ -262,6 +262,10 @@ public class TalonSRXMotor extends TalonSRX implements MotorInterface {
       }
     }
 
+    
+
+  public void updatePid(CloseLoopParam newParams, int slot) {}
+
     @Override
     public void setEncoderPosition(double position) {
         setSelectedSensorPosition(position * config.motorRatio);

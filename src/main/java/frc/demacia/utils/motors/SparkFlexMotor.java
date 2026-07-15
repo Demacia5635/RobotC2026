@@ -141,6 +141,9 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
       ).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
       .withIsMotor()
       .build();
+      
+      configPidFf(0);
+      configMotionMagic();
   }
 
   @Override
@@ -410,7 +413,7 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
       configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
     
-    SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/Motion Magic Config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Motion Magic Config");
@@ -433,6 +436,26 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
         );
       }
     });
+  }
+
+  public void updatePid(CloseLoopParam newParams, int slot) {config.pid[slot].setKP(newParams.kP());
+    config.pid[slot].setKI(newParams.kI());
+    config.pid[slot].setKD(newParams.kD());
+    config.pid[slot].setKS(newParams.kS());
+    config.pid[slot].setKV(newParams.kV());
+    config.pid[slot].setKA(newParams.kA());
+    config.pid[slot].setKG(newParams.kG());
+
+    if (slot >= 0 && slot <= 2) {
+      closedLoopSlot = slot == 0 ? ClosedLoopSlot.kSlot0 : slot == 1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot2;
+      cfg.closedLoop.pid(config.pid[slot].kP(), config.pid[slot].kI(), config.pid[slot].kD(), 
+        closedLoopSlot);
+      cfg.closedLoop.feedForward.kV(config.pid[slot].kV(), closedLoopSlot)
+        .kA(config.pid[slot].kA(), closedLoopSlot)
+        .kS(config.pid[slot].kS(), closedLoopSlot)
+        .kG(config.pid[slot].kG(), closedLoopSlot);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
+    }
   }
 
   @Override

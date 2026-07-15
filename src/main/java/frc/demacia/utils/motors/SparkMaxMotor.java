@@ -38,6 +38,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
 
   double wantedValue = 0.0;
   private ControlMode controlMode = ControlMode.DISABLE;
+  private ControlMode lastControlMode = ControlMode.DISABLE;
   
   // Variables for manual velocity/acceleration calculation
   private double lastVelocity;
@@ -142,6 +143,9 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
       ).withLogLevel(LogLevel.LOG_ONLY_NOT_IN_COMP)
       .withIsMotor()
       .build();
+      
+      configPidFf(0);
+      configMotionMagic();
   }
 
   @Override
@@ -187,8 +191,10 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     super.set(power);
     controlType = ControlType.kDutyCycle;
     if (power == 0){
+      lastControlMode = controlMode;
       controlMode = ControlMode.DISABLE;
     } else {
+      lastControlMode = controlMode;
       controlMode = ControlMode.DUTYCYCLE;
     }
     }
@@ -197,6 +203,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void setVoltage(double voltage) {
     super.setVoltage(voltage);
     controlType = ControlType.kVoltage;
+    lastControlMode = controlMode;
     controlMode = ControlMode.VOLTAGE;
   }
 
@@ -208,6 +215,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     }
     getClosedLoopController().setSetpoint(velocity, ControlType.kMAXMotionVelocityControl, closedLoopSlot, feedForward + velocityFeedForward(velocity) + config.pid[closedLoopSlot.value].kS()*Math.signum(velocity));
     controlType = ControlType.kMAXMotionVelocityControl;
+    lastControlMode = controlMode;
     controlMode = ControlMode.VELOCITY;
     setPoint = velocity;
   }
@@ -226,6 +234,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public void setPositionVoltage(double position, double feedForward) {
     getClosedLoopController().setSetpoint(position, ControlType.kPosition, closedLoopSlot, feedForward);
     controlType = ControlType.kPosition;
+    lastControlMode = controlMode;
     controlMode = ControlMode.POSITION_VOLTAGE;
     setPoint = position;
   }
@@ -243,6 +252,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
     }
     getClosedLoopController().setSetpoint(position, ControlType.kMAXMotionPositionControl, closedLoopSlot, feedForward + config.pid[closedLoopSlot.value].kS() + positionFeedForward(position));
     controlType = ControlType.kMAXMotionPositionControl;
+    lastControlMode = controlMode;
     controlMode = ControlMode.MAGIC_MOTION;
     setPoint = position;
   } 
@@ -255,6 +265,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   @Override
   public void setAngle(double angle, double feedForward) {
     setMotion(getCurrentPosition() + MathUtil.angleModulus(angle - getCurrentAngle()), feedForward);
+    lastControlMode = controlMode;
     controlMode = ControlMode.ANGLE;
   }
 
@@ -342,7 +353,20 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
   public double getCurrentValue() {
     switch (controlMode) {
       case DISABLE:
-        return 0;
+        switch (lastControlMode) {
+          case DUTYCYCLE:
+            return 0;
+          case VOLTAGE:
+            return getCurrentVoltage();
+          case VELOCITY:
+            return getCurrentVelocity();
+          case POSITION_VOLTAGE, MAGIC_MOTION:
+            return getCurrentPosition();
+          case ANGLE:
+            return getCurrentAngle();
+          default:
+            return 0;
+          }
       case DUTYCYCLE:
         return 0;
       case VOLTAGE:
@@ -431,7 +455,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
       configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
     }).ignoringDisable(true);
     
-    SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/Motion Magic Config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Motion Magic Config");
@@ -455,6 +479,28 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
       }
     });
   }
+
+  public void updatePid(CloseLoopParam newParams, int slot) {
+    config.pid[slot].setKP(newParams.kP());
+    config.pid[slot].setKI(newParams.kI());
+    config.pid[slot].setKD(newParams.kD());
+    config.pid[slot].setKS(newParams.kS());
+    config.pid[slot].setKV(newParams.kV());
+    config.pid[slot].setKA(newParams.kA());
+    config.pid[slot].setKG(newParams.kG());
+
+    if (slot >= 0 && slot <= 2) {
+      closedLoopSlot = slot == 0 ? ClosedLoopSlot.kSlot0 : slot == 1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot2;
+      cfg.closedLoop.pid(config.pid[slot].kP(), config.pid[slot].kI(), config.pid[slot].kD(), 
+        closedLoopSlot);
+      cfg.closedLoop.feedForward.kV(config.pid[slot].kV(), closedLoopSlot)
+        .kA(config.pid[slot].kA(), closedLoopSlot)
+        .kS(config.pid[slot].kS(), closedLoopSlot)
+        .kG(config.pid[slot].kG(), closedLoopSlot);
+      configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
+    }
+  }
+
   public void updateStallDetection() {
     if (config.conditionIsTrue == null || config.lowVelocityThreshold == 0)
       return;
@@ -499,6 +545,7 @@ public class SparkMaxMotor extends SparkMax implements MotorInterface {
 
   public void stop(){
       stopMotor();
+      lastControlMode = controlMode;
       controlMode = ControlMode.DISABLE;
   }
     

@@ -27,6 +27,7 @@ public class StateManger extends SubsystemBase{
 
     private StateManger() {
         SmartDashboard.putData("State Manager", this);
+        SmartDashboard.putData("reset Shift", new InstantCommand(() -> resetShift()).ignoringDisable(true));
     }
 
     public static StateManger getInstance() {
@@ -244,6 +245,5 @@ public class StateManger extends SubsystemBase{
         }
         SmartDashboard.putNumber("Time Left", getTimeLeft());
         SmartDashboard.putNumber("shift time left", getShiftTimeLeft());
-        SmartDashboard.putData("reset Shift", new InstantCommand(() -> resetShift()).ignoringDisable(true));
     }
 }

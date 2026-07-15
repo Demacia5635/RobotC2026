@@ -10,7 +10,6 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.demacia.utils.log.LogManager;
@@ -94,6 +93,7 @@ public class ElasticGenerator {
 
         json.append(buildTunerTabs());
         json.append(buildChassisTab());
+        json.append(buildSysidTabs());
         json.append(buildMechanismTabs());
 
         json.append("\n  ]\n");
@@ -241,6 +241,123 @@ public class ElasticGenerator {
         sb.append(createWidget("Command", "Brake Chassis", 4, 3, 2, 1, "/SmartDashboard/chassis/set brake", "\"show_type\": true"));
 
         sb.append("\n        ]\n      }\n    }");
+        return sb.toString();
+    }
+
+    private String buildSysidTabs() {
+        StringBuilder sb = new StringBuilder();
+        int tabIndex = 1;
+        boolean firstTab = true;
+        int xMax = 10;
+        int yMax = 5;
+        int motorX = 2;
+
+        int motorIndex = 0;
+
+        sb.append(",\n");
+
+        while (motorIndex < allMotors.size() || (allMotors.isEmpty())) {
+            if (!firstTab) sb.append(",\n");
+            
+            String tabName = "Sysid" + (tabIndex > 1 ? " " + tabIndex : "");
+            sb.append("    {\n");
+            sb.append("      \"name\": \"").append(tabName).append("\",\n");
+            sb.append("      \"grid_layout\": {\n        \"layouts\": [\n");
+            
+            List<String> widgets = new ArrayList<>();
+            int row = 0;
+            int col = 2;
+
+            while (motorIndex < allMotors.size() && col < xMax) {
+                MotorInterface motor = allMotors.get(motorIndex);
+
+                // if () {
+                //     widgets.add(createWidget("Boolean Box", motor.getName(), col, row, 1, 1, motorPath + "/Is" + motor.getName() + "Connected", "\"data_type\": \"boolean\""));
+                //     row++;
+                // }
+                
+                String motorPath = "/SmartDashboard/motors/" + motor.getName();
+                
+                StringBuilder listLayout = new StringBuilder();
+                double xPos = col * 128.0;
+                double yPos = row * 128.0;
+                double w = motorX * 128.0;
+                double h = (yMax - row) * 128.0;
+
+                listLayout.append("          {\n");
+                listLayout.append("            \"type\": \"List Layout\",\n");
+                listLayout.append("            \"title\": \"").append(motor.getName()).append("\",\n");
+                listLayout.append("            \"x\": ").append(xPos).append(",\n");
+                listLayout.append("            \"y\": ").append(yPos).append(",\n");
+                listLayout.append("            \"width\": ").append(w).append(",\n");
+                listLayout.append("            \"height\": ").append(h).append(",\n");
+                listLayout.append("            \"properties\": {\n");
+                listLayout.append("              \"label_position\": \"TOP\"\n");
+                listLayout.append("            },\n");
+                listLayout.append("            \"children\": [\n");
+
+                String[] pidffParams = {"KP", "KI", "KD", "KS", "KV", "KA", "KG", "KV2"};
+                for (int i = 0; i < pidffParams.length; i++) {
+                    listLayout.append("              {\n");
+                    listLayout.append("                \"title\": \"").append(pidffParams[i]).append("\",\n");
+                    listLayout.append("                \"x\": 0.0,\n");
+                    listLayout.append("                \"y\": 0.0,\n");
+                    listLayout.append("                \"width\": 128.0,\n");
+                    listLayout.append("                \"height\": 128.0,\n");
+                    listLayout.append("                \"type\": \"Text Display\",\n");
+                    listLayout.append("                \"properties\": {\n");
+                    listLayout.append("                  \"topic\": \"").append(motorPath).append("/PID+FF config/").append(pidffParams[i]).append("\",\n");
+                    listLayout.append("                  \"period\": 0.06,\n");
+                    listLayout.append("                  \"data_type\": \"double\",\n");
+                    listLayout.append("                  \"show_submit_button\": true\n");
+                    listLayout.append("                }\n");
+                    listLayout.append("              },\n");
+                }
+
+                listLayout.append("              {\n");
+                listLayout.append("                \"title\": \"Update\",\n");
+                listLayout.append("                \"x\": 0.0,\n");
+                listLayout.append("                \"y\": 0.0,\n");
+                listLayout.append("                \"width\": 128.0,\n");
+                listLayout.append("                \"height\": 128.0,\n");
+                listLayout.append("                \"type\": \"Toggle Button\",\n");
+                listLayout.append("                \"properties\": {\n");
+                listLayout.append("                  \"topic\": \"").append(motorPath).append("/PID+FF config/Update\",\n");
+                listLayout.append("                  \"period\": 0.06,\n");
+                listLayout.append("                  \"data_type\": \"boolean\"\n");
+                listLayout.append("                }\n");
+                listLayout.append("              }\n");
+                
+                listLayout.append("            ]\n");
+                listLayout.append("          }");
+
+                widgets.add(listLayout.toString());
+
+                row = 0;
+                col += motorX;
+                motorIndex++;
+            }
+
+            sb.append(String.join(",\n", widgets));
+            sb.append("\n        ],\n");
+
+            sb.append("        \"containers\": [\n");
+            List<String> containers = new ArrayList<>();
+            
+            if (allMotors.isEmpty() && allSensors.isEmpty()) {
+                containers.add(createWidget("Text Display", "Status", 0, 0, 4, 1, "", "\"data_type\": \"string\""));
+            } else {
+                containers.add(createWidget("Command", "sysid Command", 0, 0, 2, 1, "/SmartDashboard/SysID/sysidCommand", "\"show_type\": true, \"maximize_button_space\": false"));
+            }
+
+            sb.append(String.join(",\n", containers));
+            sb.append("\n        ]\n");
+            sb.append("      }\n");
+            sb.append("    }");
+            
+            tabIndex++;
+            firstTab = false;
+        }
         return sb.toString();
     }
 

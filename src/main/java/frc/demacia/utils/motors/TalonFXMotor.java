@@ -37,6 +37,7 @@ import frc.demacia.utils.dashboard.ElasticGenerator;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.log.LogEntryBuilder.LogLevel;
 import frc.demacia.utils.motors.BaseMotorConfig.Canbus;
+import frc.demacia.utils.sysid.Sysid;
 
 /**
  * Wrapper class for the TalonFX motor controller using Phoenix 6.
@@ -96,6 +97,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     SmartDashboard.putData("motors/" + name,this);
     LogManager.log(name + " motor initialized");
     ElasticGenerator.getInstance().registerMotor(this);
+    Sysid.registerMotor(this);
   }
 
   public TalonFXConfig getConfig() {
@@ -278,6 +280,9 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
     SmartDashboard.putData("motors/" + name + "/test power command", new StartEndCommand(
       () -> setDuty(testPower),
       () -> stop()));
+
+      configPidFf(0);
+      configMotionMagic();
   }
 
   @Override
@@ -546,13 +551,13 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");
-        builder.addDoubleProperty("KP", () -> config.pid[0].kP(), (double newValue) -> config.pid[0].setKP(newValue));
-        builder.addDoubleProperty("KI", () -> config.pid[0].kI(), (double newValue) -> config.pid[0].setKI(newValue));
-        builder.addDoubleProperty("KD", () -> config.pid[0].kD(), (double newValue) -> config.pid[0].setKD(newValue));
-        builder.addDoubleProperty("KS", () -> config.pid[0].kS(), (double newValue) -> config.pid[0].setKS(newValue));
-        builder.addDoubleProperty("KV", () -> config.pid[0].kV(), (double newValue) -> config.pid[0].setKV(newValue));
-        builder.addDoubleProperty("KA", () -> config.pid[0].kA(), (double newValue) -> config.pid[0].setKA(newValue));
-        builder.addDoubleProperty("KG", () -> config.pid[0].kG(), (double newValue) -> config.pid[0].setKG(newValue));
+        builder.addDoubleProperty("KP", () -> config.pid[slot].kP(), (double newValue) -> config.pid[slot].setKP(newValue));
+        builder.addDoubleProperty("KI", () -> config.pid[slot].kI(), (double newValue) -> config.pid[slot].setKI(newValue));
+        builder.addDoubleProperty("KD", () -> config.pid[slot].kD(), (double newValue) -> config.pid[slot].setKD(newValue));
+        builder.addDoubleProperty("KS", () -> config.pid[slot].kS(), (double newValue) -> config.pid[slot].setKS(newValue));
+        builder.addDoubleProperty("KV", () -> config.pid[slot].kV(), (double newValue) -> config.pid[slot].setKV(newValue));
+        builder.addDoubleProperty("KA", () -> config.pid[slot].kA(), (double newValue) -> config.pid[slot].setKA(newValue));
+        builder.addDoubleProperty("KG", () -> config.pid[slot].kG(), (double newValue) -> config.pid[slot].setKG(newValue));
         builder.addDoubleProperty("KV2", () -> config.kv2, (double newValue) -> config.kv2 = newValue);
         builder.addBooleanProperty("Update", () -> configPidFf.isScheduled(),
             value -> {
@@ -585,7 +590,7 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
       getConfigurator().apply(cfg);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
+    SmartDashboard.putData("motors/" + name + "/Motion Magic Config", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Motion Magic Config");
@@ -607,6 +612,38 @@ public class TalonFXMotor extends TalonFX implements MotorInterface {
             });
       }
     });
+  }
+
+  public void updatePid(CloseLoopParam newParams, int slot) {
+    config.pid[slot].setKP(newParams.kP());
+    config.pid[slot].setKI(newParams.kI());
+    config.pid[slot].setKD(newParams.kD());
+    config.pid[slot].setKS(newParams.kS());
+    config.pid[slot].setKV(newParams.kV());
+    config.pid[slot].setKA(newParams.kA());
+    config.pid[slot].setKG(newParams.kG());
+    
+    SlotConfigs cfg = new SlotConfigs();
+
+    cfg.SlotNumber = slot;
+    if (slot <= 2 && slot >= 0) {
+      cfg.kP = config.pid[slot].kP();
+      cfg.kI = config.pid[slot].kI();
+      cfg.kD = config.pid[slot].kD();
+      cfg.kS = config.pid[slot].kS();
+      cfg.kV = config.pid[slot].kV();
+      cfg.kA = config.pid[slot].kA();
+      cfg.kG = config.pid[slot].kG();
+    } else {
+      cfg.kP = config.pid[0].kP();
+      cfg.kI = config.pid[0].kI();
+      cfg.kD = config.pid[0].kD();
+      cfg.kS = config.pid[0].kS();
+      cfg.kV = config.pid[0].kV();
+      cfg.kA = config.pid[0].kA();
+      cfg.kG = config.pid[0].kG();
+    }
+    getConfigurator().apply(cfg);
   }
 
   public double gearRatio() {
