@@ -198,7 +198,7 @@ public class ElasticGenerator {
         StringBuilder sb = new StringBuilder();
         sb.append(",\n");
         sb.append("    {\n");
-        sb.append("      \"name\": \"Chassis Base\",\n");
+        sb.append("      \"name\": \"Chassis\",\n");
         sb.append("      \"grid_layout\": {\n        \"layouts\": [],\n        \"containers\": [\n");
         
         sb.append(createWidget("Field", "Field", 0, 0, 2, 4, "/SmartDashboard/chassis/field", "\"field_rotation\": 90.0"));
@@ -270,11 +270,6 @@ public class ElasticGenerator {
 
             while (motorIndex < allMotors.size() && col < xMax) {
                 MotorInterface motor = allMotors.get(motorIndex);
-
-                // if () {
-                //     widgets.add(createWidget("Boolean Box", motor.getName(), col, row, 1, 1, motorPath + "/Is" + motor.getName() + "Connected", "\"data_type\": \"boolean\""));
-                //     row++;
-                // }
                 
                 String motorPath = "/SmartDashboard/motors/" + motor.getName();
                 
@@ -295,6 +290,28 @@ public class ElasticGenerator {
                 listLayout.append("              \"label_position\": \"TOP\"\n");
                 listLayout.append("            },\n");
                 listLayout.append("            \"children\": [\n");
+
+                String commandName = powerCmds.stream()
+                        .filter(pair -> pair.getSecond().equals(motor))
+                        .map(pair -> pair.getFirst().getName() + " Power Command")
+                        .findFirst()
+                        .orElse(null);
+
+                if (commandName != null) {
+                    listLayout.append("              {\n");
+                    listLayout.append("                \"title\": \"").append(commandName).append("\",\n");
+                    listLayout.append("                \"x\": 0.0,\n");
+                    listLayout.append("                \"y\": 0.0,\n");
+                    listLayout.append("                \"width\": 128.0,\n");
+                    listLayout.append("                \"height\": 128.0,\n");
+                    listLayout.append("                \"type\": \"Command\",\n");
+                    listLayout.append("                \"properties\": {\n");
+                    listLayout.append("                  \"topic\": \"/SmartDashboard/").append(commandName).append("\",\n"); 
+                    listLayout.append("                  \"show_type\": true,\n");
+                    listLayout.append("                  \"maximize_button_space\": false\n");
+                    listLayout.append("                }\n");
+                    listLayout.append("              },\n");
+                }
 
                 String[] pidffParams = {"KP", "KI", "KD", "KS", "KV", "KA", "KG", "KV2"};
                 for (int i = 0; i < pidffParams.length; i++) {
@@ -344,7 +361,7 @@ public class ElasticGenerator {
             sb.append("        \"containers\": [\n");
             List<String> containers = new ArrayList<>();
             
-            if (allMotors.isEmpty() && allSensors.isEmpty()) {
+            if (allMotors.isEmpty()) {
                 containers.add(createWidget("Text Display", "Status", 0, 0, 4, 1, "", "\"data_type\": \"string\""));
             } else {
                 containers.add(createWidget("Command", "sysid Command", 0, 0, 2, 1, "/SmartDashboard/SysID/sysidCommand", "\"show_type\": true, \"maximize_button_space\": false"));

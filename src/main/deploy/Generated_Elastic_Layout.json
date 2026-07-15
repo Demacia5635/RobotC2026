@@ -708,7 +708,7 @@
       }
     },
     {
-      "name": "Chassis Base",
+      "name": "Chassis",
       "grid_layout": {
         "layouts": [],
         "containers": [
@@ -2022,6 +2022,19 @@
             },
             "children": [
               {
+                "title": "turret Power Command",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/turret Power Command",
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              },
+              {
                 "title": "KP",
                 "x": 0.0,
                 "y": 0.0,
@@ -2160,6 +2173,19 @@
             },
             "children": [
               {
+                "title": "shooter Power Command",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/shooter Power Command",
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              },
+              {
                 "title": "KP",
                 "x": 0.0,
                 "y": 0.0,
@@ -2297,6 +2323,19 @@
               "label_position": "TOP"
             },
             "children": [
+              {
+                "title": "shooter Power Command",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/shooter Power Command",
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              },
               {
                 "title": "KP",
                 "x": 0.0,
@@ -2595,6 +2634,19 @@
               "label_position": "TOP"
             },
             "children": [
+              {
+                "title": "intack Power Command",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/intack Power Command",
+                  "show_type": true,
+                  "maximize_button_space": false
+                }
+              },
               {
                 "title": "KP",
                 "x": 0.0,
