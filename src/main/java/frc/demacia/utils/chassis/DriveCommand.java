@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.demacia.utils.DemaciaUtils;
 import frc.demacia.utils.controller.CommandController;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.RobotCommon;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -62,10 +63,10 @@ public class DriveCommand extends Command {
     double joyY = controller.getLeftX() * direction;
     
     // Calculate r]otation from trigger axes
-    double rot = Math.abs(controller.getRightX()) < 0.01 ? 
-    0 : 
-    controller.getRightX();
-    // double rot = controller.getRightTrigger() - controller.getLeftTrigger();
+    // double rot = Math.abs(controller.getRightX()) < 0.01 ? 
+    // 0 : 
+    // controller.getRightX();
+    double rot = controller.getRightTrigger() - controller.getLeftTrigger();
     
     double velX = Math.pow(joyX, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getMaxDriveVelocity() * Math.signum(joyY);
@@ -73,7 +74,7 @@ public class DriveCommand extends Command {
     if(precisionMode){
         velX /= 4;
         velY /= 4;
-        // velRot /= 4;
+        velRot /= 4;
     }
 
     speeds = new ChassisSpeeds(velX, velY, velRot);

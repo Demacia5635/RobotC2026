@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry; // ← חדש: אודומטריה טהורה של WPILib
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
@@ -37,6 +38,9 @@ import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaOdometry;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
+import frc.demacia.vision.utils.Vision;
+import frc.demacia.vision.utils.VisionConstants;
+import frc.robot.Field;
 import frc.robot.RobotCommon;
 
 public class Chassis extends SubsystemBase {
@@ -63,6 +67,11 @@ public class Chassis extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
     // ────────────────────────────────────────────────────────────────────────
 
+    // ── אודומטריה טהורה של WPILib (בלי תיקוני Vision) — לצורך השוואה בלבד ───
+    private SwerveDriveOdometry wpilibOdometry;
+    private Field2d fieldWpilibOdometry;
+    // ────────────────────────────────────────────────────────────────────────
+
     private Field2d field;
     private Field2d fieldTesting;
     private Field2d fieldOdmetry;
@@ -72,7 +81,7 @@ public class Chassis extends SubsystemBase {
 
     private Rotation2d lastGyroYaw;
     private double lastGyroAngularVelocity;
-
+    private final Vision vision;
     private final PIDController xController = new PIDController(0.2, 0.0, 0.0);
     private final PIDController yController = new PIDController(0.2, 0.0, 0.0);
     private final PIDController headingController = new PIDController(0.03, 0.0, 0) {
@@ -93,7 +102,7 @@ public class Chassis extends SubsystemBase {
 
     private Chassis(ChassisConfig chassisConfig) {
         setName(getName());
-
+        vision = new Vision(VisionConstants.Tags.TAGS_ARRAY);
         this.chassisConfig = chassisConfig;
         fieldOdmetry = new Field2d();
         modules = new SwerveModule[4];
@@ -121,10 +130,21 @@ public class Chassis extends SubsystemBase {
                 VecBuilder.fill(0.9, 0.9, 0.9));       // visionStdDevs: x, y, theta
         // ────────────────────────────────────────────────────────────────────
 
+        // ── אתחול אודומטריה טהורה של WPILib (ללא תיקוני Vision) ─────────────
+        // רץ במקביל ל-poseEstimator, רק לצורך השוואה: כמה הוויז'ן בפועל מתקן
+        wpilibOdometry = new SwerveDriveOdometry(
+                wpilibKinematics,
+                getGyroAngle(),
+                getModulePositions(),
+                new Pose2d());
+        fieldWpilibOdometry = new Field2d();
+        // ────────────────────────────────────────────────────────────────────
+
         field = new Field2d();
         fieldTesting = new Field2d();
 
         SmartDashboard.putData("field odometry", fieldOdmetry);
+        SmartDashboard.putData("chassis/field wpilib odometry (no vision)", fieldWpilibOdometry);
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
@@ -139,6 +159,11 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
                         .resetPose(getPose())).ignoringDisable(true));
         SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
+        SmartDashboard.putData("Reset Pose Based Red Hub" , new InstantCommand(()-> {
+            Chassis.getInstance().setYaw(Rotation2d.kZero);
+            resetPose(new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER, Rotation2d.kZero));
+            
+        }).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -275,6 +300,7 @@ public class Chassis extends SubsystemBase {
 
     public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(getGyroAngle(), getModulePositions(), pose);
+        wpilibOdometry.resetPosition(getGyroAngle(), getModulePositions(), pose);
     }
 
     public boolean isPassBamp() {
@@ -284,6 +310,14 @@ public class Chassis extends SubsystemBase {
 
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
+    }
+
+    /**
+     * Pose לפי אודומטריה טהורה של WPILib בלבד (ללא תיקוני Vision).
+     * שימושי להשוואה מול {@link #getPose()} כדי לראות כמה הוויז'ן מתקן בפועל.
+     */
+    public Pose2d getWpilibOdometryPose() {
+        return wpilibOdometry.getPoseMeters();
     }
 
     public Pose2d getPoseWithVelocity(double dt) {
@@ -389,8 +423,13 @@ public class Chassis extends SubsystemBase {
         poseEstimator.update(getGyroAngle(), getModulePositions());
         // ────────────────────────────────────────────────────────────────────
 
-        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
+        // ── עדכון אודומטריה טהורה של WPILib (ללא תיקוני Vision) ─────────────
+        wpilibOdometry.update(getGyroAngle(), getModulePositions());
+        fieldWpilibOdometry.setRobotPose(getWpilibOdometryPose());
+        // ────────────────────────────────────────────────────────────────────
 
+        SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
+        addVisionMeasurement(vision.getPoseEstimation(), 0.02);
         field.setRobotPose(getPose());
         fieldTesting.setRobotPose(new Pose2d(RobotCommon.getHubPose(), new Rotation2d(0)));
 
@@ -406,6 +445,12 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putNumber("pose/x", getPose().getX());
         SmartDashboard.putNumber("pose/y", getPose().getY());
         SmartDashboard.putNumber("pose/heading", getPose().getRotation().getDegrees());
+
+        // ── מספרים להשוואה: אודומטריה טהורה מול poseEstimator (עם Vision) ───
+        SmartDashboard.putNumber("odometry_wpilib/x", getWpilibOdometryPose().getX());
+        SmartDashboard.putNumber("odometry_wpilib/y", getWpilibOdometryPose().getY());
+        SmartDashboard.putNumber("odometry_wpilib/heading", getWpilibOdometryPose().getRotation().getDegrees());
+        // ────────────────────────────────────────────────────────────────────
     }
 
     public Pose2d getFuturePose(double dtSeconds) {
@@ -448,6 +493,11 @@ public class Chassis extends SubsystemBase {
                     angle,
                     getModulePositions(),
                     new Pose2d(getPose().getTranslation(), angle));
+            // מאפסים גם את האודומטריה הטהורה לפי אותה זווית
+            wpilibOdometry.resetPosition(
+                    angle,
+                    getModulePositions(),
+                    new Pose2d(getWpilibOdometryPose().getTranslation(), angle));
         }
     }
 
