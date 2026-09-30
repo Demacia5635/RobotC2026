@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.demacia.utils.motors.TalonFXConfig;
+import frc.demacia.utils.sensors.LimitSwitchConfig;
 
 public class TurretConstants {
     //TODO: Set the motor config and delivery points
@@ -34,12 +35,13 @@ public class TurretConstants {
     public static final double TURRET_ANGLE_RANGE = MAX_TURRET_ANGLE + Math.abs(MIN_TURRET_ANGLE);
 
     //TODO: Set the limit switch config
-    public static final int MAX_LIMIT_SWITCH_ID = 8;
+    public static final int MAX_LIMIT_SWITCH_ID = 9;
+
     // public static final int MIN_LIMIT_SWITCH_ID = 0;
     public final static String MAX_LIMIT_SWITCH_NAME = "max limit swich";
     // public final static String MIN_LIMIT_SWITCH_NAME = "min limit swich";
 
-    // public static final LimitSwitchConfig MIN_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MAX_LIMIT_SWITCH_ID, MAX_LIMIT_SWITCH_NAME);
+    public static final LimitSwitchConfig MIN_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MAX_LIMIT_SWITCH_ID, MAX_LIMIT_SWITCH_NAME);
     // public static final DigitalInput MAX_LIMIT_SWITCH_CONFIG= new DigitalInput(MAX_LIMIT_SWITCH_ID);
 
     public static final double MIN_VELOCITY = 0;

@@ -30,6 +30,6 @@ public class TurretCalibration extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return turret.getMaxLimitSwich();
+    return turret.getLimitSwich();
   }
 }

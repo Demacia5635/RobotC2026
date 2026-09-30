@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.robot.intake.IntakeConstants;
@@ -25,6 +26,11 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput intakeDeployLimitSwitch;
   private IntakeState state;
   private boolean isCalibrated = false;
+
+  public void initialize(){
+    if (instance == null)
+            instance = new IntakeSubsystem();
+  }
 
   public static IntakeSubsystem getInstance() {
     if (instance == null)

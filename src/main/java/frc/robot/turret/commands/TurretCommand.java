@@ -55,6 +55,10 @@ public class TurretCommand extends Command {
         TurretConstants.MAX_TURRET_ANGLE + (360 - TurretConstants.TURRET_ANGLE_RANGE)/2), //(27) - (37) will be 27
         TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE));
         break;
+        case TEST:
+        targetAngle = testAngle;
+        turret.setTurretMotion(targetAngle);
+        break;
       default:
         turret.setTurretMotion(turret.getDeliveryAngle());
         break;

@@ -3,20 +3,16 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.turret.subsystems;
+import frc.demacia.utils.chassis.Chassis;
+import frc.demacia.utils.chassis.ChassisConfig;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
-import frc.robot.RobotContainer;
-import frc.robot.intake.IntakeConstants;
-import frc.robot.shooter.ShooterConstants.FlywheelConstants;
-import frc.robot.shooter.ShooterConstants.HoodConstants;
-import frc.robot.shooter.ShooterConstants.ShooterStates;
 import frc.robot.turret.TurretConstants;
 import frc.robot.turret.TurretConstants.TurretStates;
 import frc.robot.turret.commands.TurretCalibration;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -25,16 +21,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Turret extends SubsystemBase {
   private static Turret turret;
   public TalonFXMotor turretMotor;
-  private DigitalInput maxLimitSwitch;
-  // private LimitSwitch minLimitSwitch;
+  // private DigitalInput maxLimitSwitch;
+  private LimitSwitch limitSwitch;
   private TurretStates turretStates = TurretStates.IDLE;
   private boolean isCalibrated;
   private double deliveryAngle;
   public boolean isDelivery;
+
+  private static Turret instance;
+
   /** Creates a new Turret. */
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
-    maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
+    // maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
+    limitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
     isCalibrated = false;
     isDelivery = true;
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
@@ -45,6 +45,17 @@ public class Turret extends SubsystemBase {
     addNT();
   }
 
+
+  public static Turret getInstance(){
+    if (turret == null){
+      turret = new Turret();
+    }
+    return turret;
+  }
+
+  public static void initialize() {
+        if (turret == null) {turret = new Turret();}
+    }
   
   private void addNT() {
     SendableChooser<TurretStates> stateChooser = new SendableChooser<>();
@@ -59,7 +70,7 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      builder.addBooleanProperty("is limet turret", ()-> getMaxLimitSwich(), null);
+      builder.addBooleanProperty("is limet turret", ()-> getLimitSwich(), null);
       builder.addBooleanProperty("is turret cal", ()-> getIsCaliberation(), null);
       builder.addDoubleProperty("turret ang", ()-> getAngleDeg(), null);
       builder.addBooleanProperty("is delevry", ()-> isDelivery, (x)-> isDelivery = x);
@@ -80,12 +91,7 @@ public class Turret extends SubsystemBase {
   public void setNatrelMode(boolean isBrake){
     turretMotor.setNeutralMode(isBrake);
   }
-  public static Turret getInstance(){
-    if (turret == null){
-      turret = new Turret();
-    }
-    return turret;
-  }
+  
 
   public void setTurretPower(double Power){
     turretMotor.setDuty(Power);
@@ -93,11 +99,11 @@ public class Turret extends SubsystemBase {
 
   public void setTurretMotion(double position){
     position = MathUtil.clamp(position, TurretConstants.MIN_TURRET_ANGLE, TurretConstants.MAX_TURRET_ANGLE);
-    turretMotor.setMotion(Math.toRadians(position));
+    turretMotor.setMotion(MathUtil.angleModulus(Math.toRadians(position)));
   }
 
   public void setPositionByLimit(){
-    if(getMaxLimitSwich()) turretMotor.setEncoderPosition(Math.toRadians(TurretConstants.MIN_TURRET_ANGLE));
+    if(getLimitSwich()) turretMotor.setEncoderPosition(Math.toRadians(TurretConstants.MIN_TURRET_ANGLE));
   }
 
 
@@ -109,8 +115,8 @@ public class Turret extends SubsystemBase {
     return turretMotor.getCurrentAngle();
   }
 
-  public boolean getMaxLimitSwich(){
-    return !maxLimitSwitch.get();
+  public boolean getLimitSwich(){
+    return !limitSwitch.get();
   }
 
   public void setState(TurretStates state){

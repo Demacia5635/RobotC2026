@@ -89,10 +89,11 @@ public class RobotContainer implements Sendable {
     new StateManger();
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
+    // Turret.initialize();
     intake = IntakeSubsystem.getInstance();
     shooter = Shooter.getInstance();
     shinua = ShinuaSubsystem.getInstance();
-    turret = Turret.getInstance();
+    // turret = Turret.getInstance();
     autoChooser = new SendableChooser<>();
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     SmartDashboard.putData("atou chooser", autoChooser);
@@ -153,7 +154,7 @@ public class RobotContainer implements Sendable {
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    turret.setDefaultCommand(new TurretCommand());
+    // turret.setDefaultCommand(new TurretCommand());
 
     // shinua.setDefaultCommand(new
     // frc.robot.shinua.commands.ControllerCommand(controller));
