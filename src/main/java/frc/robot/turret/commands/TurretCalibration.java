@@ -14,7 +14,7 @@ public class TurretCalibration extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.setTurretPower(-0.15);
+    turret.setTurretPower(-0.01);
   }
 
   // Called once the command ends or is interrupted.
