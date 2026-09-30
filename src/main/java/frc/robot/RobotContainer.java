@@ -166,71 +166,75 @@ public class RobotContainer implements Sendable {
   }
 
   private void setController() {
-    controller.rightButton().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.INTAKING);
-      shooter.setShooterState(ShooterStates.IDLE);
-      shinua.setState(ShinuaState.NO_INDEXER);
-      // turret.setState(TurretStates.IDLE);
-      intake.setNeutralModeIntakeDeploy(true);
-    })); //
-    controller.leftButton().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.MIDDLE);
-      shinua.setState(ShinuaState.ONLY_ROLLERS);
-      shooter.setShooterState(ShooterStates.IDLE);
-      // turret.setState(TurretStates.IDLE);
-      intake.setNeutralModeIntakeDeploy(false);
-    }));
-    controller.upButton().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.EJECTING);
-      shinua.setState(ShinuaState.EJECTING);
-      shooter.setShooterState(ShooterStates.IDLE);
-      // turret.setState(TurretStates.IDLE);
-      intake.setNeutralModeIntakeDeploy(false);
-    }));
-    // controller.downButton().onTrue(new InstantCommand(() -> {
-    //   intake.setState(IntakeState.INTAKING);
-    //   shinua.setState(ShinuaState.SHINUA_ON);
-    //   shooter.setShooterState(ShooterStates.DELIVERY);
-    //   // turret.setState(TurretStates.DELIVERY);
-    //   intake.setNeutralModeIntakeDeploy(true);
-    // }));
-    // controller.rightBumper().onTrue(new InstantCommand(() -> {
-    //   intake.setState(IntakeState.INTAKING);
-    //   shinua.setState(ShinuaState.ONLY_ROLLERS);
-    //   shooter.setShooterState(ShooterStates.DELIVERY);
-    //   // turret.setState(TurretStates.DELIVERY);
-    //   intake.setNeutralModeIntakeDeploy(true);
-    // }));
-    controller.povUp().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.SHOOTING);
-      shinua.setState(ShinuaState.SHINUA_ON);
-      shooter.setShooterState(ShooterStates.onePoint);
-      // turret.setState(TurretStates.IDLE);
-      intake.setNeutralModeIntakeDeploy(false);
-    }));
+    controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.SHOOTER); shinua.setState(ShinuaState.SHINUA_ON);}));
+    controller.leftButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.IDLE); shinua.setState(ShinuaState.SHINUA_OFF); intake.setState(IntakeState.IDLE);}));
+    controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);}));
 
-    // controller.povDown().onTrue(new InstantCommand(() -> {
+    // controller.rightButton().onTrue(new InstantCommand(() -> {
+    //   intake.setState(IntakeState.INTAKING);
+    //   shooter.setShooterState(ShooterStates.IDLE);
+    //   shinua.setState(ShinuaState.NO_INDEXER);
+    //   // turret.setState(TurretStates.IDLE); TODO: COMENT
+    //   intake.setNeutralModeIntakeDeploy(true);
+    // })); //
+    // controller.leftButton().onTrue(new InstantCommand(() -> {
+    //   intake.setState(IntakeState.MIDDLE);
+    //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //   shooter.setShooterState(ShooterStates.IDLE);
+    //   // turret.setState(TurretStates.IDLE); TODO: COMENT
+    //   intake.setNeutralModeIntakeDeploy(false);
+    // }));
+    // controller.upButton().onTrue(new InstantCommand(() -> {
+    //   intake.setState(IntakeState.EJECTING);
+    //   shinua.setState(ShinuaState.EJECTING);
+    //   shooter.setShooterState(ShooterStates.IDLE);
+    //   // turret.setState(TurretStates.IDLE); TODO: COMENT
+    //   intake.setNeutralModeIntakeDeploy(false);
+    // }));
+    // // controller.downButton().onTrue(new InstantCommand(() -> {
+    // //   intake.setState(IntakeState.INTAKING);
+    // //   shinua.setState(ShinuaState.SHINUA_ON);
+    // //   shooter.setShooterState(ShooterStates.DELIVERY);
+    // //   // turret.setState(TurretStates.DELIVERY);
+    // //   intake.setNeutralModeIntakeDeploy(true);
+    // // }));
+    // // controller.rightBumper().onTrue(new InstantCommand(() -> {
+    // //   intake.setState(IntakeState.INTAKING);
+    // //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+    // //   shooter.setShooterState(ShooterStates.DELIVERY);
+    // //   // turret.setState(TurretStates.DELIVERY);
+    // //   intake.setNeutralModeIntakeDeploy(true);
+    // // }));
+    // controller.povUp().onTrue(new InstantCommand(() -> {
     //   intake.setState(IntakeState.SHOOTING);
     //   shinua.setState(ShinuaState.SHINUA_ON);
-    //   shooter.setShooterState(ShooterStates.towPoint);
+    //   shooter.setShooterState(ShooterStates.onePoint);
+    //   // turret.setState(TurretStates.IDLE); TODO: COMENT
     //   intake.setNeutralModeIntakeDeploy(false);
     // }));
 
-    controller.povRight().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.SHOOTING);
-      shinua.setState(ShinuaState.SHINUA_ON);
-      shooter.setShooterState(ShooterStates.thrrePoint);
-      // turret.setState(TurretStates.TRENCH_RIGHT);
-      intake.setNeutralModeIntakeDeploy(false);
-    }));
-    controller.leftBumper().onTrue(new InstantCommand(() -> driveCommand.precisionMode = !driveCommand.precisionMode));
+    // // controller.povDown().onTrue(new InstantCommand(() -> {
+    // //   intake.setState(IntakeState.SHOOTING);
+    // //   shinua.setState(ShinuaState.SHINUA_ON);
+    // //   shooter.setShooterState(ShooterStates.towPoint);
+    // //   intake.setNeutralModeIntakeDeploy(false);
+    // // }));
 
-    controller.povDown().onTrue(new InstantCommand(() -> {
-      intake.setState(IntakeState.CLOSED);
-      shinua.setState(ShinuaState.ONLY_ROLLERS);
-      intake.setNeutralModeIntakeDeploy(true);
-      // turret.setState(TurretStates.IDLE);
-    }));
+    // controller.povRight().onTrue(new InstantCommand(() -> {
+    //   intake.setState(IntakeState.SHOOTING);
+    //   shinua.setState(ShinuaState.SHINUA_ON);
+    //   shooter.setShooterState(ShooterStates.thrrePoint);
+    //   // turret.setState(TurretStates.TRENCH_RIGHT);TODO: COMENT
+    //   intake.setNeutralModeIntakeDeploy(false);
+    // }));
+    // controller.leftBumper().onTrue(new InstantCommand(() -> driveCommand.precisionMode = !driveCommand.precisionMode));
+
+    // controller.povDown().onTrue(new InstantCommand(() -> {
+    //   intake.setState(IntakeState.CLOSED);
+    //   shinua.setState(ShinuaState.ONLY_ROLLERS);
+    //   intake.setNeutralModeIntakeDeploy(true);
+    //   // turret.setState(TurretStates.IDLE); TODO: COMENT
+    // }));
     // controller.povLeft().onTrue(new InstantCommand(() -> {
     //   intake.setState(IntakeState.SHOOTING);
     //   shinua.setState(ShinuaState.SHINUA_ON);
