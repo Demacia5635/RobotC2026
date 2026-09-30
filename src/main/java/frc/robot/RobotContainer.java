@@ -69,7 +69,7 @@ public class RobotContainer implements Sendable {
   public static IntakeCommand intakeCommand;
   public static CommandController controller = new CommandController(0, ControllerType.kPS5);
   public static Shooter shooter;
-  // public static Turret turret;
+  public static Turret turret;
   public static DriveCommand driveCommand;
   public static Timer autoTimer;
   public static Timer timerToClose;
@@ -92,7 +92,7 @@ public class RobotContainer implements Sendable {
     intake = IntakeSubsystem.getInstance();
     shooter = Shooter.getInstance();
     shinua = ShinuaSubsystem.getInstance();
-    // turret = Turret.getInstance();
+    turret = Turret.getInstance();
     autoChooser = new SendableChooser<>();
     driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     SmartDashboard.putData("atou chooser", autoChooser);
@@ -153,7 +153,7 @@ public class RobotContainer implements Sendable {
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
-    // turret.setDefaultCommand(new TurretCommand());
+    turret.setDefaultCommand(new TurretCommand());
 
     // shinua.setDefaultCommand(new
     // frc.robot.shinua.commands.ControllerCommand(controller));
