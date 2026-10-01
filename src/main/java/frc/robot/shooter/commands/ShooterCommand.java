@@ -169,7 +169,6 @@ public class ShooterCommand extends Command {
     }
       shooter.setFlywheelVelocity(flywheelVelocity);
       shooter.setHoodMotion(hoodPosition);
-      // LogManager.log("hood pose" + hoodPosition);
       shooter.setFeederPower(feederPower);
 
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){

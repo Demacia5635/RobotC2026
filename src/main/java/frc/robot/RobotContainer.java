@@ -156,20 +156,12 @@ public class RobotContainer implements Sendable {
     shooter.setDefaultCommand(new ShooterCommand());
     // turret.setDefaultCommand(new TurretCommand());
 
-    // shinua.setDefaultCommand(new
-    // frc.robot.shinua.commands.ControllerCommand(controller));
-    // intake.setDefaultCommand(new
-    // frc.robot.intake.commands.ControllerCommand(controller));
-    // shooter.setDefaultCommand(new
-    // frc.robot.shooter.commands.commandContorller(controller));
-    // turret.setDefaultCommand(new
-    // frc.robot.turret.commands.ControllerCommand(controller));
   }
 
   private void setController() {
-    controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.SHOOTER); shinua.setState(ShinuaState.SHINUA_ON);}));
-    controller.leftButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.IDLE); shinua.setState(ShinuaState.SHINUA_OFF); intake.setState(IntakeState.IDLE);}));
-    controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.NO_INDEXER); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.onePoint); shinua.setState(ShinuaState.SHINUA_ON);intake.setState(IntakeState.MIDDLE);}));
+    controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.upButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.IDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
 
     // controller.rightButton().onTrue(new InstantCommand(() -> {
     //   intake.setState(IntakeState.INTAKING);

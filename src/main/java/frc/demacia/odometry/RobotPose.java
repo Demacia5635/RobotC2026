@@ -59,7 +59,7 @@ public class RobotPose {
         this.poseEstimator = new DemaciaPoseEstimator(modulePositions, stateSTD, visionSTD);
         this.accelerometer = new BuiltInAccelerometer();
         SmartDashboard.putData("Reset Pose Based Red Hub", new InstantCommand(() -> {
-            Chassis.getInstance().setYaw(Rotation2d.kZero);
+            Chassis.getInstance().setYaw(new Rotation2d(90));
             setQuestPose(hubRedResetPose);
             resetPose(hubRedResetPose);
         }).ignoringDisable(true));
@@ -77,7 +77,7 @@ public class RobotPose {
     }
 
     private final Pose2d hubRedResetPose = new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER,
-            Rotation2d.kZero);
+            new Rotation2d(0));
 
     public Quest getQuest() {
         return quest;
