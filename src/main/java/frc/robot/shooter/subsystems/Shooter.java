@@ -25,6 +25,7 @@ import frc.robot.shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.shooter.ShooterConstants.HoodConstants;
 // import frc.robot.shooter.ShooterConstants.IndexerConstants;
 import frc.robot.shooter.ShooterConstants.ShooterStates;
+import frc.robot.shooter.commands.hoodCalibrasen;
 import frc.robot.turret.subsystems.Turret;
 
 public class Shooter extends SubsystemBase {
@@ -54,7 +55,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putData("shooter",this);
     addNT();
     SmartDashboard.putData("resetHood",new InstantCommand(() -> restHoodMotor()).ignoringDisable(true));
-
+    SmartDashboard.putData("hood calibration", new hoodCalibrasen());
     SmartDashboard.putData("set hood brake", new InstantCommand(() -> setBrakeHood()).ignoringDisable(true));
     SmartDashboard.putData("set hood coast", new InstantCommand(() -> setCostHood()).ignoringDisable(true));
   }
