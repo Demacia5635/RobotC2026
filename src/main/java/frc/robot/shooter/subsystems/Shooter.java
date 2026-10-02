@@ -19,6 +19,7 @@ import frc.demacia.utils.motors.TalonFXMotor;
 import frc.demacia.utils.sensors.LimitSwitch;
 import frc.robot.RobotCommon;
 import frc.robot.intake.IntakeConstants.IntakeState;
+import frc.robot.intake.commands.CalibrationCommandIntake;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.ShooterConstants.FeederConstants;
 import frc.robot.shooter.ShooterConstants.FlywheelConstants;
@@ -42,20 +43,22 @@ public class Shooter extends SubsystemBase {
   private ShooterStates shooterState ;
   private double lastWantedFlywheelVelocity = 0;
   private boolean isCalibrated;
+  private LimitSwitch limitSwitch;
 
   /** Creates a new Shooter. */
   private Shooter() {
     super();
     shooter = this;
     shooterState = ShooterStates.IDLE;
+    limitSwitch = new LimitSwitch(ShooterConstants.LIMIT_SWITCH_CONFIG);
     flywheel = new TalonFXMotor(ShooterConstants.FlywheelConstants.FLYWHEEL_CONFIG);
     hood = new TalonFXMotor(ShooterConstants.HoodConstants.HOOD_CONFIG);
     // hood_limet_switch = new DigitalInput(ShooterConstants.HoodConstants.LIMET_SWITCH_CHANEL);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
+    SmartDashboard.putData("hood Calibration Command", new hoodCalibrasen());
     addNT();
     SmartDashboard.putData("resetHood",new InstantCommand(() -> restHoodMotor()).ignoringDisable(true));
-    SmartDashboard.putData("hood calibration", new hoodCalibrasen());
     SmartDashboard.putData("set hood brake", new InstantCommand(() -> setBrakeHood()).ignoringDisable(true));
     SmartDashboard.putData("set hood coast", new InstantCommand(() -> setCostHood()).ignoringDisable(true));
   }
@@ -73,7 +76,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("Hood Voltage", () -> hood.getMotorVoltage().getValueAsDouble(), null);
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
-      // builder.addBooleanProperty("is hood lemate switch", ()-> isHoodLimetSwithSee(), null);
+      builder.addBooleanProperty("is hood lemate switch", ()-> limitSwitchGet(), null);
       builder.addDoubleProperty("current hood pose", ()-> Math.toDegrees(hood.getPosition().getValueAsDouble()), null);
       builder.addDoubleProperty("distence", ()-> getDis(), null);
       builder.addBooleanProperty("shooter is ready", ()-> (Shooter.getInstance().isReady()), null);
@@ -85,6 +88,10 @@ public class Shooter extends SubsystemBase {
       shooter = new Shooter();
     }
     return shooter;
+  }
+
+  public boolean limitSwitchGet(){
+    return limitSwitch.get();
   }
 
   private void addNT() {

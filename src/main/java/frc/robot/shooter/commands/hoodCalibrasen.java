@@ -5,6 +5,7 @@
 package frc.robot.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.shooter.subsystems.Shooter;
 
@@ -21,10 +22,12 @@ public class hoodCalibrasen extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setHoodPower(0.1);
+    shooter.setHoodPower(-0.1);
+    LogManager.log("run"+ shooter.limitSwitchGet());
   }
 
   // Called once the command ends or is interrupted.
+
   @Override
   public void end(boolean interrupted) {
     shooter.setHoodPose(ShooterConstants.HoodConstants.HOOD_LIMET_SWITCH_POSE);
@@ -35,6 +38,6 @@ public class hoodCalibrasen extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;//shooter.isHoodLimetSwithSee();
+    return shooter.limitSwitchGet();
   }
 }

@@ -334,7 +334,6 @@ public class Chassis extends SubsystemBase {
     }
 
     public void setVelocities(ChassisSpeeds speeds) {
-        LogManager.log("current speed" + speeds + "current speed" + getVelocityAsVector());
         SwerveModuleState[] states = demaciaKinematics.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
