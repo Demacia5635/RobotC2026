@@ -38,6 +38,7 @@ import frc.demacia.kinematics.DemaciaKinematics;
 import frc.demacia.odometry.DemaciaOdometry;
 import frc.demacia.utils.log.LogManager;
 import frc.demacia.utils.sensors.Pigeon;
+import frc.demacia.vision.TagPose;
 import frc.demacia.vision.utils.Vision;
 import frc.demacia.vision.utils.VisionConstants;
 import frc.robot.Field;
@@ -159,10 +160,7 @@ public class Chassis extends SubsystemBase {
                 new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
                         .resetPose(getPose())).ignoringDisable(true));
         SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
-        SmartDashboard.putData("Reset Pose Based Red Hub" , new InstantCommand(()-> {
-            Chassis.getInstance().setYaw(Rotation2d.kZero);
-            resetPose(new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER, Rotation2d.kZero));
-            
+        SmartDashboard.putData("Reset Pose Based Red Hub" , new InstantCommand(()-> {Chassis.getInstance().setYaw(Rotation2d.kZero);resetPose(new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER, Rotation2d.kZero));
         }).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
@@ -418,6 +416,7 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
+        vision.getTagPose().updateValues();
         // ── עדכון Pose Estimator בכל לופ ────────────────────────────────────
         poseEstimator.update(getGyroAngle(), getModulePositions());
         // ────────────────────────────────────────────────────────────────────
@@ -426,7 +425,6 @@ public class Chassis extends SubsystemBase {
         wpilibOdometry.update(getGyroAngle(), getModulePositions());
         fieldWpilibOdometry.setRobotPose(getWpilibOdometryPose());
         // ────────────────────────────────────────────────────────────────────
-        LogManager.log("viion pose" + vision.getPoseEstimation());
         SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
         addVisionMeasurement(vision.getPoseEstimation(), 0.02);
         field.setRobotPose(getPose());
@@ -435,6 +433,22 @@ public class Chassis extends SubsystemBase {
         // DemaciaOdometry נשמר להשוואה בלבד
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
+        // SmartDashboard.putNumber("robot pose x 2", vision.getTagPose().getRobotPose2d().getX());
+        // SmartDashboard.putNumber("robot pose y 2", vision.getTagPose().getRobotPose2d().getY());
+        // SmartDashboard.putNumber("cam to tag x", vision.getTagPose().getCameraToTag().getX());
+        // SmartDashboard.putNumber("cam to tag y", vision.getTagPose().getCameraToTag().getY());
+        // SmartDashboard.putString("camera name", vision.getTagPose().getCamera().getName());
+        // SmartDashboard.putNumber("dis from cam", vision.getTagPose().getDistFromCamera());
+        // SmartDashboard.putNumber("robot to tag x", vision.getTagPose().getRobotToTagFieldRel().getX());
+        // SmartDashboard.putNumber("robot to tag y", vision.getTagPose().getRobotToTagFieldRel().getY());
+        // SmartDashboard.putNumber("origen to robot x", vision.getTagPose().getOriginToRobot().getX());
+        // SmartDashboard.putNumber("origen to robot y", vision.getTagPose().getOriginToRobot().getY());
+        // SmartDashboard.putNumber("ty", vision.get);
+        // SmartDashboard.putNumber("origen to tag x", vision.getTagPose().origintoTag.getX());
+        // SmartDashboard.putNumber("origen to tag y", vision.getTagPose().origintoTag.getY());
+        SmartDashboard.putNumber("vison x", vision.getPoseEstimation().getX());
+        SmartDashboard.putNumber("vison y", vision.getPoseEstimation().getY());
+        SmartDashboard.putNumber("cam id", vision.getTagPose().id);
         double[] accel = getAcceleration();
         SmartDashboard.putNumber("accel/ax", accel[0]);
         SmartDashboard.putNumber("accel/ay", accel[1]);
@@ -450,8 +464,6 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putNumber("odometry_wpilib/y", getWpilibOdometryPose().getY());
         SmartDashboard.putNumber("odometry_wpilib/heading", getWpilibOdometryPose().getRotation().getDegrees());
         // ────────────────────────────────────────────────────────────────────
-
-        LogManager.log("vision pose: " + vision.getPoseEstimation());
     }
 
     public Pose2d getFuturePose(double dtSeconds) {
