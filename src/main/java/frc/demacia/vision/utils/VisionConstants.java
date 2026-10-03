@@ -200,10 +200,10 @@ public class VisionConstants {
 
         // Quest VR headset mounting configuration
         // TODO: Find the right offsets for your robot's Quest mounting position
-        public static final Rotation3d YAW_OFFSET_QUEST = new Rotation3d(Math.toRadians(45), Math.toRadians(0), Math.toRadians(180));
-        public static final double Y_OFFSET_QUEST = -0.245;//-0.14018022
-        public static final double X_OFFSET_QUEST = -0.37;//0.3026234
-        public static final double Z_OFFSET_QUEST = 0;//0.460
+        public static final Rotation3d YAW_OFFSET_QUEST = new Rotation3d(0, 0.0, 0);
+        public static final double Y_OFFSET_QUEST = -0.176043;//-0.14018022
+        public static final double X_OFFSET_QUEST = 0.1579;//0.3026234
+        public static final double Z_OFFSET_QUEST = 0.460;//0.460
 
 
         /**
@@ -224,15 +224,11 @@ public class VisionConstants {
         public static final Matrix<N3, N1> QUEST_STD = new Matrix<>(
                         new SimpleMatrix(
                                         new double[] { 0.05, 0.05, 0 }));
-
+                                        
 
         
         public static class Tags {
                 public static final TagPose[] TAGS_ARRAY = {
-                                // new TagPose(new Camera("hub", new Translation3d(-0.133, 0.19, 0.545), 29, 0.0, false)),
-                                //prev x offset 0.283 
-                                // new TagPose(new Camera("hub", new Translation3d(0.27,-0.20,0.345), 19d, 2d, false, false)),
-                                new TagPose(new Camera("pdh", new Translation3d(-0.145, 0.275, 0.53), 20, 90, false, false)), 
                                 new TagPose(new Camera("roboio", new Translation3d(-0.325, -0.295, 0.33), 20, -90, false, false))
                         };
 

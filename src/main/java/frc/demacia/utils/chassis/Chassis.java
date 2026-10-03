@@ -81,7 +81,7 @@ public class Chassis extends SubsystemBase {
 
     private Rotation2d lastGyroYaw;
     private double lastGyroAngularVelocity;
-    private final Vision vision;
+    public final Vision vision;
     private final PIDController xController = new PIDController(0.2, 0.0, 0.0);
     private final PIDController yController = new PIDController(0.2, 0.0, 0.0);
     private final PIDController headingController = new PIDController(0.03, 0.0, 0) {
@@ -98,7 +98,7 @@ public class Chassis extends SubsystemBase {
 
     private double lastOmega = 0;
     private double lastOmegaTime = Timer.getFPGATimestamp();
-    private Translation2d[] modulePositions;
+    public Translation2d[] modulePositions;
 
     private Chassis(ChassisConfig chassisConfig) {
         setName(getName());
@@ -426,7 +426,7 @@ public class Chassis extends SubsystemBase {
         wpilibOdometry.update(getGyroAngle(), getModulePositions());
         fieldWpilibOdometry.setRobotPose(getWpilibOdometryPose());
         // ────────────────────────────────────────────────────────────────────
-
+        LogManager.log("viion pose" + vision.getPoseEstimation());
         SmartDashboard.putNumber("gyro angle", getGyroAngle().getDegrees());
         addVisionMeasurement(vision.getPoseEstimation(), 0.02);
         field.setRobotPose(getPose());
@@ -450,6 +450,8 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putNumber("odometry_wpilib/y", getWpilibOdometryPose().getY());
         SmartDashboard.putNumber("odometry_wpilib/heading", getWpilibOdometryPose().getRotation().getDegrees());
         // ────────────────────────────────────────────────────────────────────
+
+        LogManager.log("vision pose: " + vision.getPoseEstimation());
     }
 
     public Pose2d getFuturePose(double dtSeconds) {

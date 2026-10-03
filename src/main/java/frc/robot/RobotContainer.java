@@ -22,12 +22,15 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.demacia.swervePacgeWpilib.command.SwerveCommand;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.chassis.DriveCommand;
 import frc.demacia.utils.controller.CommandController;
 import frc.demacia.utils.controller.CommandController.ControllerType;
 import frc.demacia.utils.leds.LedManager;
 import frc.demacia.utils.log.LogManager;
+import frc.demacia.vision.utils.Vision;
+import frc.demacia.vision.utils.VisionConstants;
 import frc.robot.RobotCommon.StartingPlaces;
 import frc.robot.chassis.MK5nChassisConstansRobotC;
 import frc.robot.intake.IntakeConstants;
@@ -81,6 +84,8 @@ public class RobotContainer implements Sendable {
 
   public static boolean forcedIsReady = false;
 
+  private Vision vision;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -89,13 +94,13 @@ public class RobotContainer implements Sendable {
     new StateManger();
     // new DemaciaUtils(() -> getIsComp(), () -> getIsRed());
     Chassis.initialize(MK5nChassisConstansRobotC.CHASSIS_CONFIG);
+    // vision = new Vision(VisionConstants.Tags.TAGS_ARRAY);
     Turret.initialize();
     intake = IntakeSubsystem.getInstance();
     shooter = Shooter.getInstance();
     shinua = ShinuaSubsystem.getInstance();
     turret = Turret.getInstance();
     autoChooser = new SendableChooser<>();
-    driveCommand = new DriveCommand(Chassis.getInstance(), controller);
     SmartDashboard.putData("atou chooser", autoChooser);
     SmartDashboard.putData("reset Shift", new InstantCommand(() -> StateManger.resetShift()).ignoringDisable(true));
     autoTimer = new Timer();
@@ -150,7 +155,7 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(driveCommand);
+    Chassis.getInstance().setDefaultCommand(new SwerveCommand(controller, Chassis.getInstance().vision));
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
     shooter.setDefaultCommand(new ShooterCommand());
