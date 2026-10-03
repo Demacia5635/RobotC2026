@@ -416,7 +416,7 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        vision.getTagPose().updateValues();
+        vision.updateValues();
         // ── עדכון Pose Estimator בכל לופ ────────────────────────────────────
         poseEstimator.update(getGyroAngle(), getModulePositions());
         // ────────────────────────────────────────────────────────────────────
