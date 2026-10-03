@@ -35,14 +35,12 @@ public class TurretConstants {
     public static final double TURRET_ANGLE_RANGE = MAX_TURRET_ANGLE + Math.abs(MIN_TURRET_ANGLE);
 
     //TODO: Set the limit switch config
-    public static final int MAX_LIMIT_SWITCH_ID = 9;
+    public static final int LIMIT_SWITCH_ID = 9;
 
     // public static final int MIN_LIMIT_SWITCH_ID = 0;
-    public final static String MAX_LIMIT_SWITCH_NAME = "max limit swich";
-    // public final static String MIN_LIMIT_SWITCH_NAME = "min limit swich";
+    public final static String LIMIT_SWITCH_NAME = "limit swich";
 
-    public static final LimitSwitchConfig MIN_LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(MAX_LIMIT_SWITCH_ID, MAX_LIMIT_SWITCH_NAME);
-    // public static final DigitalInput MAX_LIMIT_SWITCH_CONFIG= new DigitalInput(MAX_LIMIT_SWITCH_ID);
+    public static final LimitSwitchConfig LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(LIMIT_SWITCH_ID, LIMIT_SWITCH_NAME);
 
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_CURRENT = 12;

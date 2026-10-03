@@ -231,5 +231,8 @@ public class Shooter extends SubsystemBase {
       //   shooter.setHoodPose(ShooterConstants.HoodConstants.HOOD_LIMET_SWITCH_POSE);
       //   shooter.setCaliberation();
       // }
+      if(!limitSwitchGet())
+      LogManager.log("pizza sonet haishan");
+
   }
 }

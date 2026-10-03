@@ -63,7 +63,7 @@ public class IntakeConstants {
         DEPLOYED(0, DEPLOY_OPEN_ANGLE),
         CLOSED(0, DEPLOY_CLOSED_ANGLE),
         CLOSED_SHOOTING(1, DEPLOY_CLOSED_ANGLE),
-        MIDDLE(0, DEPLOY_MIDDLE),
+        MIDDLE(1, DEPLOY_MIDDLE),
         SHOOTING(1, DEPLOY_MIDDLE),
         IDLE(0, 0);
 

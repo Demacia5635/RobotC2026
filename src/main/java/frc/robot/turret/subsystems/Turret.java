@@ -34,7 +34,7 @@ public class Turret extends SubsystemBase {
   private Turret() {
     turretMotor = new TalonFXMotor(TurretConstants.TURRET_CONFIG);
     // maxLimitSwitch = new DigitalInput(TurretConstants.MAX_LIMIT_SWITCH_ID);
-    limitSwitch = new LimitSwitch(TurretConstants.MIN_LIMIT_SWITCH_CONFIG);
+    limitSwitch = new LimitSwitch(TurretConstants.LIMIT_SWITCH_CONFIG);
     isCalibrated = false;
     isDelivery = true;
     SmartDashboard.putData("turret Calibration Command", new TurretCalibration(this));
@@ -155,6 +155,6 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {// like shooter, may not work couse not neer the other code
-
+    if(getLimitSwich()) LogManager.log("fack this shit");
   }
 }
