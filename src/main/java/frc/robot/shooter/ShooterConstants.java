@@ -24,6 +24,7 @@ public class ShooterConstants {
         LOOK_UP_TABLE.add(3.16,9.9,Math.toRadians(50));//TODO not good point
     }
 
+    public final static LimitSwitchConfig LIMIT_SWITCH_CONFIG= new LimitSwitchConfig(8, "limit switch hood");
 
     public final static class FlywheelConstants {
         //TODO: Set the motor config

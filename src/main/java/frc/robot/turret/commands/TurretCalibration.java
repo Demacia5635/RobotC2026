@@ -1,6 +1,7 @@
 package frc.robot.turret.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.utils.log.LogManager;
 import frc.robot.turret.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -12,16 +13,16 @@ public class TurretCalibration extends Command {
     addRequirements(turret);
   }
 
-  @Override
-  public void initialize() {
-    turret.setNatrelMode(true);
-  }
-  
+
+ @Override
+ public void initialize() {
+     turret.setNatrelMode(true);
+ }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.setTurretPower(-0.01);
+    turret.setTurretPower(-0.08);
   }
 
   // Called once the command ends or is interrupted.
@@ -31,6 +32,7 @@ public class TurretCalibration extends Command {
     if(!interrupted){
       turret.setCaliberation(true);
       turret.setPositionByLimit();
+      turret.setTurretMotion(180);
     }
   }
 

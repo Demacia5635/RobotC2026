@@ -35,7 +35,7 @@ public class TagPose {
   // Vision processing variables
   private double camToTagYaw;
   private double camToTagPitch;
-  private double id;
+  public double id;
   private Camera camera;
   private double confidence;
 
@@ -51,7 +51,7 @@ public class TagPose {
   private Translation2d originToRobot;
 
   // vector for tag
-  private Translation2d origintoTag;
+  public Translation2d origintoTag;
 
   // robot pose
   public Pose2d pose = new Pose2d();
@@ -106,7 +106,7 @@ public class TagPose {
   }
 
   public void updateValues() {
-    pipeEntry = Table.getEntry("pipeline");
+    // pipeEntry = Table.getEntry("pipeline");
     camToTagPitch = (isUpsidedown ? -1 : 1) * Table.getEntry("ty").getDouble(0.0);
     camToTagYaw = (isUpsidedown ? 1 : -1) * Table.getEntry("tx").getDouble(0.0);
     id = (int) Table.getEntry("tid").getDouble(0.0);

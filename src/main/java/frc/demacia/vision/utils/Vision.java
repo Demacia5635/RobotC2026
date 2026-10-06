@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.demacia.utils.log.LogManager;
 import frc.demacia.vision.TagPose;
 import frc.robot.RobotCommon;
 // import frc.robot.RobotCommon.*;
@@ -73,6 +74,10 @@ public class Vision {
             if(t.isSeeTag()) return true;
         }
         return false;
+    }
+
+    public TagPose getTagPose(){
+        return new TagPose(VisionConstants.Tags.TAGS_ARRAY[0].getCamera());
     }
     
 
