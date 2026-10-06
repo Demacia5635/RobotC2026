@@ -76,6 +76,7 @@ public class SwerveCommand extends Command {
     double direction = RobotContainer.isRed ? -1.0 : 1.0;
     double joyX = controller.getLeftY() * direction;
     double joyY = controller.getLeftX() * direction;
+    LogManager.log("joyX: " + joyX + ", joyY: " + joyY);
     
     // Calculate rotation from trigger axes
     double rot = controller.getLeftTrigger() - controller.getRightTrigger();
@@ -93,13 +94,13 @@ public class SwerveCommand extends Command {
 
 
     // Field-Oriented Driving
-    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velX, velY, -velRot, chassis.getGyroAngle());
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velX, velY, velRot, chassis.getGyroAngle());
 
     moduleStates = kinematics.kinematics().toSwerveModuleStates(speeds);
 
     // נרמול מהירויות כדי למנוע חריגה מהמהירות המרבית
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, chassis.getConfig().maxDriveVelocity);
-
+    LogManager.log("Module States: " + moduleStates.toString());
     chassis.setModuleStates(moduleStates);
 
     // 1. עדכון מיקומי המודולים המעודכנים
@@ -120,10 +121,7 @@ public class SwerveCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // עצירת הרובוט בעת סיום/הפסקת הפקודה
-    chassis.setModuleStates(
-        kinematics.kinematics().toSwerveModuleStates(new ChassisSpeeds(0, 0, 0))
-    );
+    
   }
 
   // Returns true when the command should end.

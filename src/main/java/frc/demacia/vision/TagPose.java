@@ -72,15 +72,16 @@ public class TagPose {
     // LogManager.addEntry(camera.getName()+"dist ty", this::getDistanceFromTy).withLogLevel(LogLevel.LOG_AND_NT_NOT_IN_COMP).build();
 
     SmartDashboard.putData("field-tag " + camera.getName(), field);
-    SmartDashboard.putData("setTo3d " + camera.getName(),
-        new InstantCommand(() -> setDimension(true)).ignoringDisable(true));
-    SmartDashboard.putData("setTo2d " + camera.getName(),
-        new InstantCommand(() -> setDimension(false)).ignoringDisable(true));
-    SmartDashboard.putData("chassis/reset gyro by camera " + camera.getName(),
-        Commands.sequence(
-            new InstantCommand(() -> changePipeline(5)).ignoringDisable(true),
-            new InstantCommand(() -> Chassis.getInstance().setYaw(getRobotAngle())).ignoringDisable(true),
-            new InstantCommand(() -> changePipeline(0)).ignoringDisable(true)).ignoringDisable(true));
+    //TODO:RETURN
+    // SmartDashboard.putData("setTo3d " + camera.getName(),
+    //     new InstantCommand(() -> setDimension(true)).ignoringDisable(true));
+    // SmartDashboard.putData("setTo2d " + camera.getName(),
+    //     new InstantCommand(() -> setDimension(false)).ignoringDisable(true));
+    // SmartDashboard.putData("chassis/reset gyro by camera " + camera.getName(),
+        // Commands.sequence(
+        //     new InstantCommand(() -> changePipeline(5)).ignoringDisable(true),
+        //     new InstantCommand(() -> Chassis.getInstance().setYaw(getRobotAngle())).ignoringDisable(true),
+        //     new InstantCommand(() -> changePipeline(0)).ignoringDisable(true)).ignoringDisable(true));
 
     cropEntry = Table.getEntry("crop");
 
