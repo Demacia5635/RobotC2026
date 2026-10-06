@@ -11,6 +11,13 @@ public class TurretCalibration extends Command {
     this.turret = turret;
     addRequirements(turret);
   }
+
+  @Override
+  public void initialize() {
+    turret.setNatrelMode(true);
+  }
+  
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

@@ -147,6 +147,7 @@ public final class RobotBChassisConstants {
                             i == 0 || i == 2 ? 0.395 : -0.395))
                     .withSteerOffset(offsets[i])
                     .withDrivePowerToSteerPower(0.022);
+                    
         }
 
         return ans;
@@ -155,10 +156,10 @@ public final class RobotBChassisConstants {
     /** The swerve modules config using the function */
     private static final SwerveModuleConfig[] MODULES = getSwerveModuleConfigs(
             new double[] {
-                    /* Front Left Offset: */ 1.5217120831752096896735813514194,
-                    /* Front Right Offset: */ 1.8837303710189759237145855990482,
-                    /* Back Left Offset: */ -1.7674223277977745984402216157124,
-                    /* Back Right Offset: */ 1.012428498101768307786402232556
+                    /* Front Left Offset: */ -0.494873,
+                    /* Front Right Offset: */ -0.387451,
+                    /* Back Left Offset: */ -0.483398,
+                    /* Back Right Offset: */ 0.313232
             });
 
 
