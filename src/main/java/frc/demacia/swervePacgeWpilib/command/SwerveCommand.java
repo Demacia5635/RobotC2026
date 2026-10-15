@@ -7,6 +7,9 @@ package frc.demacia.swervePacgeWpilib.command;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -37,7 +40,7 @@ public class SwerveCommand extends Command {
   // אובייקט ה-Field2d להצגת תמונה/מיקום ב-Elastic / SmartDashboard
   private final Field2d field = new Field2d();
 
-  private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+  private SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
   private SwerveModuleState[] moduleStates = new SwerveModuleState[4];
   private ChassisSpeeds speeds;
   private boolean isPrecisionMode = false;
@@ -64,6 +67,8 @@ public class SwerveCommand extends Command {
     // SmartDashboard.putData("Field", field);
     LogManager.log(vision.getPoseEstimation());
     addRequirements(chassis);
+
+    SmartDashboard.putData("field", field);
   }
 
   // Called when the command is initially scheduled.
@@ -79,8 +84,8 @@ public class SwerveCommand extends Command {
     LogManager.log("joyX: " + joyX + ", joyY: " + joyY);
     
     // Calculate rotation from trigger axes
-    // double rot = controller.getLeftTrigger() - controller.getRightTrigger();
-    double rot = controller.getRightX();
+    double rot = controller.getRightTrigger() - controller.getLeftTrigger();
+    // double rot = controller.getRightX();
     
     double velX = Math.pow(joyX, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyY);
@@ -93,6 +98,12 @@ public class SwerveCommand extends Command {
     }
 
 
+    
+    if(vision.isSeeTag() && vision.getPoseEstimation().getTranslation().getNorm() >= 0.3){
+      odometry.updateVision(vision.getPoseEstimation(),chassis.getGyroAngle());
+    }else{
+      odometry.updatePose(chassis.getGyroAngle(), modulePositions);
+    }
 
     // Field-Oriented Driving
     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velX, velY, velRot, chassis.getGyroAngle());
@@ -101,13 +112,15 @@ public class SwerveCommand extends Command {
 
     // נרמול מהירויות כדי למנוע חריגה מהמהירות המרבית
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, chassis.getConfig().maxDriveVelocity);
-    LogManager.log("Module States: " + moduleStates.toString());
+    // LogManager.log("Module States: " + moduleStates.toString());
     chassis.setModuleStates(moduleStates);
 
     // 1. עדכון מיקומי המודולים המעודכנים
     for (int i = 0; i < modulePositions.length; i++) {
       modulePositions[i] = chassis.modules[i].getModulePosition();
     }
+
+    LogManager.log(odometry.getPose());
 
 
     // 3. עדכון ויז'ן אם קיים
@@ -116,7 +129,7 @@ public class SwerveCommand extends Command {
     }
 
     // 4. עדכון מיקום הרובוט ב-Field2d שנשלח ל-Elastic
-    field.setRobotPose(poseEstimator.getPose2d());
+    field.setRobotPose(odometry.getPose()); 
   }
 
   // Called once the command ends or is interrupted.
