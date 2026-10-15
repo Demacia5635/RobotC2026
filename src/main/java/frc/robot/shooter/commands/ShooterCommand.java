@@ -117,7 +117,7 @@ public class ShooterCommand extends Command {
         flywheelVelocity = 8.2;
         hoodPosition = Math.toRadians(12.7);
         feederPower = 0.4;
-      break;
+        break;
       case onePoint:
           flywheelVelocity = 9.2;
           hoodPosition = Math.toRadians(26);
@@ -149,7 +149,7 @@ public class ShooterCommand extends Command {
         hoodPosition = 0;
         feederPower = 0;
         break;
-      case TEST:
+      case TESTING:
         flywheelVelocity = testingFlywheelVelocity;
         hoodPosition = testingHoodPosition;
         feederPower = testingFeederPower;
@@ -168,7 +168,8 @@ public class ShooterCommand extends Command {
         break;
     }
       shooter.setFlywheelVelocity(flywheelVelocity);
-      shooter.setHoodMotion(hoodPosition);
+      // shooter.setHoodMotion(hoodPosition);
+      shooter.updateHoodMotion();
       shooter.setFeederPower(feederPower);
 
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){

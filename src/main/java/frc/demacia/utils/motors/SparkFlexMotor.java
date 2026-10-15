@@ -342,33 +342,33 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
       configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("PID+FF Config");
-          builder.addDoubleProperty("KP", ()-> config.pid[0].kP(), (double newValue) -> config.pid[0].setKP(newValue));
-          builder.addDoubleProperty("KI", ()-> config.pid[0].kI(), (double newValue) -> config.pid[0].setKI(newValue));
-          builder.addDoubleProperty("KD", ()-> config.pid[0].kD(), (double newValue) -> config.pid[0].setKD(newValue));
-          builder.addDoubleProperty("KS", ()-> config.pid[0].kS(), (double newValue) -> config.pid[0].setKS(newValue));
-          builder.addDoubleProperty("KV", ()-> config.pid[0].kV(), (double newValue) -> config.pid[0].setKV(newValue));
-          builder.addDoubleProperty("KA", ()-> config.pid[0].kA(), (double newValue) -> config.pid[0].setKA(newValue));
-          builder.addDoubleProperty("KG", ()-> config.pid[0].kG(), (double newValue) -> config.pid[0].setKG(newValue));
+    // SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    //   @Override
+    //   public void initSendable(SendableBuilder builder) {
+    //     builder.setSmartDashboardType("PID+FF Config");
+    //       builder.addDoubleProperty("KP", ()-> config.pid[0].kP(), (double newValue) -> config.pid[0].setKP(newValue));
+    //       builder.addDoubleProperty("KI", ()-> config.pid[0].kI(), (double newValue) -> config.pid[0].setKI(newValue));
+    //       builder.addDoubleProperty("KD", ()-> config.pid[0].kD(), (double newValue) -> config.pid[0].setKD(newValue));
+    //       builder.addDoubleProperty("KS", ()-> config.pid[0].kS(), (double newValue) -> config.pid[0].setKS(newValue));
+    //       builder.addDoubleProperty("KV", ()-> config.pid[0].kV(), (double newValue) -> config.pid[0].setKV(newValue));
+    //       builder.addDoubleProperty("KA", ()-> config.pid[0].kA(), (double newValue) -> config.pid[0].setKA(newValue));
+    //       builder.addDoubleProperty("KG", ()-> config.pid[0].kG(), (double newValue) -> config.pid[0].setKG(newValue));
         
-        builder.addBooleanProperty("Update", ()-> configPidFf.isScheduled(), 
-          value -> {
-            if (value) {
-              if (!configPidFf.isScheduled()) {
-                CommandScheduler.getInstance().schedule(configPidFf);
-              }
-            } else {
-              if (configPidFf.isScheduled()) {
-                configPidFf.cancel();
-              }
-            }
-          }
-        );
-      }
-    });
+    //     builder.addBooleanProperty("Update", ()-> configPidFf.isScheduled(), 
+    //       value -> {
+    //         if (value) {
+    //           if (!configPidFf.isScheduled()) {
+    //             CommandScheduler.getInstance().schedule(configPidFf);
+    //           }
+    //         } else {
+    //           if (configPidFf.isScheduled()) {
+    //             configPidFf.cancel();
+    //           }
+    //         }
+    //       }
+    //     );
+    //   }
+    // });
   }
 
   /**
@@ -384,29 +384,29 @@ public class SparkFlexMotor extends SparkFlex implements MotorInterface {
       configure(cfg, com.revrobotics.ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
     }).ignoringDisable(true);
     
-    SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Motion Magic Config");
+    // SmartDashboard.putData(name + "/Motion Magic Config", new Sendable() {
+    //   @Override
+    //   public void initSendable(SendableBuilder builder) {
+    //     builder.setSmartDashboardType("Motion Magic Config");
         
-        builder.addDoubleProperty("Vel", ()-> config.maxVelocity, value-> config.maxVelocity = value);
-        builder.addDoubleProperty("Acc", ()-> config.maxAcceleration, value-> config.maxAcceleration = value);
+    //     builder.addDoubleProperty("Vel", ()-> config.maxVelocity, value-> config.maxVelocity = value);
+    //     builder.addDoubleProperty("Acc", ()-> config.maxAcceleration, value-> config.maxAcceleration = value);
         
-        builder.addBooleanProperty("Update", ()-> configMotionMagic.isScheduled(), 
-        value -> {
-          if (value) {
-            if (!configMotionMagic.isScheduled()) {
-              CommandScheduler.getInstance().schedule(configMotionMagic);
-            }
-          } else {
-            if (configMotionMagic.isScheduled()) {
-              configMotionMagic.cancel();
-            }
-          }
-        }
-        );
-      }
-    });
+    //     builder.addBooleanProperty("Update", ()-> configMotionMagic.isScheduled(), 
+    //     value -> {
+    //       if (value) {
+    //         if (!configMotionMagic.isScheduled()) {
+    //           CommandScheduler.getInstance().schedule(configMotionMagic);
+    //         }
+    //       } else {
+    //         if (configMotionMagic.isScheduled()) {
+    //           configMotionMagic.cancel();
+    //         }
+    //       }
+    //     }
+    //     );
+    //   }
+    // });
   }
 
   @Override

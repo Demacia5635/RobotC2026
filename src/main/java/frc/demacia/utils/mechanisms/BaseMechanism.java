@@ -63,19 +63,19 @@ public class BaseMechanism extends SubsystemBase{
 
         // Create individual Brake/Coast buttons for each motor
         for (String motorName : this.motors.keySet()) {
-            SmartDashboard.putData(getName() + "/" + motorName + "/set brake", 
-                new InstantCommand(() -> setNeutralMode(motorName, true)).ignoringDisable(true));
-            SmartDashboard.putData(getName() + "/" + motorName + "/set coast", 
-                new InstantCommand(() -> setNeutralMode(motorName, false)).ignoringDisable(true));
+            // SmartDashboard.putData(getName() + "/" + motorName + "/set brake", 
+            //     new InstantCommand(() -> setNeutralMode(motorName, true)).ignoringDisable(true));
+            // SmartDashboard.putData(getName() + "/" + motorName + "/set coast", 
+            //     new InstantCommand(() -> setNeutralMode(motorName, false)).ignoringDisable(true));
         }
 
         // Create global Brake/Coast buttons for the whole mechanism
-        SmartDashboard.putData(getName() + "/set coast all", 
-                new InstantCommand(() -> setNeutralModeAll(false)).ignoringDisable(true));
-        SmartDashboard.putData(getName() + "/set brake all", 
-                new InstantCommand(() -> setNeutralModeAll(true)).ignoringDisable(true));
+        // SmartDashboard.putData(getName() + "/set coast all", 
+        //         new InstantCommand(() -> setNeutralModeAll(false)).ignoringDisable(true));
+        // SmartDashboard.putData(getName() + "/set brake all", 
+        //         new InstantCommand(() -> setNeutralModeAll(true)).ignoringDisable(true));
         
-        SmartDashboard.putData(name, this);
+        // SmartDashboard.putData(name, this);
     }
 
     /**

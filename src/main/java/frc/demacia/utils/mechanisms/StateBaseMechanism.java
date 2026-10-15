@@ -129,7 +129,7 @@ public class StateBaseMechanism extends BaseMechanism {
         // Listener to update the local state variable when dashboard selection changes
         stateChooser.onChange(state -> this.state = state);
         
-        SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
+        // SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
         SmartDashboard.putString(getName() + "/State", getState().name());
 
         for (int i = 0; i < getState().getValues().length; i++){

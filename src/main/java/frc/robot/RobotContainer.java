@@ -167,7 +167,12 @@ public class RobotContainer implements Sendable {
     controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.onePoint); shinua.setState(ShinuaState.SHINUA_ON);intake.setState(IntakeState.MIDDLE);}));
     controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.upButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.IDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
+    controller.leftButton().onTrue(new InstantCommand(() -> {forcedIsReady = !forcedIsReady;}));
 
+    controller.rightBumper().onTrue(new InstantCommand(() -> {shooter.increaseHoodPosition(Math.toRadians(1));}));
+    controller.leftBumper().onTrue(new InstantCommand(() -> {shooter.increaseHoodPosition(Math.toRadians(-1));}));
+
+    controller.povDown().onTrue(new InstantCommand(() -> {shooter.setShooterState(ShooterStates.IDLE); intake.setState(IntakeState.EJECTING); shinua.setState(ShinuaState.EJECTING);}));
     // controller.rightButton().onTrue(new InstantCommand(() -> {
     //   intake.setState(IntakeState.INTAKING);
     //   shooter.setShooterState(ShooterStates.IDLE);

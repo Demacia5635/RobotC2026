@@ -144,24 +144,24 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         fieldTesting = new Field2d();
 
-        SmartDashboard.putData("field odometry", fieldOdmetry);
-        SmartDashboard.putData("chassis/field wpilib odometry (no vision)", fieldWpilibOdometry);
+        // SmartDashboard.putData("field odometry", fieldOdmetry);
+        // SmartDashboard.putData("chassis/field wpilib odometry (no vision)", fieldWpilibOdometry);
         SmartDashboard.putData("chassis/reset gyro",
                 new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("chassis/reset gyro 180",
                 new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
-        SmartDashboard.putData("chassis/field", field);
-        SmartDashboard.putData("chassis/fieldTesting", fieldTesting);
+        // SmartDashboard.putData("chassis/field", field);
+        // SmartDashboard.putData("chassis/fieldTesting", fieldTesting);
         SmartDashboard.putData("chassis/set coast",
                 new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("chassis/set brake",
                 new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-        SmartDashboard.putData("reset odmetry",
-                new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
-                        .resetPose(getPose())).ignoringDisable(true));
-        SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
-        SmartDashboard.putData("Reset Pose Based Red Hub" , new InstantCommand(()-> {Chassis.getInstance().setYaw(Rotation2d.kZero);resetPose(new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER, Rotation2d.kZero));
-        }).ignoringDisable(true));
+        // SmartDashboard.putData("reset odmetry",
+        //         new InstantCommand(() -> DemaciaOdometry.getOdometryInstance(modulePositions)
+        //                 .resetPose(getPose())).ignoringDisable(true));
+        // SmartDashboard.putData("reset moduls", new InstantCommand(()-> resetMudolse()).ignoringDisable(true));
+        // SmartDashboard.putData("Reset Pose Based Red Hub" , new InstantCommand(()-> {Chassis.getInstance().setYaw(Rotation2d.kZero);resetPose(new Pose2d(Field.HubRed.X_BACK + 0.3, Field.HubRed.Y_CENTER, Rotation2d.kZero));
+        // }).ignoringDisable(true));
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -215,12 +215,12 @@ public class Chassis extends SubsystemBase {
         return new double[]{ax, ay, aOmga};
     }
 
-    public void restGyro() {
+    public void resetGyro() {
         double gyroAngle = !RobotCommon.isRed() ? 0 : 180;
         gyro.setYaw(gyroAngle);
     }
 
-    public void resrtGyro180() {
+    public void resetGyro180() {
         double gyroAngle = !RobotCommon.isRed() ? 180 : 0;
         gyro.setYaw(gyroAngle);
     }

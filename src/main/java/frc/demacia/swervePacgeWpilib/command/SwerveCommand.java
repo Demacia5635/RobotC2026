@@ -61,7 +61,7 @@ public class SwerveCommand extends Command {
     poseEstimator = new wpilibPoseEstimator(kinematics.kinematics(), odometry.getOdometry(), odmetryStd, visionSTD);
 
     // שליחת אובייקט ה-Field2d ל-NetworkTables תחת השם "Field" כדי ש-Elastic יידע לקרוא אותו
-    SmartDashboard.putData("Field", field);
+    // SmartDashboard.putData("Field", field);
     LogManager.log(vision.getPoseEstimation());
     addRequirements(chassis);
   }
@@ -78,7 +78,8 @@ public class SwerveCommand extends Command {
     double joyY = controller.getLeftX() * direction;
     
     // Calculate rotation from trigger axes
-    double rot = controller.getLeftTrigger() - controller.getRightTrigger();
+    // double rot = controller.getLeftTrigger() - controller.getRightTrigger();
+    double rot = controller.getRightX();
     
     double velX = Math.pow(joyX, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyY);

@@ -87,7 +87,7 @@ public class ShooterConstants {
         AUTO_POINT,
         SHOOTER,
         IDLE,
-        TEST,
+        TESTING,
         DELIVERY,
         TRANCH,
         onePoint,

@@ -56,7 +56,7 @@ public class Shooter extends SubsystemBase {
     // hood_limet_switch = new DigitalInput(ShooterConstants.HoodConstants.LIMET_SWITCH_CHANEL);
     feeder = new TalonFXMotor(ShooterConstants.FeederConstants.FEEDER_CONFIG);
     SmartDashboard.putData("shooter",this);
-    SmartDashboard.putData("hood Calibration Command", new hoodCalibrasen());
+    SmartDashboard.putData("hood Calibration Command", new InstantCommand(() -> isCalibrated = true));
     addNT();
     SmartDashboard.putData("resetHood",new InstantCommand(() -> restHoodMotor()).ignoringDisable(true));
     SmartDashboard.putData("set hood brake", new InstantCommand(() -> setBrakeHood()).ignoringDisable(true));
@@ -74,6 +74,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("Hood Velocity", () -> hood.getVelocity().getValueAsDouble(), null);
       builder.addDoubleProperty("Hood Acceleration", () -> hood.getAcceleration().getValueAsDouble(), null);
       builder.addDoubleProperty("Hood Voltage", () -> hood.getMotorVoltage().getValueAsDouble(), null);
+      builder.addDoubleProperty("Hood Wanted Angle", () -> Math.toDegrees(wantedAngle), null);
       builder.addStringProperty("Shooter State", () -> shooterState.name(), null);
       builder.addDoubleProperty("shooter voltage", () -> flywheel.getVoltageSignal().getDouble(), null);
       builder.addBooleanProperty("is hood lemate switch", ()-> limitSwitchGet(), null);
@@ -81,6 +82,7 @@ public class Shooter extends SubsystemBase {
       builder.addDoubleProperty("distence", ()-> getDis(), null);
       builder.addBooleanProperty("shooter is ready", ()-> (Shooter.getInstance().isReady()), null);
       builder.addBooleanProperty("is ready", ()-> (Shooter.getInstance().isReady()), null);
+      builder.addBooleanProperty("is clibrated", ()-> isCalibrated, null);
   }
 
   public static Shooter getInstance(){
@@ -88,6 +90,14 @@ public class Shooter extends SubsystemBase {
       shooter = new Shooter();
     }
     return shooter;
+  }
+
+  public void increaseHoodPosition(double delta) {
+    wantedAngle += delta;
+  }
+
+  public void updateHoodMotion() {
+    setHoodMotion(wantedAngle);
   }
 
   public boolean limitSwitchGet(){
@@ -177,7 +187,6 @@ public class Shooter extends SubsystemBase {
 
   public void setHoodMotion(double position){
     if (isCalibrated){
-      wantedAngle = position;
       position = MathUtil.clamp(position, HoodConstants.MIN_POSITION, HoodConstants.MAX_POSITION);
       hood.setMotion(position);
     }
