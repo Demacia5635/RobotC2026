@@ -82,6 +82,8 @@ public class RobotContainer implements Sendable {
   public static LedManager ledManager;
   private static RobotCLedStrip mainLed;
 
+  private SwerveCommand swerveCommand;
+
   public static boolean forcedIsReady = false;
 
   private Vision vision;
@@ -106,6 +108,8 @@ public class RobotContainer implements Sendable {
     autoTimer = new Timer();
     timerToClose = new Timer();
     // Configure the trigger bindings
+
+    swerveCommand =new SwerveCommand(controller, Chassis.getInstance().vision);
 
     ledManager = new LedManager();
     mainLed = new RobotCLedStrip(ledManager);
@@ -155,16 +159,16 @@ public class RobotContainer implements Sendable {
   }
 
   private void setDefaultCommands() {
-    Chassis.getInstance().setDefaultCommand(new SwerveCommand(controller, Chassis.getInstance().vision));
+    Chassis.getInstance().setDefaultCommand(swerveCommand);
     shinua.setDefaultCommand(new ShinuaCommand());
     intake.setDefaultCommand(new IntakeCommand());
-    shooter.setDefaultCommand(new ShooterCommand());
+    shooter.setDefaultCommand(new ShooterCommand(swerveCommand.getOdometry()));
     // turret.setDefaultCommand(new TurretCommand());
 
   }
 
   private void setController() {
-    controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.onePoint); shinua.setState(ShinuaState.SHINUA_ON);intake.setState(IntakeState.MIDDLE);}));
+    controller.rightButton().onTrue(new InstantCommand(()-> {shooter.setShooterState(ShooterStates.SHOOTER); shinua.setState(ShinuaState.SHINUA_ON);intake.setState(IntakeState.MIDDLE);}));
     controller.downButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.INTAKING); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.upButton().onTrue(new InstantCommand(()-> {intake.setState(IntakeState.IDLE); shinua.setState(ShinuaState.SHINUA_OFF); shooter.setShooterState(ShooterStates.IDLE);}));
     controller.leftButton().onTrue(new InstantCommand(() -> {forcedIsReady = !forcedIsReady;}));

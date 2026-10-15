@@ -71,6 +71,10 @@ public class SwerveCommand extends Command {
     SmartDashboard.putData("field", field);
   }
 
+  public wpilivOdmetry getOdometry() {
+    return odometry;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
@@ -89,7 +93,7 @@ public class SwerveCommand extends Command {
     
     double velX = Math.pow(joyX, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyX);
     double velY = Math.pow(joyY, 2) * chassis.getConfig().maxDriveVelocity * Math.signum(joyY);
-    double velRot = Math.pow(rot, 2) * chassis.getConfig().maxRotationalVelocity * Math.signum(rot);
+    double velRot = (Math.pow(rot, 2) * chassis.getConfig().maxRotationalVelocity * Math.signum(rot)) *-1;
 
     if (isPrecisionMode) {
       velX /= 2.0;

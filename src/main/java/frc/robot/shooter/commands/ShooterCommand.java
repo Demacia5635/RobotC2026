@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.demacia.swervePacgeWpilib.wpilib_odmetry.wpilivOdmetry;
 import frc.demacia.utils.chassis.Chassis;
 import frc.demacia.utils.log.LogManager;
 import frc.robot.Field;
@@ -48,8 +49,11 @@ public class ShooterCommand extends Command {
   private double VELOCITY_CORRECTION = 1;
   private Pose2d nextPose = RobotCommon.getRobotFucerPose();
 
+  private wpilivOdmetry odmetry;
+
   /** Creates a new ShooterCommand. */
-  public ShooterCommand() {
+  public ShooterCommand(wpilivOdmetry odmetry) {
+    this.odmetry = odmetry;
     this.shooter =  Shooter.getInstance();
     addRequirements(shooter);
     SmartDashboard.putData("shooter command", this);
@@ -136,12 +140,12 @@ public class ShooterCommand extends Command {
         //243
       break;
       case SHOOTER:
-        Translation2d toHub = RobotCommon.getHubPose().minus(Chassis.getInstance().getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle())));
+        Translation2d toHub = RobotCommon.getHubPose().minus(odmetry.getPose().getTranslation().plus(ShooterConstants.SHOOTER_OFFSET.rotateBy(Chassis.getInstance().getGyroAngle())));
         double lut[] = ShooterConstants.LOOK_UP_TABLE.get(toHub.getNorm());
-        // Rotation2d heading = toHub.getAngle();
-        //double[] arr = setFlywheelAndHood(lut[0], lut[1], heading);
-        flywheelVelocity = lut[0];//* WHEEL_TO_BALL_VELOCITY_RATIO* velocityFromBattery;
-        hoodPosition = lut[1];// + HOOD_OFFSET;
+        Rotation2d heading = toHub.getAngle();
+        double[] arr = setFlywheelAndHood(lut[0], lut[1], heading);
+        flywheelVelocity = arr[0]* WHEEL_TO_BALL_VELOCITY_RATIO* velocityFromBattery;
+        hoodPosition = arr[1];
         feederPower = FeederConstants.MAX_FEEDER_POWER;
         break;
       case IDLE:
@@ -168,8 +172,8 @@ public class ShooterCommand extends Command {
         break;
     }
       shooter.setFlywheelVelocity(flywheelVelocity);
-      // shooter.setHoodMotion(hoodPosition);
-      shooter.updateHoodMotion();
+      shooter.setHoodMotion(hoodPosition);
+    // shooter.updateHoodMotion();
       shooter.setFeederPower(feederPower);
 
     if (shooter.getFeederCurrent() > FeederConstants.MAX_FEEDER_CURRENT && Math.abs(shooter.getFeederVelocity()) < FeederConstants.MIN_FEEDER_VELOCITY){
