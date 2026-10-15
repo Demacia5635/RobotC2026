@@ -433,32 +433,6 @@ public class Chassis extends SubsystemBase {
         // DemaciaOdometry נשמר להשוואה בלבד
         fieldOdmetry.setRobotPose(DemaciaOdometry.getOdometryInstance(modulePositions).getPose2d());
 
-        // SmartDashboard.putNumber("robot pose x 2", vision.getTagPose().getRobotPose2d().getX());
-        // SmartDashboard.putNumber("robot pose y 2", vision.getTagPose().getRobotPose2d().getY());
-        // SmartDashboard.putNumber("cam to tag x", vision.getTagPose().getCameraToTag().getX());
-        // SmartDashboard.putNumber("cam to tag y", vision.getTagPose().getCameraToTag().getY());
-        // SmartDashboard.putString("camera name", vision.getTagPose().getCamera().getName());
-        // SmartDashboard.putNumber("dis from cam", vision.getTagPose().getDistFromCamera());
-        // SmartDashboard.putNumber("robot to tag x", vision.getTagPose().getRobotToTagFieldRel().getX());
-        // SmartDashboard.putNumber("robot to tag y", vision.getTagPose().getRobotToTagFieldRel().getY());
-        // SmartDashboard.putNumber("origen to robot x", vision.getTagPose().getOriginToRobot().getX());
-        // SmartDashboard.putNumber("origen to robot y", vision.getTagPose().getOriginToRobot().getY());
-        // SmartDashboard.putNumber("ty", vision.get);
-        // SmartDashboard.putNumber("origen to tag x", vision.getTagPose().origintoTag.getX());
-        // SmartDashboard.putNumber("origen to tag y", vision.getTagPose().origintoTag.getY());
-        SmartDashboard.putNumber("vison x", vision.getPoseEstimation().getX());
-        SmartDashboard.putNumber("vison y", vision.getPoseEstimation().getY());
-        SmartDashboard.putNumber("cam id", vision.getTagPose().id);
-        double[] accel = getAcceleration();
-        SmartDashboard.putNumber("accel/ax", accel[0]);
-        SmartDashboard.putNumber("accel/ay", accel[1]);
-        SmartDashboard.putNumber("accel/alpha (from kinematics)", accel[2]);
-        SmartDashboard.putNumber("accel/alpha (from gyro)", getAngularAcceleration());
-
-        SmartDashboard.putNumber("pose/x", getPose().getX());
-        SmartDashboard.putNumber("pose/y", getPose().getY());
-        SmartDashboard.putNumber("pose/heading", getPose().getRotation().getDegrees());
-
         // ── מספרים להשוואה: אודומטריה טהורה מול poseEstimator (עם Vision) ───
         SmartDashboard.putNumber("odometry_wpilib/x", getWpilibOdometryPose().getX());
         SmartDashboard.putNumber("odometry_wpilib/y", getWpilibOdometryPose().getY());
